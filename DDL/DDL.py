@@ -1,7 +1,7 @@
 import mysql.connector
 # 마리아db설치하시고 -> create database db_name -> connect 메소드 부분에 패스워드랑 데이터베이스 이름만 바꿔서 사용
 # mysql connection을 선언한다. 파라미터는 host는 접속 주소, user는 ID, passwd는 패스워드, database는 접속할 데이터 베이스이다.	
-dbconn = mysql.connector.connect(host="localhost", user="root", passwd="2657", database="testdb")
+dbconn = mysql.connector.connect(host="localhost", user="root", passwd="2657", database="DBProject")
 cs = dbconn.cursor()
 
 tmp = []
