@@ -4,10 +4,27 @@ import mysql.connector
 dbconn = mysql.connector.connect(host="localhost", user="root", passwd="2657", database="DBProject")
 cs = dbconn.cursor()
 
+def execute(query, bufferd=True):	
+  # 전역에 선언되어 있는 connection을 가져온다.	
+  global dbconn;	
+  try:	
+    # 커서를 취득한다. 	
+    cursor = dbconn.cursor(buffered=bufferd);	
+    # 쿼리를 실행한다.	
+    cursor.execute(query);	
+    # 쿼리를 커밋한다.	
+    dbconn.commit();	
+  except Exception as e:	
+    # 에러가 발생하면 쿼리를 롤백한다.	
+    dbconn.rollback();	
+    raise e;	
+
+
 tmp = []
 tmp.append(
 """
 CREATE TABLE USER(
+MainID       VARCHAR(20)        NOT NULL,    
 ID           VARCHAR(20)        NOT NULL,
 Password     VARCHAR(20)        NOT NULL,
 Name         VARCHAR(20)        NOT NULL,
@@ -15,9 +32,10 @@ Gender       CHAR(1)            NOT NULL ,
 Address      TEXT               NOT NULL,
 DateOfBirth  DATE               NOT NULL,
 PhoneNumber  VARCHAR(11)        NOT NULL,
-CONSTRAINT domain_sex CHECK (Gender='M' OR Gender="F"),
-CONSTRAINT domain_user_flag CHECK (ID LIKE 'ad %' OR ID LIKE 'as %' OR ID LIKE 'su %'),
-PRIMARY KEY(ID)
+CONSTRAINT domain_Gender CHECK (Gender='M' OR Gender="F"),
+CONSTRAINT domain_MainID CHECK (MainID LIKE 'ad %' OR ID LIKE 'as %' OR ID LIKE 'su %'),
+PRIMARY KEY(MainID),
+UNIQUE(ID)
 );
 """)
 tmp.append(
@@ -63,8 +81,8 @@ QUalAssessment     DECIMAL(6,4),
 P_NP               VARCHAR(2)         NOT NULL    DEFAULT 'NP',
 
 FOREIGN KEY (OriginalTypeID) REFERENCES ORIGINAL_DATA_TYPE(OriginalTypeID) ON DELETE SET NULL ON UPDATE CASCADE,
-FOREIGN KEY (SubmitterID) REFERENCES USER(ID) ON DELETE SET NULL ON UPDATE CASCADE,
-FOREIGN KEY (AssessorID) REFERENCES USER(ID) ON DELETE SET NULL ON UPDATE CASCADE,
+FOREIGN KEY (SubmitterID) REFERENCES USER(MainID) ON DELETE SET NULL ON UPDATE CASCADE,
+FOREIGN KEY (AssessorID) REFERENCES USER(MainID) ON DELETE SET NULL ON UPDATE CASCADE,
 PRIMARY KEY(SubmissionID),
 CONSTRAINT domain_QuanAssessment CHECK (QuanAssessment >=0 and QuanAssessment <= 10),
 CONSTRAINT domain_QualAssessment CHECK ((QualAssessment >=0 and QualAssessment <= 10) OR QualAssessment IS NULL),
@@ -74,6 +92,12 @@ CONSTRAINT domain_AssessorID CHECK (AssessorID LIKE 'as %')
 );
 """)
 
+try:	
+  for s in tmp[:]:
+    execute(s)
+except Exception as e:	
+  print(e);	
+finally:	
+  # connection을 다 사용하면 반드시 connection 리소스를 닫는다.	
+  dbconn.close();
 
-for s in tmp[:]:
-    cs.execute(s)
