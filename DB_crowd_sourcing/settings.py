@@ -87,7 +87,7 @@ DATABASES = {
         "ENGINE": "django.db.backends.mysql",
         "NAME": "DB_test",  # mysql
         "USER": "root",  # root
-        "PASSWORD": "111111",  # 1234
+        "PASSWORD": "111111",  # 여러분들 비밀번호로 변경해주세요
         "HOST": "localhost",  # 공백으로 냅두면 default localhost
         "PORT": "3306",  # 공백으로 냅두면 default 3306
     }
