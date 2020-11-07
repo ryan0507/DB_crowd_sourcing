@@ -14,7 +14,7 @@ from pathlib import Path
 import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+print(BASE_DIR)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -50,7 +50,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "urls"
+ROOT_URLCONF = "DB_crowd_sourcing.urls"
 
 TEMPLATES = [
     {
@@ -68,7 +68,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "db.wsgi.application"
+WSGI_APPLICATION = "DB_crowd_sourcing.wsgi.application"
 
 
 # Database
@@ -86,7 +86,7 @@ DATABASES = {
         #'ENGINE': 'django.db.backends.sqlite3',
         #'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "mysql",  # mysql
+        "NAME": "DB_test",  # mysql
         "USER": "root",  # root
         "PASSWORD": "111111",  # 1234
         "HOST": "localhost",  # 공백으로 냅두면 default localhost
