@@ -1,0 +1,18 @@
+
+.home{
+    background-color: #6EB9E8;
+    display : flex;
+    justify-content: center;
+    align-items: center;
+}
+.home-white{
+    background-color: #FFFFFF;
+}
+
+.selected{
+    text-decoration : underline;
+}
+.hidden{
+
+    display : none;
+}

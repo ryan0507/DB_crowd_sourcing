@@ -1,0 +1,95 @@
+
+{% load static %}
+<head>
+    <!--link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous"-->
+    <link rel="stylesheet" href="../../static/css/home.css">
+
+</head>
+
+<body class="home">
+    <div class="home-white">
+        <header class="home-white__title">
+            <a id="signin__select" class="signin__select selected" onclick="shiftInputSignin();">SIGN IN</a>
+            <a id="signup__select" class="signup__select unselected" onclick="shiftInputSignup();">SIGN UP</a>
+        </header>
+
+        <main class="home__inputs">
+            <div id="signin-inputs" class="signin-inputs">
+                <input type="text" placeholder="ID" name="login__input">
+                <input type="text" placeholder="PASSWORD" name="login__input">
+                <div class="submit__button">
+                    <button name="login-submit">login</button>
+                </div>
+            </div>
+            <div id='signup-inputs' class="signup-inputs hidden">
+                <div class="signup-input__title">
+                    ID
+                </div>
+                <input type="text" name="signup__input1">
+                <div class="signup-input__title">
+                    Password
+                </div>
+                <input type="text" name="signup__input1">
+                <div class="signup-input__title">
+                    Repeat Password
+                </div>
+                <input type="text" name="signup__input1">
+                <div class="signup-input__title">
+                    Name
+                </div>
+                <input type="text" name="signup__input1">
+                <div class="signup-input__title">
+                    Sex
+                </div>
+                <div class="signup__input2">
+                    <input type="select" value="Male">
+                    <input type="select" value="Female">
+                </div>
+                <div class="signup-input__title">
+                    Address
+                </div>
+                <input type="text" name="signup__input1">
+                <div class="signup-input__title">
+                    Birth
+                </div>
+                <input type="date">
+                <div class="signup-input__title">
+                    Phone number
+                </div>
+                <div class="phone-number">
+                    <input type="text" name="signup__input3">
+                    <span>-</span>
+                    <input type="text" name="signup__input3">
+                    <span>-</span>
+                    <input type="text" name="signup__input3">
+                </div>
+                <div class="type__select">
+                    <button class="type-select">제출자</button>
+                    <button class="type-select">평가자</button>
+                </div>
+                <div class="submit__button">
+                    <button name="login-submit">sign up</button>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script>
+        const signinInputs = document.getElementById("signin-inputs");
+        const signupInputs = document.getElementById("signup-inputs");
+        const signinSelect = document.getElementById("signin__select");
+        const signupSelect = document.getElementById("signup__select");
+
+        const shiftInputSignin = () => {
+            signinInputs.className = "signin-inputs";
+            signupInputs.className = "signup-inputs hidden";
+            signinSelect.className = "signin__select selected";
+            signupSelect.className = "signup__select unselected";
+        }
+        const shiftInputSignup = () => {
+            signinInputs.className = 'signin-inputs hidden';
+            signupInputs.className = 'signup-inputs';
+            signinSelect.className = 'signin__select unselected';
+            signupSelect.className = 'signup__select selected';
+        }
+    </script>
+</body>
