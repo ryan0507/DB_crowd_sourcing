@@ -1,17 +1,13 @@
 ## Table 정리
-
 ### 1) movie : type == "MOVIE",
-
-## table 정리
-1) movie : type == "MOVIE",
     - type(Movie or TV Show) : str, title : str (key), release_year : int, rating : str, month : str, date : int, year : int
-2) tv_show : type == "TV Show",
+### 2) tv_show : type == "TV Show",
     - type(Movie or TV Show) : str, title : str (key), release_year : int, rating : str, month : str, date : int, year : int 
     
-3) country
+### 3) country
     - title(key) : str, country : str
 
-4) direc
+### 4) direc
     - title(key) : str, director : str
 
 ## Table Size
