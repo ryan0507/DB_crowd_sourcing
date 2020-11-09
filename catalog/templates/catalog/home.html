@@ -9,66 +9,70 @@
 <body class="home">
     <div class="home-white">
         <header class="home-white__title">
-            <a id="signin__select" class="signin__select selected" onclick="shiftInputSignin();">SIGN IN</a>
-            <a id="signup__select" class="signup__select unselected" onclick="shiftInputSignup();">SIGN UP</a>
+            <a id="signin__select" class="signin__select selected" onclick="shiftInputSignin()">SIGN IN</a>
+            <a id="signup__select" class="signup__select unselected" onclick="shiftInputSignup()">SIGN UP</a>
         </header>
 
         <main class="home__inputs">
             <div id="signin-inputs" class="signin-inputs">
-                <input type="text" placeholder="ID" name="login__input">
-                <input type="text" placeholder="PASSWORD" name="login__input">
+                <div>
+                    <input type="text" placeholder="ID" class="login__input-ID">
+                </div>
+                <div>
+                    <input type="text" placeholder="PASSWORD" class="login__input-PW">
+                </div>
                 <div class="submit__button">
-                    <button name="login-submit">login</button>
+                    <button class="login-submit">LOG IN</button>
                 </div>
             </div>
             <div id='signup-inputs' class="signup-inputs hidden">
                 <div class="signup-input__title">
                     ID
                 </div>
-                <input type="text" name="signup__input1">
+                <input type="text" class="signup__input1">
                 <div class="signup-input__title">
                     Password
                 </div>
-                <input type="text" name="signup__input1">
+                <input type="text" class="signup__input1">
                 <div class="signup-input__title">
                     Repeat Password
                 </div>
-                <input type="text" name="signup__input1">
+                <input type="text" class="signup__input1">
                 <div class="signup-input__title">
                     Name
                 </div>
-                <input type="text" name="signup__input1">
+                <input type="text" class="signup__input1">
                 <div class="signup-input__title">
                     Sex
                 </div>
                 <div class="signup__input2">
-                    <input type="select" value="Male">
-                    <input type="select" value="Female">
+                    <div id='select__male' class="select__male white" onclick="clickMale()">Male</div>
+                    <div id='select__female' class="select__female white" onclick="clickFemale()">Female</div>
                 </div>
                 <div class="signup-input__title">
                     Address
                 </div>
-                <input type="text" name="signup__input1">
+                <input type="text" class="signup__input1">
                 <div class="signup-input__title">
                     Birth
                 </div>
-                <input type="date">
+                <input type="date" class="select__birth">
                 <div class="signup-input__title">
                     Phone number
                 </div>
                 <div class="phone-number">
-                    <input type="text" name="signup__input3">
-                    <span>-</span>
-                    <input type="text" name="signup__input3">
-                    <span>-</span>
-                    <input type="text" name="signup__input3">
+                    <input type="text" class="signup__input3">
+                    <span class="phone">-</span>
+                    <input type="text" class="signup__input3">
+                    <span class="phone">-</span>
+                    <input type="text" class="signup__input3">
                 </div>
                 <div class="type__select">
-                    <button class="type-select">제출자</button>
-                    <button class="type-select">평가자</button>
+                    <div id="type-select1" class="type-select1 white" onclick="clickType1()">제출자</div>
+                    <div id="type-select2" class="type-select2 white" onclick="clickType2()">평가자</div>
                 </div>
                 <div class="submit__button">
-                    <button name="login-submit">sign up</button>
+                    <button class="login-submit">SIGN UP</button>
                 </div>
             </div>
         </main>
@@ -78,6 +82,10 @@
         const signupInputs = document.getElementById("signup-inputs");
         const signinSelect = document.getElementById("signin__select");
         const signupSelect = document.getElementById("signup__select");
+        const typeSelect1 = document.getElementById("type-select1");
+        const typeSelect2 = document.getElementById("type-select2");
+        const selectMale = document.getElementById("select__male");
+        const selectFemale = document.getElementById("select__female");
 
         const shiftInputSignin = () => {
             signinInputs.className = "signin-inputs";
@@ -90,6 +98,22 @@
             signupInputs.className = 'signup-inputs';
             signinSelect.className = 'signin__select unselected';
             signupSelect.className = 'signup__select selected';
+        }
+        const clickType1 = () => {
+            typeSelect1.className = "type-select1 blue";
+            typeSelect2.className = "type-select2 white";
+        }
+        const clickType2 = () => {
+            typeSelect1.className = "type-select1 white";
+            typeSelect2.className = "type-select2 blue";
+        }
+        const clickMale = () => {
+            selectMale.className = "select__male blue";
+            selectFemale.className = "select__female white";
+        }
+        const clickFemale = () => {
+            selectMale.className = "select__male white";
+            selectFemale.className = "select__female blue";
         }
     </script>
 </body>

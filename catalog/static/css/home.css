@@ -1,4 +1,3 @@
-
 .home{
     background-color: #6EB9E8;
     display : flex;
@@ -7,12 +6,175 @@
 }
 .home-white{
     background-color: #FFFFFF;
+    box-shadow: 0px 15px 20px #00000048;
+    border-radius: 26px;
+}
+.signin-inputs{
+    width: 895px;
+    height: 444px;
+}
+.signup-inputs{
+    width : 895px;
+    height : 950px;
+}
+.selected{
+    border-bottom: 3px solid #6EB9E8;
+}
+.home-white__title{
+    padding-top : 80px;
+}
+.signin__select{
+    text-align: left;
+    font: normal normal 800 30px/36px Apple SD Gothic Neo;
+    letter-spacing: 0px;
+    color: #707070;
+    margin-left : 298px;
+    margin-right : 98px;
+}
+.signup__select{
+    text-align: left;
+    font: normal normal 800 30px/36px Apple SD Gothic Neo;
+    letter-spacing: 0px;
+    color: #707070;
+}
+.login__input-ID{
+    background: #F6F6F6 0% 0% no-repeat padding-box;
+    border-radius: 15px;
+    border : none;
+    margin-top: 41.5px;
+    margin-left : 70px;
+    width: 756px;
+    height: 82px;
+}
+.login__input-PW{
+    background: #F6F6F6 0% 0% no-repeat padding-box;
+    border-radius: 15px;
+    border : none;
+    margin-top: 19px;
+    margin-left : 70px;
+    width: 756px;
+    height: 82px;
+}
+input::placeholder {
+    text-align: center;
+    font: normal normal 800 30px/36px Apple SD Gothic Neo;
+    letter-spacing: 0px;
+    color: #A7A7A7;
+}
+.login-submit{
+    text-align: center;
+    font: normal normal 600 25px/31px Apple SD Gothic Neo;
+    letter-spacing: 0px;
+    color: #FFFAFA;
+    border : none;
+    background: #6EB9E8 0% 0% no-repeat padding-box;
+    box-shadow: 0px 3px 6px #00000029;
+    border-radius: 15px;
+    width: 392px;
+    height: 71px;
+    margin-top:58px;
+    margin-left : 251px;
+}
+.signup-input__title{
+    text-align: left;
+    font: normal normal 800 25px/31px Apple SD Gothic Neo;
+    letter-spacing: 0px;
+    color: #A7A7A7;
+    margin-left: 82px;
+}
+.signup__input1{
+    border : none;
+    width: 760px;
+    height: 53px;
+    background: #F6F6F6 0% 0% no-repeat padding-box;
+    border-radius: 15px;
+    margin-left : 68px;
+    margin-bottom: 7px;
+}
+.select__male{
+    padding : 8px 34px 15px 34px;
+    border : none;
+    background: #F6F6F6 0% 0% no-repeat padding-box;
+    border-radius: 15px;
+    text-align: center;
+    font: normal normal 800 25px Apple SD Gothic Neo;
+    letter-spacing: 0px;
+    color: #A7A7A7;
+    margin-bottom: 7px;
+    margin-left : 67px;
+    vertical-align: middle;
+}
+.select__female{
+    padding : 8px 34px 15px 34px;
+    border : none;
+    background: #F6F6F6 0% 0% no-repeat padding-box;
+    border-radius: 15px;
+    text-align: center;
+    font: normal normal 800 25px Apple SD Gothic Neo;
+    letter-spacing: 0px;
+    color: #A7A7A7;
+    margin-left : 24px;
+    margin-bottom: 7px;
+    vertical-align: middle;
 }
 
-.selected{
-    text-decoration : underline;
+.signup__input2{
+    display: flex;
+    width: 760px;
+    height: 53px;
+}
+.select__birth{
+    height : 53px;
+    padding-left: 21px;
+    background: #F6F6F6 0% 0% no-repeat padding-box;
+    border-radius: 15px;
+    text-align: left;
+    font: normal normal 800 30px/36px Apple SD Gothic Neo;
+    letter-spacing: 0px;
+    color: #A7A7A7;
+    border : none;
+    margin-left : 68px;
+    margin-bottom: 7px;
+}
+.signup__input3{
+    border : none;
+    width: 124px;
+    height: 53px;
+    background: #F6F6F6 0% 0% no-repeat padding-box;
+    border-radius: 15px;
+    text-align: center;
+    font: normal normal 800 30px/36px Apple SD Gothic Neo;
+    letter-spacing: 0px;
+    color: #A7A7A7;
+}
+.phone-number{
+    margin-left : 68px;
+}
+.phone {
+    text-align: left;
+    font: normal normal 800 30px/36px Apple SD Gothic Neo;
+    letter-spacing: 0px;
+    color: #A7A7A7;
+}
+.type__select{
+    margin-left:251px;
+    margin-top:38px;
+    display : flex;
+}
+.type-select1, .type-select2{
+    background: #F6F6F6 0% 0% no-repeat padding-box;
+    border-radius: 15px;
+    border : none;
+    font: normal normal 800 25px/31px Apple SD Gothic Neo;
+    color: #A7A7A7;
+    margin-right : 24px;
+    padding : 11px 60px;
+}
+.blue{
+    background: #6EB9E8 0% 0% no-repeat padding-box;
+    color: #FFFFFF;
+    box-shadow: 0px 3px 6px #00000029;
 }
 .hidden{
-
     display : none;
 }
