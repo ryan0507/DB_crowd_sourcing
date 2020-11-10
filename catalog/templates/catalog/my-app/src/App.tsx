@@ -8,6 +8,8 @@ import {
   NavLink,
 } from 'react-router-dom';
 import admin_main from "./pages/admin_main";
+import admin_taskAdd from "./pages/admin_taskAdd";
+import admin_taskInfo from "./pages/admin_taskInfo";
 
 function App() {
   return (
@@ -24,8 +26,10 @@ function App() {
                     </div>
                 </div>
                 <Switch>
-                    <Route exact={true} path="/" component={admin_main}/>
+                    <Route exact path="/" component={admin_main}/>
                     <Route exact={true} path="/admin_main" component={admin_main}/>
+                    <Route exact path="/admin_taskAdd" component={admin_taskAdd}/>
+                    <Route exact path="/admin_taskInfo" component={admin_taskInfo}/>
                 </Switch>
             </body>
         </div>
