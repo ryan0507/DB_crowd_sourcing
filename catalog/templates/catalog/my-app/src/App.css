@@ -62,17 +62,18 @@ h2 {
 }
 
 .Title{
-  transform: translate(-600%, -20%);
+  position:relative;
   color: #fff;
   font-size: 30px;
   font-weight: bold;
-  margin: 100px 0px 0px 20px;
+  margin: 100px 830px 15px 0px;
 }
-.back{
-  transform: translate(600%, -70%);
+.right_side_small{
+  position: relative;
   color: #fff;
   font-size: 20px;
   font-weight: 800;
+  margin: 0px 0px 20px 830px;
 }
 
 .formContent {
@@ -81,6 +82,17 @@ h2 {
   padding: 50px;
   width: 1000px;
   min-height: 500px;
+  height: auto;
+  position: relative;
+  box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
+}
+
+.content_list {
+  border-radius: 10px 10px 10px 10px;
+  background: #fff;
+  padding: 25px;
+  width: 1000px;
+  min-height: 120px;
   height: auto;
   position: relative;
   box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
