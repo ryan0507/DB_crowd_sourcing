@@ -62,14 +62,16 @@ h2 {
 }
 
 .Title{
-  position:relative;
+  position:absolute;
+  top: 110px;
+  left: 23%;
   color: #fff;
   font-size: 30px;
   font-weight: bold;
-  margin: 100px 830px 15px 0px;
 }
 .right_side_small{
   position: relative;
+  top: 145px;
   color: #fff;
   font-size: 20px;
   font-weight: 800;
@@ -77,6 +79,7 @@ h2 {
 }
 
 .formContent {
+  top: 150px;
   border-radius: 10px 10px 10px 10px;
   background: #fff;
   padding: 50px;
@@ -88,6 +91,7 @@ h2 {
 }
 
 .content_list {
+  top: 150px;
   border-radius: 10px 10px 10px 10px;
   background: #fff;
   padding: 25px;
