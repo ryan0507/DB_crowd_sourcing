@@ -14,6 +14,7 @@ import admin_tableSchema_add from "./pages/admin/admin_tableSchema_add";
 import admin_datatype_add from "./pages/admin/admin_datatype_add";
 import admin_taskOrigin from "./pages/admin/admin_taskOrigin";
 import table from "./pages/admin/table";
+import admin_userList from "./pages/admin/admin_userLIst";
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
                     <Route exact path="/admin/tableschemaadd" component={admin_tableSchema_add}/>
                     <Route exact path="/admin/datatypeadd" component={admin_datatype_add}/>
                     <Route exact path="/admin/table" component={table}/>
+                    <Route exact path="/admin/userlist" component={admin_userList}/>
                 </Switch>
             </body>
         </div>
