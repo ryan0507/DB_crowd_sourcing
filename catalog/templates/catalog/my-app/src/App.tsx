@@ -26,7 +26,7 @@ function App() {
                         <nav>
                             <a className="n" href="/admin/main">태스크 관리</a>
                             <a className="nr" href="/">비밀번호 변경</a>
-                            <a className="nr" href="/">회원 관리</a>
+                            <a className="nr" href="/admin/userlist">회원 관리</a>
                         </nav>
                     </div>
                 </div>

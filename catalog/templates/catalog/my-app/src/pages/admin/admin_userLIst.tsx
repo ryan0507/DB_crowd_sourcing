@@ -8,27 +8,21 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import DirectionsIcon from '@material-ui/icons/Directions';
-import {black} from "material-ui/styles/colors";
+import {black, white} from "material-ui/styles/colors";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      padding: '2px 4px',
-      display: 'flex',
-      alignItems: 'center',
-      width: 300,
-        backgroundColor: black,
+        display: 'flex',
+        alignItems: 'center',
+        height: '0px',
     },
     input: {
-      marginLeft: theme.spacing(1),
-      flex: 1,
+        marginBottom: '30px',
     },
     iconButton: {
-      padding: 10,
-    },
-    divider: {
-      height: 28,
-      margin: 4,
+        marginBottom: '30px',
+        padding: 10,
     },
   }),
 );
@@ -38,19 +32,18 @@ export default function CustomizedInputBase() {
   return (
       <div className="wrapper">
            <div className="Title">회원 List</div>
-           <Link to = "/admin/main" className="right_side_small">
+           <div className="right_side_search">
                <Paper component="form" className={classes.root}>
                   <InputBase
                     className={classes.input}
-                    placeholder="Search Google Maps"
-                    inputProps={{ 'aria-label': 'search google maps' }}
+                    placeholder="회원 검색"
+                    inputProps={{ 'aria-label': '회원 검색' }}
                   />
                   <IconButton type="submit" className={classes.iconButton} aria-label="search">
                     <SearchIcon />
                   </IconButton>
-                  <Divider className={classes.divider} orientation="vertical" />
                 </Paper>
-           </Link>
+           </div>
            <div className="formContent">
                <div>내용</div>
            </div>
