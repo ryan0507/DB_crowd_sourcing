@@ -2,15 +2,15 @@ import { BrowserRouter as Router, Route,Link } from 'react-router-dom';
 import React from 'react';
 import table from '../table';
 
-function admin_datatype_add(){
+function admin_fileDetail(){
    return(
        <div className="wrapper">
-           <div className="Title">원본 데이터 타입 추가</div>
-           <Link to = "/admin/taskAdd" className="right_side_small">뒤로가기</Link>
+           <div className="Title">file name</div>
+           <Link to = "/admin/taskinfo" className="right_side_small">뒤로가기</Link>
            <div className="formContent"> {table()} </div>
 
        </div>
    );
 }
 
-export default admin_datatype_add;
+export default admin_fileDetail;

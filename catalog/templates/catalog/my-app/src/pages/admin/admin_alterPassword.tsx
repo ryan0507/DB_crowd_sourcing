@@ -10,44 +10,33 @@ import SearchIcon from '@material-ui/icons/Search';
 import DirectionsIcon from '@material-ui/icons/Directions';
 import {black, white} from "material-ui/styles/colors";
 import table from "../table";
+import App from "../../App";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-        display: 'flex',
-        alignItems: 'center',
-        height: '0px',
-    },
     input: {
         marginBottom: '30px',
-    },
-    iconButton: {
-        marginBottom: '30px',
-        padding: 10,
+        width: '700px',
     },
   }),
 );
 
-export default function CustomizedInputBase() {
+function Admin_alterPassword() {
   const classes = useStyles();
   return (
       <div className="wrapper">
-           <div className="Title">회원 List</div>
-           <div className="right_side_search">
-               <Paper component="form" className={classes.root}>
+           <div className="Title">비밀번호 변경</div>
+           <div className="formContent">
+               <div>
                   <InputBase
                     className={classes.input}
-                    placeholder="회원 검색"
-                    inputProps={{ 'aria-label': '회원 검색' }}
+                    placeholder="새로운 비밀번호"
+                    inputProps={{ 'aria-label': '비밀번호 변경' }}
                   />
-                  <IconButton type="submit" className={classes.iconButton} aria-label="search">
-                    <SearchIcon />
-                  </IconButton>
-                </Paper>
-           </div>
-           <div className="formContent">
-               <div>{table()} </div>
+               </div>
            </div>
        </div>
   );
 }
+
+export default Admin_alterPassword;

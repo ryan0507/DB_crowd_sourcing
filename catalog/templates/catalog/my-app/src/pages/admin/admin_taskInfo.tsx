@@ -8,9 +8,9 @@ function admin_taskInfo(){
            <Link to = "/admin/main" className="right_side_small">뒤로가기</Link>
            <div className="formContent">
                <div>내용</div>
-               <Link to = "/admin/datatypeadd">원본 데이터 타입 추가하기</Link>
+               <Link to = "/admin/datatypeadd_exist">원본 데이터 타입 추가하기</Link>
                <div className = "task_statistics">
-                   <Link to = "/admin/table">새마을식당_10월.csv</Link>
+                   <Link to = "/admin/filedetail">새마을식당_10월.csv</Link>
                </div>
            </div>
        </div>
