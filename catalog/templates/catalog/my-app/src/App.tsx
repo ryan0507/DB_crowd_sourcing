@@ -8,7 +8,7 @@ function App() {
   return (
         <div className="App">
             <body>
-                {admin()}
+                {login()}
             </body>
         </div>
   );
