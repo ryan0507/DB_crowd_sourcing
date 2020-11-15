@@ -43,12 +43,10 @@ tmp.append(
 CREATE TABLE TASK(
 TaskID               VARCHAR(20)        NOT NULL,
 SubmissionPeriod     INT                NOT NULL,
-TaskThreshold        INT                NOT NULL,
 TableName            VARCHAR(40)        NOT NULL,
 TaskSchema           TEXT               NOT NULL,
 Name                 VARCHAR(40)        NOT NULL,
 Description          MEDIUMTEXT         NOT NULL,
-CONSTRAINT domain_task_threshold CHECK (TaskThreshold >=0 and TaskThreshold <= 10),
 PRIMARY KEY(TaskID),
 UNIQUE(TableName)
 );
@@ -78,7 +76,7 @@ EndDate            DATE,
 NumberOfTuple      INT                NOT NULL,
 QuanAssessment     DECIMAL(6,4)       NOT NULL,
 QUalAssessment     DECIMAL(6,4),
-P_NP               VARCHAR(2)         NOT NULL    DEFAULT 'NP',
+P_NP               VARCHAR(2)         NOT NULL    DEFAULT 'W',
 
 FOREIGN KEY (OriginalTypeID) REFERENCES ORIGINAL_DATA_TYPE(OriginalTypeID) ON DELETE CASCADE ON UPDATE CASCADE,
 FOREIGN KEY (SubmitterID) REFERENCES USER(MainID) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -86,7 +84,7 @@ FOREIGN KEY (AssessorID) REFERENCES USER(MainID) ON DELETE SET NULL ON UPDATE CA
 PRIMARY KEY(SubmissionID),
 CONSTRAINT domain_QuanAssessment CHECK (QuanAssessment >=0 and QuanAssessment <= 10),
 CONSTRAINT domain_QualAssessment CHECK ((QualAssessment >=0 and QualAssessment <= 10) OR QualAssessment IS NULL),
-CONSTRAINT domain_P_NP CHECK (P_NP = 'NP' OR P_NP = 'P'),
+CONSTRAINT domain_P_NP CHECK (P_NP = 'NP' OR P_NP = 'P' OR P_NP = 'W'),
 CONSTRAINT domain_SubmitterID CHECK (SubmitterID LIKE 'su %'),
 CONSTRAINT domain_AssessorID CHECK (AssessorID LIKE 'as %')
 );
