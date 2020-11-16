@@ -11,6 +11,7 @@ import admin_userList from "./admin_userLIst";
 import admin_estimatorDetail from "./admin_estimatorDetail";
 import admin_presenterDetail from "./admin_presenterDetail";
 import admin_alterPassword from "./admin_alterPassword";
+import "./admin.css";
 
 function admin() {
   return (
