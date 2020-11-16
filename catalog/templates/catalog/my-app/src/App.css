@@ -1,8 +1,10 @@
 .App {
   background-color: #56baed;
+  height: auto;
 }
 
 body {
+  background-color: #56baed;
   font-family: "Poppins", sans-serif;
   height: 100vh;
 }
@@ -25,6 +27,9 @@ h2 {
 }
 
 /* STRUCTURE */
+ul{
+   list-style:none;
+}
 
 .fixed-header{
   width: 100%;
@@ -59,6 +64,20 @@ h2 {
   justify-content: center;
   width: 100%;
   padding: 20px;
+  height: auto;
+}
+.wrapper_title{
+  font-size: 20px;
+  font-weight: 550;
+  clear: both;
+}
+
+.lightgray_wrapper{
+  border: 1px solid #F6F6F6;
+  background-color: #F6F6F6;
+  border-radius: 20px;
+  padding: 20px 30px;
+  margin: 5px;
 }
 
 .Title{
@@ -72,7 +91,7 @@ h2 {
 }
 .right_side_small{
   position: relative;
-  top: 115px;
+  top: 90px;
   color: #fff;
   font-size: 20px;
   font-weight: 800;
@@ -88,7 +107,7 @@ h2 {
 }
 
 .formContent {
-  top: 110px;
+  top: 90px;
   border-radius: 10px 10px 10px 10px;
   background: #fff;
   padding: 50px;
@@ -113,7 +132,7 @@ h2 {
 }
 
 .content_list {
-  top: 150px;
+  top: 90px;
   border-radius: 10px 10px 10px 10px;
   background: #fff;
   padding: 25px;
@@ -131,6 +150,16 @@ h2 {
   text-align: center;
   -webkit-border-radius: 0 0 10px 10px;
   border-radius: 0 0 10px 10px;
+}
+
+._button{
+  background-color: #F6F6F6;
+  border: 0px;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.36);
+  border-radius: 10px;
+  padding: 5px 15px;
+  margin: 13px 0px 0px 20px;
+  font-weight: 700;
 }
 
 /* TABS */

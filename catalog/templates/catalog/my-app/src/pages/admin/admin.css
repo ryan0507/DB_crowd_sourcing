@@ -1,8 +1,11 @@
 /*admin_main*/
+.task_list{
+    clear: both;
+}
 .content_list .taskName {
-    font-size: 30px;
+    font-size: 27px;
     color: black;
-    font-weight: 500;
+    font-weight: 610;
 }
 .content_list .applicant{
     font-size: 20px;
@@ -10,4 +13,106 @@
     color: #6EB9E8;
     float: right;
     transform: translate(0%, -150%);
+}
+.content_list .aboutTask{
+    font-size: 18px;
+    color: black;
+    margin: 13px 0px 0px 5px;
+}
+
+/*admin_taskInfo*/
+.task_howToPass, .originDataType {
+    margin-top: 20px;
+    clear: both;
+}
+.originDataType .wrapper_title{
+    float: left;
+}
+.originDataType .addDataType{
+    float: right;
+    color: #A7A7A7;
+    font-weight: 600;
+}
+.task_statistics{
+    clear: both;
+}
+.datatype_list{
+    clear: both;
+    padding-top: 10px;
+}
+.datatype_list .datatypeID{
+    float: left;
+    transform: translate(-35%, 90%);
+}
+.value_list li{
+    text-align: center;
+    border: 0.3px solid #707070;
+    float: left;
+    padding: 10px 20px;
+    background-color: #F6F6F6;
+}
+.value_list li .originName{
+    color :#6EB9E8;
+    font-size: 14px;
+    font-weight: 700;
+}
+.originDataTypeRequest{
+    clear: both;
+    margin-top: 80px;
+}
+.originDataTypeRequest ul{
+    transform: translate(0%, -25%);
+}
+#yes{color:#6EB9E8}
+#no{color:#E86E77}
+
+.applicantList{
+    padding-top: 10px;
+}
+.applicantList .lightgray_wrapper{
+    width : 500px;
+}
+.applicantList .name{
+    position: absolute;
+    left: 150px;
+    font-weight: 600;
+}
+.applicantList .score{
+    position: absolute;
+    left: 250px;
+    font-weight: 600;
+}
+.applicants li{
+    font-weight: 600;
+}
+.applicants li .sequenceNum{
+    float:left;
+    transform: translate(-30px, 100%);
+}
+.applicants li .personal_name{
+    float: left;
+    transform: translate(20%, 100%);
+}
+.applicants li .personal_score{
+    float: left;
+    transform: translate(390%, 100%);
+}
+.applicants #yes{
+    margin-left: 170px;
+}
+
+.taskStatistic{
+    margin-top: 10px;
+}
+.taskStatistic .submitFiles,
+.taskStatistic .passFiles,
+.taskStatistic .passTuples{
+    font-weight: 600;
+    line-height: 150%;
+}
+.taskStatistic .passFiles{
+    float : left;
+}
+.taskStatistic .passTuples{
+    transform: translate(5%, 0%);
 }
