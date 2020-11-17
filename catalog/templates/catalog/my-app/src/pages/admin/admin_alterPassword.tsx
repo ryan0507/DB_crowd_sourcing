@@ -12,30 +12,40 @@ import {black, white} from "material-ui/styles/colors";
 import table from "../table";
 import App from "../../App";
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    input: {
-        marginBottom: '30px',
-        width: '700px',
-    },
-  }),
-);
-
 function Admin_alterPassword() {
-  const classes = useStyles();
   return (
-      <div className="wrapper">
-           <div className="Title">비밀번호 변경</div>
-           <div className="formContent">
-               <div>
-                  <InputBase
-                    className={classes.input}
-                    placeholder="새로운 비밀번호"
-                    inputProps={{ 'aria-label': '비밀번호 변경' }}
-                  />
+      <div className={"adminAlterPassword"}>
+          <div className="wrapper">
+               <div className="Title">비밀번호 변경</div>
+               <div className="formContent">
+                   <div className={"userName"}>
+                       Name
+                       <span className={"contentName"}>관리자</span>
+                   </div>
+                   <div className={"userID"}>
+                       ID
+                       <span className={"contentID"}>admin</span>
+                   </div>
+                   <div className={"newPassword"}>
+                       New Password
+                      <InputBase
+                          className={"newPassword"}
+                        placeholder="새로운 비밀번호"
+                        inputProps={{ 'aria-label': '비밀번호 변경' }}
+                          />
+                   </div>
+                   <div className={"confirmNewPassword"}>
+                       Repeat Password
+                      <InputBase
+                          className={"newPassword"}
+                        placeholder="비밀번호 확인"
+                        inputProps={{ 'aria-label': '비밀번호 변경' }}
+                      />
+                   </div>
+                   <input type="submit" value="저장"/>
                </div>
            </div>
-       </div>
+      </div>
   );
 }
 

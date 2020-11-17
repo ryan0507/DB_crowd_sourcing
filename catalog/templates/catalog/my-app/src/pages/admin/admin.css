@@ -3,9 +3,9 @@
     clear: both;
 }
 .content_list .taskName {
-    font-size: 27px;
+    font-size: 26px;
     color: black;
-    font-weight: 610;
+    font-weight: 650;
 }
 .content_list .applicant{
     font-size: 20px;
@@ -102,7 +102,7 @@
 }
 
 .taskStatistic{
-    margin-top: 10px;
+    margin-top: 20px;
 }
 .taskStatistic .submitFiles,
 .taskStatistic .passFiles,
@@ -115,4 +115,47 @@
 }
 .taskStatistic .passTuples{
     transform: translate(5%, 0%);
+    margin-bottom: 10px;
+}
+.taskStatistic a{
+    color: #56baed;
+    font-weight: 500;
+}
+
+/*alter Password*/
+.adminAlterPassword .formContent{
+    transform: translate(0%, 4%);
+}
+.adminAlterPassword .formContent{
+    line-height: 500%;
+    padding-left: 100px;
+    font-weight: 700;
+    color: #A7A7A7;
+}
+.adminAlterPassword .contentName{
+    margin-left: 170px;
+    color: #707070;
+    font-size: 17px;
+}
+.adminAlterPassword .contentID{
+    margin-left: 198px;
+    color: #707070;
+    font-size: 17px;
+}
+.adminAlterPassword .newPassword{
+    display: contents;
+}
+
+.adminAlterPassword input[type="text"]{
+    position: relative;
+    float: right;
+    width : 500px;
+    margin-top: 12px;
+    margin-right: 90px;
+}
+.adminAlterPassword input[type="submit"]{
+    margin: 40px auto 0 auto;
+    transform: translate(296px,0);
+    font-size: 20px;
+    font-weight: 600;
 }

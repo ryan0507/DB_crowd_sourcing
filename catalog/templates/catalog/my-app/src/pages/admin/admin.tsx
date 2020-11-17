@@ -27,7 +27,7 @@ function admin() {
                         </nav>
                     </div>
                 </div>
-                <Switch>
+                <Switch><Route exact path="/" component={admin_main}/>
                     <Route exact={true} path="/admin/main" component={admin_main}/>
                     <Route exact path="/admin/taskadd" component={admin_taskAdd}/>
                     <Route exact path="/admin/taskinfo" component={admin_taskInfo}/>

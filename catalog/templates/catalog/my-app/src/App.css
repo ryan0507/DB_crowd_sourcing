@@ -32,6 +32,7 @@ ul{
 }
 
 .fixed-header{
+  z-index: 1;
   width: 100%;
   position: fixed;
   background: #fff;
@@ -44,6 +45,11 @@ ul{
   width: 80%;
   margin: 0 auto;
 }
+.container nav a{
+  font-size: 17px;
+  font-weight: 530;
+}
+
 .n{
   color: black;
   padding: 7px 25px;
@@ -99,7 +105,7 @@ ul{
 }
 .right_side_search{
   position: relative;
-  top: 115px;
+  top:90px;
   color: #fff;
   font-size: 20px;
   font-weight: 800;
@@ -116,6 +122,7 @@ ul{
   height: auto;
   position: relative;
   box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
+  margin-bottom: 40px;
 }
 
 .formContent_signin {
@@ -275,4 +282,10 @@ input[type=text]:placeholder {
 
 * {
   box-sizing: border-box;
+}
+
+/* table */
+.MuiTableCell-stickyHeader,
+.MuiTableCell-body{
+  text-align: center;
 }
