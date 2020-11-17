@@ -159,3 +159,137 @@
     font-size: 20px;
     font-weight: 600;
 }
+
+/*task add*/
+.taskAdd .task_info input[type="text"],
+.taskAdd .task_howToPass input[type="text"]{
+    width : 820px;
+    border-radius: 20px;
+    padding: 20px 30px;
+    margin: 5px;
+}
+.taskAdd .task_name .wrapper_title{
+    float: left;
+    line-height: 60px;
+}
+.taskAdd .task_name input[type="text"]{
+    width : 730px;
+    height: 30px;
+    border-radius: 20px;
+    padding: 10px 20px;
+    margin: 0px 0px 0px 20px;
+}
+.taskAdd .task_info{
+    margin-top: 20px;
+}
+.taskAdd .minUpload .wrapper_title{
+    margin-top: 20px;
+    float: left;
+}
+.taskAdd .minUpload .dropdown{
+    transform: translate(2%,10%);
+}
+.taskAdd .dataTable_name{
+    margin-top: 20px;
+}
+
+.taskAdd .dataTable_name .wrapper_title{
+    float: left;
+    line-height: 60px;
+}
+.taskAdd .dataTable_name input[type="text"]{
+    width : 620px;
+    height: 30px;
+    border-radius: 20px;
+    padding: 10px 20px;
+    margin: 0px 0px 0px 20px;
+}
+
+.taskAdd .dataTableSchema {
+    margin-top: 20px;
+    clear: both;
+}
+.taskAdd .dataTableSchema .wrapper_title{
+    float: left;
+}
+.taskAdd .dataTableSchema .addDataType{
+    float: right;
+    color: #A7A7A7;
+    font-weight: 600;
+}
+.taskAdd .dataTableSchema_list{
+    clear: both;
+    padding: 10px 0px 0px 20px;
+}
+.taskAdd .dataTableSchema_list li{
+    font-weight: 500;
+    text-align: center;
+    border: 0.3px solid #707070;
+    float: left;
+    padding: 10px 20px;
+    background-color: #F6F6F6;
+}
+.originDataType_add{
+    padding-top: 50px;
+}
+.originDataType_add .wrapper_title{
+    float: left;
+}
+.originDataType_add .addDataType{
+    float: right;
+    color: #A7A7A7;
+    font-weight: 600;
+}
+.taskAdd input[type="submit"]{
+    clear:both;
+    display: inherit;
+    margin: 100px auto 0 auto;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+/*table schema add*/
+.tableSchema_add input[type="text"]{
+    width: 400px;
+}
+.tableSchema_add button[type="submit"]{
+    width: 100px;
+    text-align: center;
+    padding : 10px 20px;
+    margin: 0px 20px;
+}
+/*user list*/
+.userList button[type="submit"]{
+    margin-bottom: 32px;
+    border: none;
+    color: white;
+    padding: 0;
+    font-size: 13px;
+    box-shadow: 0;
+    border-radius: 0;
+    transition: all 0.3s ease-in-out;
+}
+.userList .dropdown{
+    transform: translate(-50%,28%);
+    border-radius: 20px;
+}
+.userList a{
+    color: #56baed;
+    font-weight: 500;
+}
+
+/*presenter detail*/
+.presenterDetail .taskStatistic{
+    margin-top: 0px;
+}
+.presenterDetail .passFiles{
+    margin-bottom: 20px;
+}
+
+/*estimator detail*/
+.estimatorDetail .taskStatistic{
+    margin-top: 0px;
+}
+.estimatorDetail .passFiles{
+    margin-bottom: 20px;
+}

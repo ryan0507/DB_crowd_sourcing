@@ -178,7 +178,7 @@ export default function Admin_taskInfo(){
                <div className={"taskStatistic"}>
                    <div className={"wrapper_title"}>태스크 통계</div>
                    <div className={"lightgray_wrapper"}>
-                       <div className={"submitFiles"}>제출된 파일 수 : 00개</div>
+                       <div className={"submitFiles"}>제출된 파일 수 : {rows.length}개</div>
                        <div className={"passFiles"}>Pass된 파일 수 : 0개</div>
                        <div className={"passTuples"}>Pass된 튜플 수 : 000개</div>
                        <Paper className={classes.root}>

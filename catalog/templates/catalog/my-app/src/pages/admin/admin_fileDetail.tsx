@@ -12,7 +12,7 @@ import TablePagination from "@material-ui/core/TablePagination";
 import Paper from "@material-ui/core/Paper";
 
 interface Column {
-  id: 'name' | 'date' | 'time' | 'fileName' | 'pNp';
+  id: 'name' | 'salary' | 'customer' | 'money' ;
   label: string;
   minWidth?: number;
   align?: 'center';
@@ -21,28 +21,16 @@ interface Column {
 }
 
 const columns: Column[] = [
-  { id: 'name', label: '제출자', minWidth: 80 },
-  { id: 'date', label: '제출일', minWidth: 80 },
-  {
-    id: 'time',
-    label: '제출시간',
-    minWidth: 90,
-  },
-  {
-    id: 'fileName',
-    label: '제출\u00a0파일명',
-    minWidth: 140,
-  },
-  {
-    id: 'pNp',
-    label: 'Pass\u00a0여부',
-    minWidth: 100,
-  },
+  { id: 'name', label: '음식점\u00a0이름'},
+  { id: 'salary', label: '월\u00a0매출' },
+  { id: 'customer',label: '월\u00a0고객\u00a0수'},
+  {id: 'money',label: '순\u00a0이익',},
 ];
 
 const useStyles = makeStyles({
   root: {
-    width: '100%',
+    width: '1000px',
+      marginTop: '100px',
   },
   container: {
     maxHeight: 440,
@@ -52,19 +40,18 @@ const useStyles = makeStyles({
 
 interface Data {
   name: string;
-  date: string;
-  time: string;
-  fileName: string;
-  pNp: string;
+  salary: number;
+  customer: number;
+  money: number;
 }
 
-function createData( name: string, date: string, time: string,fileName: string, pNp: string): Data {
-  return { name, date, time, fileName, pNp };
+function createData( name: string, salary: number, customer: number,money: number): Data {
+  return { name, salary, customer, money };
 }
 
 const rows = [
-  createData('박선종', '20.11.01', '23 : 15 : 20', '음악은_즐거워.csv', 'Non-pass'),
-  createData('조민주', '20.11.02', '23 : 15 : 30', '새마을식당_10월.csv', 'Pass'),
+  createData('새마을식당', 30000000,  60000, 4500000),
+  createData('새마을식당', 30000000,  60000, 4500000),
 ];
 
 export default function Admin_fileDetail(){
@@ -82,64 +69,52 @@ export default function Admin_fileDetail(){
        <div className="wrapper">
            <div className="Title">file name</div>
            <Link to = "/admin/taskinfo" className="right_side_small">뒤로가기</Link>
-           <div className="formContent">
-               <Paper className={classes.root}>
-                  <TableContainer className={classes.container}>
-                    <Table stickyHeader aria-label="sticky table">
-                      <TableHead>
-                        <TableRow>
-                          {columns.map((column) => (
-                            <TableCell
-                              key={column.id}
-                              align={'center'}
-                              style={{ minWidth: column.minWidth, fontSize: '16px', fontWeight: 'bold' }}
-                            >
-                              {column.label}
-                            </TableCell>
-                          ))}
+           <Paper className={classes.root}>
+              <TableContainer className={classes.container}>
+                <Table stickyHeader aria-label="sticky table">
+                  <TableHead>
+                    <TableRow>
+                      {columns.map((column) => (
+                        <TableCell
+                          key={column.id}
+                          align={'center'}
+                          style={{ minWidth: column.minWidth, fontSize: '16px', fontWeight: 'bold' }}
+                        >
+                          {column.label}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                      return (
+                        <TableRow hover role="checkbox" tabIndex={-1} key={row.name}>
+                          {columns.map((column) => {
+                              const value = row[column.id];
+                              return (
+                                  <TableCell key={column.id} align='center'
+                                  style={{fontSize: '14px', fontWeight: 'normal' }}>
+                                      {column.format && typeof value === 'number' ? column.format(value) : value}
+                                  </TableCell>
+                                );
+                            }
+                          )}
                         </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                          return (
-                            <TableRow hover role="checkbox" tabIndex={-1} key={row.time}>
-                              {columns.map((column) => {
-                                const value = row[column.id];
-                                if (column.id == "fileName"){
-                                   return (
-                                      <TableCell key={column.id} align='center'
-                                          style={{fontSize: '14px', fontWeight: 'normal', color:'black' }}>
-                                            <Link to ="/admin/filedetail">
-                                                {column.format && typeof value === 'number' ? column.format(value) : value}
-                                            </Link>
-                                      </TableCell>
-                                    );
-                                }else{
-                                    return (
-                                      <TableCell key={column.id} align='center'
-                                      style={{fontSize: '14px', fontWeight: 'normal' }}>
-                                        {column.format && typeof value === 'number' ? column.format(value) : value}
-                                      </TableCell>
-                                    );
-                                }
-                              })}
-                            </TableRow>
-                          );
-                        })}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                  <TablePagination
-                    rowsPerPageOptions={[10, 20, 30]}
-                    component="div"
-                    count={rows.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onChangePage={handleChangePage}
-                    onChangeRowsPerPage={handleChangeRowsPerPage}
-                  />
-                </Paper>
-           </div>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              <TablePagination
+                rowsPerPageOptions={[10, 20, 30]}
+                component="div"
+                count={rows.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onChangePage={handleChangePage}
+                onChangeRowsPerPage={handleChangeRowsPerPage}
+              />
+            </Paper>
 
        </div>
    );
