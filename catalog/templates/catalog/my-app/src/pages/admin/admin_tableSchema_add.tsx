@@ -82,7 +82,7 @@ class Admin_tableSchema_add extends React.Component<Props, State> {
                 <div className="formContent">
                     <form className="input" onSubmit={onSubmit}>
                         <input type={"text"} onChange={onChange} value={input}></input>
-                        <button type="submit">ADD</button>
+                        <button type="submit">추가</button>
                     </form>
                     {schemaItemValues}
                 </div>

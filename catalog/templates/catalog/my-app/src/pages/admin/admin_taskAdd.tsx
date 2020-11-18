@@ -136,7 +136,7 @@ function Admin_taskAdd(){
 
                <div className={"originDataType_add"}>
                    <div className={"wrapper_title"}>원본 데이터 타입</div>
-                   <Link className={"addDataType"} to = "/admin/datatypeadd_exist">원본 데이터 타입 추가하기</Link>
+                   <Link className={"addDataType"} to = "/admin/datatypeadd">원본 데이터 타입 추가하기</Link>
                    <ul className={"datatype_list"}>
                        <li>
                            <div className={"datatypeID"}>ID : 001</div>
