@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Route,Link } from 'react-router-dom';
 import React, {Component, MouseEvent, useReducer, useState} from 'react';
-import table from '../table';
 import InputBase from "@material-ui/core/InputBase";
 
 interface Value {
@@ -13,13 +12,6 @@ const defaultValue: Value = {
     datatypeName: '',
     datatypeType: '',
 }
-
-// type datatypeList = {
-//     list: Value[];
-// }
-// const defaultDatatypeList: datatypeList = {
-//     list: Value[];
-// }
 
 type tempValue = {
     name: string;
@@ -59,11 +51,21 @@ function Admin_datatype_add() {
       <div key={item.datatypeName}>
           <li>
               <div className={"dataName"}>{item.datatypeName}</div>
-            <div className={"dataType"}>({item.datatypeType})</div>
+              <div className={"dataType"}>({item.datatypeType})</div>
+              <div><button className={"deleteButton"} onClick={e => handleRemove(item.id)}>[삭제하기]</button></div>
           </li>
       </div>
     );
   });
+  const handleRemove = (id: number) => {
+      let l : Value[] = [];
+      _list.map((content) => {
+          if(content.id !== id){
+              l.push(content);
+          }
+      });
+      setList(l);
+  }
   return (
       <div className={"admin_datatype_add"}>
       <div className="wrapper">

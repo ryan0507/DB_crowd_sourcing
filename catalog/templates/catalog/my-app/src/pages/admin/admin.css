@@ -342,8 +342,96 @@
     color:#707070;
 }
 .admin_datatype_add .datatypeList .dataType{
+    float: left;
     color: #6EB9E8;
     transform: translate(30px, 0);
     font-size: 18px;
     font-weight: 650;
+}
+.admin_datatype_add .datatypeList .deleteButton{
+    border: 0px;
+    background-color: white;
+    color: #E86E77;
+    transform: translate(50px, -3px);
+    padding: 0px;
+    font-size: 16px;
+    font-weight: 650;
+}
+
+/*table schema add*/
+.admin_tableSchema_add .dropdown{
+    float: left;
+    margin-left: 10px;margin-top: 20px;
+}
+.admin_tableSchema_add .datatypeInput{
+    clear: both;
+}
+.admin_tableSchema_add .small_lightgray_wrapper{
+    margin-top: 20px;
+    float: left;
+    height: 51px;
+}
+.admin_tableSchema_add .datatypeName{
+    margin-top: 14px;
+    width : 380px;
+    float: left;
+}
+.admin_tableSchema_add button[type="submit"]{
+    width : 120px;
+    padding : 10px 20px;
+    font-weight: 650;
+    margin-top: 26px;
+}
+.admin_tableSchema_add .datatypeList .decimalList{
+    list-style: decimal;
+    transform: translate(10px, -40px);
+    font-size: 20px;
+    font-weight: 600;
+    color:#707070;
+}
+.admin_tableSchema_add .datatypeList li{
+    padding : 13px 10px;
+}
+
+.admin_tableSchema_add .datatypeList .dataName{
+    float: left;
+    margin-left: 20px;
+    font-size: 20px;
+    font-weight: 600;
+    color:#707070;
+}
+.admin_tableSchema_add .datatypeList .dataType{
+    float: left;
+    color: #6EB9E8;
+    transform: translate(30px, 0);
+    font-size: 18px;
+    font-weight: 650;
+}
+.admin_tableSchema_add .datatypeList .deleteButton{
+    border: 0px;
+    background-color: white;
+    color: #E86E77;
+    transform: translate(50px, -3px);
+    padding: 0px;
+    font-size: 16px;
+    font-weight: 650;
+}
+.admin_tableSchema_add .wrapper_title,
+.admin_tableSchema_add .wrapper_title a{
+  font-size: 20px;
+  font-weight: 800;
+  clear: both;
+    color: #707070;
+}
+.admin_tableSchema_add .wrapper_title{
+    margin-left: 135px;
+}
+.admin_tableSchema_add .wrapper_title a{
+    margin-left: 207px;
+}
+.admin_tableSchema_add .alert{
+    color:#E86E77;
+    font-size: 13px;
+    font-weight: 780;
+    transform: translate(13px, -23px);
 }
