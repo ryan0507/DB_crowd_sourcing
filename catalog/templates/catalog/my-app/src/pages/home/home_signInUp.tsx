@@ -27,7 +27,8 @@ function Home_signInUp() {
                           <input type="text" placeholder="PASSWORD" className="login__input-PW"></input>
                       </div>
                       <div className="submit__button">
-                          <button className="login-submit">LOG IN</button>
+                          <Link to ="/admin/main">
+                          <button className="login-submit">LOG IN</button></Link>
                       </div>
                   </div>
                   <div className={signIn ? "signup-inputs hidden" : "signup-inputs"}>
@@ -66,18 +67,19 @@ function Home_signInUp() {
                           Phone number
                       </div>
                       <div className="phone-number">
-                          <input type="text" className="signup__input3"></input>
+                          <input type="number" className="signup__input3"></input>
                           <span className="phone">-</span>
-                          <input type="text" className="signup__input3"></input>
+                          <input type="number" className="signup__input3"></input>
                           <span className="phone">-</span>
-                          <input type="text" className="signup__input3"></input>
+                          <input type="number" className="signup__input3"></input>
                       </div>
                       <div className="type__select">
-                          <div id="type-select1" className="type-select1 white" >제출자</div>
-                          <div id="type-select2" className="type-select2 white" >평가자</div>
+                          <div className="type-select1 white" >제출자</div>
+                          <div className="type-select2 white" >평가자</div>
                       </div>
                       <div className="submit__button">
-                          <button className="login-submit">SIGN UP</button>
+                          <Link to ="/">
+                          <button className="signup-submit">SIGN UP</button></Link>
                       </div>
                   </div>
               </div>

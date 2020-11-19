@@ -1,89 +1,112 @@
-.home{
+#root{
+  display: flex;
+    width: 100%;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
     background-color: #6EB9E8;
     display : flex;
     justify-content: center;
     align-items: center;
-
-    width: 1920px;
-    height: 1080px;
+    min-height: 100%;
+}
+.home{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    background-color: #6EB9E8;
+    display : flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 .home-white{
+    margin: 40px 0px;
     background-color: #FFFFFF;
     box-shadow: 0px 15px 20px #00000048;
     border-radius: 26px;
+
+    padding: 30px;
+    width: 600px;
+    align-content: center;
 }
 .signin-inputs{
-    width: 895px;
-    height: 444px;
+    height: auto;
+    align-content: center;
+    align-items: center;
 }
 .signup-inputs{
-    width : 895px;
-    height : 950px;
+    height: auto;
+    align-content: center;
+    align-items: center;
+}
+.signup-inputs input[type="text"],
+.signin-inputs input[type="text"]{
+    margin-left: auto;
+    margin-right: auto;
+    display: table;
+    width: 90%;
 }
 .selected{
     border-bottom: 3px solid #6EB9E8;
 }
 .home-white__title{
-    padding-top : 80px;
+    padding-top : 10px;
+    margin: 0 auto;
+    position: relative;
+    display: table;
 }
-.signin__select{
+.signin__select,.signup__select{
     text-align: left;
     font: normal normal 800 30px/36px Apple SD Gothic Neo;
     letter-spacing: 0px;
     color: #707070;
-    margin-left : 298px;
-    margin-right : 98px;
-}
-.signup__select{
-    text-align: left;
-    font: normal normal 800 30px/36px Apple SD Gothic Neo;
-    letter-spacing: 0px;
-    color: #707070;
+    padding: 0px 10px;
+    margin: 0px 25px;
 }
 .login__input-ID{
-    background: #F6F6F6 0% 0% no-repeat padding-box;
-    border-radius: 15px;
-    border : none;
-    margin-top: 41.5px;
-    margin-left : 70px;
-    width: 756px;
-    height: 82px;
+    height: 60px;
+    transform: translate(0, 30px);
 }
 .login__input-PW{
-    background: #F6F6F6 0% 0% no-repeat padding-box;
-    border-radius: 15px;
-    border : none;
-    margin-top: 19px;
-    margin-left : 70px;
-    width: 756px;
-    height: 82px;
+    line-height: 30px;
+    height: 60px;
+    margin-top: 20px;
+    transform: translate(0, 40px);
 }
 input::placeholder {
     text-align: center;
-    font: normal normal 800 30px/36px Apple SD Gothic Neo;
+    font: normal normal 800 24px Apple SD Gothic Neo;
     letter-spacing: 0px;
     color: #A7A7A7;
 }
+
 .login-submit{
     text-align: center;
-    font: normal normal 600 25px/31px Apple SD Gothic Neo;
+    font: normal normal 600 25px Apple SD Gothic Neo;
     letter-spacing: 0px;
     color: #FFFAFA;
     border : none;
     background: #6EB9E8 0% 0% no-repeat padding-box;
     box-shadow: 0px 3px 6px #00000029;
-    border-radius: 15px;
-    width: 392px;
-    height: 71px;
-    margin-top:58px;
-    margin-left : 251px;
+    border-radius: 5px;
+    width: 50%;
+    height: 50px;
+    margin-top: 53px;
+    margin-left : auto;
+    margin-right: auto;
+    display: table;
 }
+
 .signup-input__title{
     text-align: left;
-    font: normal normal 800 25px/31px Apple SD Gothic Neo;
+    font: normal normal 800 25px Apple SD Gothic Neo;
     letter-spacing: 0px;
     color: #A7A7A7;
-    margin-left: 82px;
+    margin-left: 8%;
 }
 .signup__input1{
     border : none;
@@ -104,7 +127,7 @@ input::placeholder {
     letter-spacing: 0px;
     color: #A7A7A7;
     margin-bottom: 7px;
-    margin-left : 67px;
+    margin-left : 4%;
     vertical-align: middle;
 }
 .select__female{
@@ -132,26 +155,33 @@ input::placeholder {
     background: #F6F6F6 0% 0% no-repeat padding-box;
     border-radius: 15px;
     text-align: left;
-    font: normal normal 800 30px/36px Apple SD Gothic Neo;
+    font: normal normal 800 20px Apple SD Gothic Neo;
     letter-spacing: 0px;
     color: #A7A7A7;
     border : none;
-    margin-left : 68px;
+    margin-left: 4%;
     margin-bottom: 7px;
 }
-.signup__input3{
+.phone-number .phone{
+    float: left;
+    line-height: 46px;
+    margin: 0 10px 0 10px;
+}
+.phone-number input[type="number"]{
+    float: left;
     border : none;
-    width: 124px;
-    height: 53px;
+    width: 100px;
+    height: 46px;
+    padding: 10px 15px;
     background: #F6F6F6 0% 0% no-repeat padding-box;
     border-radius: 15px;
     text-align: center;
-    font: normal normal 800 30px/36px Apple SD Gothic Neo;
+    font: normal normal 800 20px Apple SD Gothic Neo;
     letter-spacing: 0px;
     color: #A7A7A7;
 }
 .phone-number{
-    margin-left : 68px;
+    margin-left :4%;
 }
 .phone {
     text-align: left;
@@ -160,18 +190,61 @@ input::placeholder {
     color: #A7A7A7;
 }
 .type__select{
-    margin-left:251px;
-    margin-top:38px;
-    display : flex;
+    padding-top: 20px;
+    clear: both;
+    margin-left:auto;
+    margin-right:auto;
+    display: table;
 }
-.type-select1, .type-select2{
-    background: #F6F6F6 0% 0% no-repeat padding-box;
+.type-select1{
+    clear: both;
+    height: 50px;
+    line-height: 50px;
+    background-color: #F6F6F6;
+    text-align: center;
     border-radius: 15px;
     border : none;
-    font: normal normal 800 25px/31px Apple SD Gothic Neo;
+    font: normal normal 800 25px Apple SD Gothic Neo;
     color: #A7A7A7;
-    margin-right : 24px;
-    padding : 11px 60px;
+    padding : 10px 15px;
+    width: 120px;
+    float: left;
+    margin-right: 20px;
+}
+
+.type-select2{
+    margin-left: 150px;
+    position: relative;
+    height: 50px;
+    line-height: 50px;
+    background-color: #F6F6F6;
+    text-align: center;
+    border-radius: 15px;
+    border : none;
+    font: normal normal 800 25px Apple SD Gothic Neo;
+    color: #A7A7A7;
+    padding : 10px 15px;
+    width: 120px;
+}
+
+.home a{
+    all : unset;
+}
+.signup-submit{
+    text-align: center;
+    font: normal normal 600 25px Apple SD Gothic Neo;
+    letter-spacing: 0px;
+    color: #FFFAFA;
+    border : none;
+    background: #6EB9E8 0% 0% no-repeat padding-box;
+    box-shadow: 0px 3px 6px #00000029;
+    border-radius: 5px;
+    width: 50%;
+    height: 50px;
+    margin-top: 20px;
+    margin-left : auto;
+    margin-right: auto;
+    display: table;
 }
 .blue{
     background: #6EB9E8 0% 0% no-repeat padding-box;
