@@ -58,6 +58,8 @@ OriginalTypeID       VARCHAR(20)        NOT NULL,
 TaskID               VARCHAR(20)        NOT NULL,
 OriginSchema         TEXT               NOT NULL,
 Mapping              TEXT               NOT NULL,
+TaskThreshold        DECIMAL(6,4)       NOT NULL,
+CONSTRAINT domain_TaskThreshold CHECK (TaskThreshold >=0 and TaskThreshold <= 10),
 PRIMARY KEY(OriginalTypeID),
 FOREIGN KEY (TaskID) REFERENCES TASK(TaskID) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -87,6 +89,17 @@ CONSTRAINT domain_QualAssessment CHECK ((QualAssessment >=0 and QualAssessment <
 CONSTRAINT domain_P_NP CHECK (P_NP = 'NP' OR P_NP = 'P' OR P_NP = 'W'),
 CONSTRAINT domain_SubmitterID CHECK (SubmitterID LIKE 'su %'),
 CONSTRAINT domain_AssessorID CHECK (AssessorID LIKE 'as %')
+);
+""")
+tmp.append(
+"""
+CREATE TABLE PARTICIPATE_TASK(
+SubmitterID          VARCHAR(20)        NOT NULL,
+TaskID               VARCHAR(20)        NOT NULL,
+PRIMARY KEY(OriginalTypeID),
+FOREIGN KEY (TaskID) REFERENCES TASK(TaskID) ON DELETE CASCADE ON UPDATE CASCADE
+FOREIGN KEY (SubmitterID) REFERENCES USER(MainID) ON DELETE CASCADE ON UPDATE CASCADE,
+CONSTRAINT domain_SubmitterID CHECK (SubmitterID LIKE 'su %')
 );
 """)
 
