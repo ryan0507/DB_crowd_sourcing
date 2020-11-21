@@ -97,10 +97,12 @@ tmp.append(
 CREATE TABLE PARTICIPATE_TASK(
 SubmitterID          VARCHAR(20)        NOT NULL,
 TaskID               VARCHAR(20)        NOT NULL,
+Pass                 VARCHAR(1)         NOT NULL    DEFAULT 'W',
 PRIMARY KEY(OriginalTypeID),
 FOREIGN KEY (TaskID) REFERENCES TASK(TaskID) ON DELETE CASCADE ON UPDATE CASCADE
 FOREIGN KEY (SubmitterID) REFERENCES USER(MainID) ON DELETE CASCADE ON UPDATE CASCADE,
-CONSTRAINT domain_SubmitterID CHECK (SubmitterID LIKE 'su %')
+CONSTRAINT domain_SubmitterID CHECK (SubmitterID LIKE 'su %'),
+CONSTRAINT domain_Pass CHECK ( Pass = 'P' OR Pass = 'W'),
 );
 """)
 
