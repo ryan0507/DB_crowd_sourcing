@@ -15,6 +15,16 @@ import admin_userList from "./pages/admin/admin_userLIst";
 import admin_estimatorDetail from "./pages/admin/admin_estimatorDetail";
 import admin_presenterDetail from "./pages/admin/admin_presenterDetail";
 import admin_alterPassword from "./pages/admin/admin_alterPassword";
+
+import submit from './pages/submit/submit';
+import submit_main from './pages/submit/submit_main';
+import submit_main2 from './pages/submit/submit_main2';
+import submit_taskInfo from "./pages/submit/submit_taskInfo";
+import submit_taskInfo2 from "./pages/submit/submit_taskInfo2";
+import submit_taskCheck from "./pages/submit/submit_taskCheck";
+import submit_fileDetail from "./pages/submit/submit_fileDetail";
+import submit_changeInfo from "./pages/submit/submit_changeInfo";
+
 import { BrowserRouter as Router, Route, Link, Switch, NavLink, } from 'react-router-dom';
 
 
@@ -34,6 +44,16 @@ function App() {
                     <Route exact path="/admin/estimatorDetail" component={admin}/>
                     <Route exact path="/admin/presenterDetail" component={admin}/>
                     <Route exact path="/admin/alterpw" component={admin}/>
+
+                    <Route exact path="/submit/main" component={submit}/>
+                    <Route exact path="/submit/main2" component={submit}/>
+                    <Route exact path="/submit/taskinfo" component={submit}/>
+                    <Route exact path="/submit/taskinfo2" component={submit}/>
+                    <Route exact path="/submit/taskCheck" component={submit}/>
+                    <Route exact path="/submit/filedetail" component={submit}/>
+                    <Route exact path="/submit/submitfile" component={submit}/>
+                    <Route exact path="/submit/changeinfo" component={submit}/>
+
                 </Switch>
             </Router>
   );
