@@ -34,10 +34,10 @@ function Home_signInUp() {
                           <Link to ="/submit/main">
                           <button className="login-submit">임시 제출자 연결</button></Link>
                       </div>
-                      <div className="submit__button">
-                          <Link to ="/rater/main">
-                          <button className="login-submit">임시 평가자 연결</button></Link>
-                      </div>
+                      {/*<div className="submit__button">*/}
+                      {/*    <Link to ="/assess/main">*/}
+                      {/*    <button className="login-submit">임시 평가자 연결</button></Link>*/}
+                      {/*</div>*/}
 
                   </div>
                   <div className={signIn ? "signup-inputs hidden" : "signup-inputs"}>

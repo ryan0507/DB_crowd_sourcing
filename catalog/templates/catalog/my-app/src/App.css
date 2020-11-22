@@ -85,16 +85,6 @@ ul{
   padding: 20px 30px;
   margin: 5px;
 }
-
-.lightgray_wrapper_file{
-  border: 1px solid #F6F6F6;
-  background-color: #F6F6F6;
-  border-radius: 20px;
-  padding: 20px 30px;
-  margin: 5px;
-  color : #39ace7;
-}
-
 .small_lightgray_wrapper{
   text-align: center;
   border: 1px solid #F6F6F6;
