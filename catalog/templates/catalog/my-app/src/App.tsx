@@ -25,8 +25,14 @@ import submit_taskCheck from "./pages/submit/submit_taskCheck";
 import submit_fileDetail from "./pages/submit/submit_fileDetail";
 import submit_changeInfo from "./pages/submit/submit_changeInfo";
 
-import { BrowserRouter as Router, Route, Link, Switch, NavLink, } from 'react-router-dom';
+import rater from './pages/rater/rater';
+import rater_main from "./pages/rater/rater_main";
+import rater_main2 from "./pages/rater/rater_main2";
+import rater_changeInfo from "./pages/rater/rater_changeInfo";
+import rater_fileDetail from "./pages/rater/rater_fileDetail";
+import rater_taskDetail from "./pages/rater/rater_taskDetail";
 
+import { BrowserRouter as Router, Route, Link, Switch, NavLink, } from 'react-router-dom';
 
 function App() {
   return (
@@ -53,6 +59,12 @@ function App() {
                     <Route exact path="/submit/filedetail" component={submit}/>
                     <Route exact path="/submit/submitfile" component={submit}/>
                     <Route exact path="/submit/changeinfo" component={submit}/>
+
+                    <Route exact path="/rater/main" component={rater}/>
+                    <Route exact path="/rater/main2" component={rater}/>
+                    <Route exact path="/rater/changeInfo" component={rater}/>
+                    <Route exact path="/rater/fileDetail" component={rater}/>
+                    <Route exact path="/rater/taskDetail" component={rater}/>
 
                 </Switch>
             </Router>

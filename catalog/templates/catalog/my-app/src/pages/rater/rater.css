@@ -1,0 +1,527 @@
+/*admin_main*/
+.task_list{
+    clear: both;
+}
+.content_list .taskName {
+    font-size: 26px;
+    color: black;
+    font-weight: 650;
+}
+.content_list .applicant{
+    font-size: 20px;
+    font-weight: 600;
+    color: #6EB9E8;
+    float: right;
+    transform: translate(0%, -150%);
+}
+
+.content_list .startDate{
+    font-size: 20px;
+    font-weight: 600;
+    color: black;
+    float: right;
+    transform: translate(0%, -150%);
+}
+
+.content_list .doneDate{
+    font-size: 20px;
+    font-weight: 600;
+    color: black;
+    float: right;
+    transform: translate(0%, -150%);
+}
+
+.content_list .aboutTask{
+    font-size: 18px;
+    color: black;
+    margin: 13px 0px 0px 5px;
+}
+
+.content_list .fileName{
+    font-size: 18px;
+    color: black;
+    margin: 13px 0px 0px 5px;
+}
+
+/*admin_taskInfo*/
+.task_howToPass, .originDataType {
+    margin-top: 20px;
+    clear: both;
+}
+.originDataType .wrapper_title{
+    float: left;
+}
+.originDataType .addDataType{
+    float: right;
+    color: #A7A7A7;
+    font-weight: 600;
+}
+.task_statistics{
+    clear: both;
+}
+.datatype_list{
+    clear: both;
+    padding-top: 10px;
+}
+.datatype_list .datatypeID{
+    float: left;
+    transform: translate(-35%, 90%);
+}
+.value_list li{
+    text-align: center;
+    border: 0.3px solid #707070;
+    float: left;
+    padding: 10px 20px;
+    background-color: #F6F6F6;
+}
+.value_list li .originName{
+    color :#6EB9E8;
+    font-size: 14px;
+    font-weight: 700;
+}
+.value_list li .type{
+    color :#6EB9E8;
+    font-size: 14px;
+    font-weight: 700;
+}
+.originDataTypeRequest{
+    clear: both;
+    margin-top: 80px;
+}
+.originDataTypeRequest ul{
+    transform: translate(0%, -25%);
+}
+#yes{color:#6EB9E8}
+#no{color:#E86E77}
+
+.applicantList{
+    padding-top: 10px;
+}
+.applicantList .lightgray_wrapper{
+    width : 500px;
+}
+.applicantList .lightgray_wrapper_inline_display{
+    width : 500px;
+    display:inline-block;
+}
+
+.applicantList .lightgray_wrapper_file{
+    width : 500px;
+}
+
+.applicantList .lightgray_wrapper_file_inline_display{
+    width : 500px;
+    display:inline-block;
+    color : #6EB9E8;
+}
+
+.applicantList .name{
+    position: absolute;
+    left: 150px;
+    font-weight: 600;
+}
+.applicantList .score{
+    position: absolute;
+    left: 250px;
+    font-weight: 600;
+}
+.applicants li{
+    font-weight: 600;
+}
+.applicants li .sequenceNum{
+    float:left;
+    transform: translate(-30px, 100%);
+}
+.applicants li .personal_name{
+    float: left;
+    transform: translate(20%, 100%);
+}
+.applicants li .personal_score{
+    float: left;
+    transform: translate(390%, 100%);
+}
+.applicants #yes{
+    margin-left: 170px;
+}
+
+.taskStatistic{
+    margin-top: 20px;
+}
+.taskStatistic .submitFiles,
+.taskStatistic .passFiles,
+.taskStatistic .passTuples{
+    font-weight: 600;
+    line-height: 150%;
+}
+.taskStatistic .passFiles{
+    float : left;
+}
+.taskStatistic .passTuples{
+    transform: translate(5%, 0%);
+    margin-bottom: 10px;
+}
+.taskStatistic a{
+    color: #56baed;
+    font-weight: 500;
+}
+
+.task-participate{
+    clear:both;
+    display:inline-block;zoom:1;.display:inline;
+    text-align: center;
+    width: auto;
+    font: normal normal 600 25px Apple SD Gothic Neo;
+    letter-spacing: 0px;
+    color: #FFFAFA;
+    border : none;
+    background: #6EB9E8 0% 0% no-repeat padding-box;
+    box-shadow: 0px 3px 6px #00000029;
+    border-radius: 5px;
+    height: 50px;
+    margin-top: 53px;
+    margin-left : auto;
+    margin-right: auto;
+}
+
+/*alter Password*/
+.adminAlterPassword .formContent{
+    transform: translate(0%, 4%);
+}
+.adminAlterPassword .formContent{
+    line-height: 500%;
+    padding-left: 100px;
+    font-weight: 700;
+    color: #A7A7A7;
+}
+.adminAlterPassword .contentName{
+    margin-left: 170px;
+    color: #707070;
+    font-size: 17px;
+}
+.adminAlterPassword .contentID{
+    margin-left: 198px;
+    color: #707070;
+    font-size: 17px;
+}
+.adminAlterPassword .newPassword{
+    display: contents;
+}
+
+.adminAlterPassword input[type="text"]{
+    position: relative;
+    float: right;
+    width : 500px;
+    margin-top: 12px;
+    margin-right: 90px;
+}
+.adminAlterPassword input[type="submit"]{
+    margin: 40px auto 0 auto;
+    transform: translate(296px,0);
+    font-size: 20px;
+    font-weight: 600;
+}
+
+/*task add*/
+.taskAdd .task_info input[type="text"],
+.taskAdd .task_howToPass input[type="text"]{
+    width : 820px;
+    border-radius: 20px;
+    padding: 20px 30px;
+    margin: 5px;
+}
+.taskAdd .task_name .wrapper_title{
+    float: left;
+    line-height: 60px;
+}
+.taskAdd .task_name input[type="text"]{
+    width : 730px;
+    height: 30px;
+    border-radius: 20px;
+    padding: 10px 20px;
+    margin: 0px 0px 0px 20px;
+}
+.taskAdd .task_info{
+    margin-top: 20px;
+}
+.taskAdd .minUpload .wrapper_title{
+    margin-top: 20px;
+    float: left;
+}
+.taskAdd .minUpload .dropdown{
+    transform: translate(2%,10%);
+}
+.taskAdd .dataTable_name{
+    margin-top: 20px;
+}
+
+.taskAdd .dataTable_name .wrapper_title{
+    float: left;
+    line-height: 60px;
+}
+
+
+
+.taskAdd .dataTable_name input[type="text"]{
+    width : 620px;
+    height: 30px;
+    border-radius: 20px;
+    padding: 10px 20px;
+    margin: 0px 0px 0px 20px;
+}
+
+.taskAdd .dataTableSchema {
+    margin-top: 20px;
+    clear: both;
+}
+.taskAdd .dataTableSchema .wrapper_title{
+    float: left;
+}
+.taskAdd .dataTableSchema .addDataType{
+    float: right;
+    color: #A7A7A7;
+    font-weight: 600;
+}
+.taskAdd .dataTableSchema_list{
+    clear: both;
+    padding: 10px 0px 0px 20px;
+}
+.taskAdd .dataTableSchema_list li{
+    font-weight: 500;
+    text-align: center;
+    border: 0.3px solid #707070;
+    float: left;
+    padding: 10px 20px;
+    background-color: #F6F6F6;
+}
+.originDataType_add{
+    padding-top: 50px;
+}
+.originDataType_add .wrapper_title{
+    float: left;
+}
+.originDataType_add .addDataType{
+    float: right;
+    color: #A7A7A7;
+    font-weight: 600;
+}
+.taskAdd input[type="submit"]{
+    clear:both;
+    display: inherit;
+    margin: 100px auto 0 auto;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+/*table schema add*/
+.tableSchema_add input[type="text"]{
+    width: 400px;
+}
+.tableSchema_add button[type="submit"]{
+    width: 100px;
+    text-align: center;
+    padding : 10px 20px;
+    margin: 0px 20px;
+}
+/*user list*/
+.userTable{
+    position: relative;
+    top:140px;
+    width: 1000px;
+}
+.userTable .MTableToolbar-root-5{
+    min-height: 0px;
+    height: 0px;
+}
+
+.userList input[type="text"]{
+    all: unset;
+    padding: 10px 10px;
+}
+.userList .dropdown{
+    transform: translate(-50%,28%);
+    border-radius: 20px;
+}
+.userList a{
+    color: #56baed;
+    font-weight: 500;
+}
+
+/*presenter detail*/
+.presenterDetail .taskStatistic{
+    margin-top: 0px;
+}
+.presenterDetail .passFiles{
+    margin-bottom: 20px;
+}
+
+/*estimator detail*/
+.estimatorDetail .taskStatistic{
+    margin-top: 0px;
+}
+.estimatorDetail .passFiles{
+    margin-bottom: 20px;
+}
+
+/*admin datatype add*/
+.admin_datatype_add .valueList button{
+    background-color: #F6F6F6;
+    border-radius: 0px;
+    border: 0.3px solid #707070;
+    font-weight: 500;
+    text-align: center;
+    float: left;
+    padding: 10px 20px;
+}
+.admin_datatype_add .datatypeInput{
+    clear: both;
+}
+.admin_datatype_add .small_lightgray_wrapper{
+    margin-top: 20px;
+    float: left;
+    height: 51px;
+}
+.admin_datatype_add .datatypeName{
+    margin-top: 14px;
+    width : 380px;
+    float: left;
+}
+.admin_datatype_add button[type="submit"]{
+    width : 120px;
+    padding : 10px 20px;
+    font-weight: 650;
+    margin-top: 26px;
+}
+.admin_datatype_add .datatypeList .decimalList{
+    list-style: decimal;
+    transform: translate(10px, -40px);
+    font-size: 20px;
+    font-weight: 600;
+    color:#707070;
+}
+.admin_datatype_add .datatypeList li{
+    padding : 13px 10px;
+}
+
+.admin_datatype_add .datatypeList .dataName{
+    float: left;
+    margin-left: 20px;
+    font-size: 20px;
+    font-weight: 600;
+    color:#707070;
+}
+.admin_datatype_add .datatypeList .dataType{
+    float: left;
+    color: #6EB9E8;
+    transform: translate(30px, 0);
+    font-size: 18px;
+    font-weight: 650;
+}
+.admin_datatype_add .datatypeList .deleteButton{
+    border: 0px;
+    background-color: white;
+    color: #E86E77;
+    transform: translate(50px, -3px);
+    padding: 0px;
+    font-size: 16px;
+    font-weight: 650;
+}
+
+/*table schema add*/
+.admin_tableSchema_add .dropdown{
+    float: left;
+    margin-left: 10px;margin-top: 20px;
+}
+.admin_tableSchema_add .datatypeInput{
+    clear: both;
+}
+.admin_tableSchema_add .small_lightgray_wrapper{
+    margin-top: 20px;
+    float: left;
+    height: 51px;
+}
+.admin_tableSchema_add .datatypeName{
+    margin-top: 14px;
+    width : 380px;
+    float: left;
+}
+.admin_tableSchema_add button[type="submit"]{
+    width : 120px;
+    padding : 10px 20px;
+    font-weight: 650;
+    margin-top: 26px;
+}
+.admin_tableSchema_add .datatypeList .decimalList{
+    list-style: decimal;
+    transform: translate(10px, -40px);
+    font-size: 20px;
+    font-weight: 600;
+    color:#707070;
+}
+.admin_tableSchema_add .datatypeList li{
+    padding : 13px 10px;
+}
+
+.admin_tableSchema_add .datatypeList .dataName{
+    float: left;
+    margin-left: 20px;
+    font-size: 20px;
+    font-weight: 600;
+    color:#707070;
+}
+.admin_tableSchema_add .datatypeList .dataType{
+    float: left;
+    color: #6EB9E8;
+    transform: translate(30px, 0);
+    font-size: 18px;
+    font-weight: 650;
+}
+.admin_tableSchema_add .datatypeList .deleteButton{
+    border: 0px;
+    background-color: white;
+    color: #E86E77;
+    transform: translate(50px, -3px);
+    padding: 0px;
+    font-size: 16px;
+    font-weight: 650;
+}
+.admin_tableSchema_add .wrapper_title,
+.admin_tableSchema_add .wrapper_title a{
+  font-size: 20px;
+  font-weight: 800;
+  clear: both;
+    color: #707070;
+}
+.admin_tableSchema_add .wrapper_title{
+    margin-left: 135px;
+}
+.admin_tableSchema_add .wrapper_title a{
+    margin-left: 207px;
+}
+.admin_tableSchema_add .alert{
+    color:#E86E77;
+    font-size: 13px;
+    font-weight: 780;
+    transform: translate(13px, -23px);
+}
+
+
+/*rater*/
+.fileDownload{
+    margin-left: 200px;
+    color: #707070;
+    font-size: 17px;
+}
+
+.contentName{
+    margin-left: 170px;
+    color: #707070;
+    font-size: 17px;
+}
+
+.taskAdd .passNonpass .wrapper_title{
+    margin-top: 20px;
+    float: left;
+}
+.taskAdd .passNonpass .dropdown{
+    transform: translate(2%,10%);
+}
