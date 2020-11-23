@@ -43,6 +43,8 @@
     align-content: center;
     align-items: center;
 }
+.signup-inputs input[type="password"],
+.signin-inputs input[type="password"],
 .signup-inputs input[type="text"],
 .signin-inputs input[type="text"]{
     margin-left: auto;

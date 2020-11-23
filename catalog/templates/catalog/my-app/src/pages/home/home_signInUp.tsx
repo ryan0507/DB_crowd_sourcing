@@ -24,7 +24,7 @@ function Home_signInUp() {
                           <input type="text" placeholder="ID" className="login__input-ID"></input>
                       </div>
                       <div>
-                          <input type="text" placeholder="PASSWORD" className="login__input-PW"></input>
+                          <input type="password" placeholder="PASSWORD" className="login__input-PW"></input>
                       </div>
                       <div className="submit__button">
                           <Link to ="/admin/main">
@@ -48,11 +48,11 @@ function Home_signInUp() {
                       <div className="signup-input__title">
                           Password
                       </div>
-                      <input type="text" className="signup__input1"></input>
+                      <input type="password" className="signup__input1"></input>
                       <div className="signup-input__title">
                           Repeat Password
                       </div>
-                      <input type="text" className="signup__input1"></input>
+                      <input type="password" className="signup__input1"></input>
                       <div className="signup-input__title">
                           Name
                       </div>

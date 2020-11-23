@@ -145,7 +145,10 @@
 .adminAlterPassword .newPassword{
     display: contents;
 }
-
+.adminAlterPassword input[type=text]::placeholder {
+    font-size: 16px;
+    text-align: left;
+}
 .adminAlterPassword input[type="text"]{
     position: relative;
     float: right;
@@ -161,6 +164,10 @@
 }
 
 /*task add*/
+.taskAdd input[type=text]::placeholder {
+    font-size: 16px;
+    text-align: left;
+}
 .taskAdd .task_info input[type="text"],
 .taskAdd .task_howToPass input[type="text"]{
     width : 820px;
@@ -267,6 +274,10 @@
 .userTable .MTableToolbar-root-5{
     min-height: 0px;
     height: 0px;
+}
+.admin input[type=text]::placeholder {
+    font-size: 16px;
+    text-align: left;
 }
 
 .userList input[type="text"]{

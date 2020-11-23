@@ -1,10 +1,10 @@
 .App {
-  background-color: #56baed;
+  background-color: #6EB9E8;
   height: auto;
 }
 
 body {
-  background-color: #56baed;
+  background-color: #6EB9E8;
   font-family: "Poppins", sans-serif;
   height: 100vh;
 }
@@ -236,7 +236,7 @@ button[type="submit"]:active ,input[type=button]:active, input[type=submit]:acti
   -ms-transform: scale(0.95);
   transform: scale(0.95);
 }
-
+input[type="password"],
 input[type=text] {
   background-color: #f6f6f6;
   border: none;
@@ -252,6 +252,7 @@ input[type=text] {
   border-radius: 5px 5px 5px 5px;
 }
 
+.signin-inputs input,
 .sign input[type=text]{
   text-align: center;
 }
@@ -259,14 +260,15 @@ input[type=text] {
   height: 15px;
 }
 
+input[type="password"]:focus,
 input[type=text]:focus {
   background-color: #fff;
   border-bottom: 2px solid #5fbae9;
 }
 
-input[type=text]:placeholder {
-  color: #cccccc;
-}
+/*input[type=text]::placeholder {*/
+/*  color: #cccccc;*/
+/*}*/
 
 
 /* ANIMATIONS */
