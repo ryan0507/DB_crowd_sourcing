@@ -1,6 +1,7 @@
 {
   "name": "my-app",
   "version": "0.1.0",
+  "proxy": "http://localhost:8000",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.11.0",
@@ -12,6 +13,8 @@
     "@types/node": "^12.0.0",
     "@types/react": "^16.9.53",
     "@types/react-dom": "^16.9.8",
+    "@types/react-router-dom": "^5.1.6",
+    "axios": "^0.21.0",
     "material-table": "^1.69.2",
     "material-ui-search-bar": "^1.0.0",
     "react": "^17.0.1",
@@ -48,6 +51,7 @@
   },
   "devDependencies": {
     "@types/material-ui": "^0.21.8",
-    "@types/react-tap-event-plugin": "0.0.30"
+    "@types/react-tap-event-plugin": "0.0.30",
+    "webpack": "^4.44.2"
   }
 }

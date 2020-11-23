@@ -17,8 +17,14 @@ from django.contrib import admin
 from django.urls import path,include
 from catalog.views import *
 
+from rest_framework import routers
+from adminUI import views
+
+router = routers.DefaultRouter()
+router.register("admin_main", views.Task, "admin_main")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include('catalog.urls')),
+    path("adminUI/", include('adminUI.urls')),
 ]
