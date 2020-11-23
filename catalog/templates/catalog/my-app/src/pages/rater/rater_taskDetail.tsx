@@ -99,35 +99,36 @@ export default function Rater_taskDetail(){
     };
 
    return(
+       <div className="rater_taskDetail">
        <div className="wrapper">
            <div className="Title">태스크 이름</div>
            <Link to = "/rater/main2" className="right_side_small">뒤로가기</Link>
            <div className="formContent">
-               <div className={"TaskInfo"}>
+               <div className={"task_info"}>
                    <div className={"wrapper_title"}>태스크 설명</div>
                    <div className={"lightgray_wrapper"}>이 태스크는 이런 태스크입니다.</div>
                </div>
-               <div className={"TaskPassStandard"}>
+               <div className={"task_howToPass"}>
                    <div className={"wrapper_title"}>태스크 PASS 기준</div>
                    <div className={"lightgray_wrapper"}>패스 기준</div>
                </div>
-               <div className={"TaskPassStandard"}>
+               <div className={"task_num"}>
                    <div className={"wrapper_title"}>회차</div>
                    <div className={"lightgray_wrapper"}>3회</div>
                </div>
-               <div className={"TaskPassStandard"}>
+               <div className={"task_duration"}>
                    <div className={"wrapper_title"}>기간</div>
                    <div className={"lightgray_wrapper"}>2020년 10월 21일 ~ 2020년 11월 21일</div>
                </div>
-               <div className={"TaskPassStandard"}>
+               <div className={"file_download"}>
                    <div className={"wrapper_title"}>파일 다운로드</div>
                    <div className={"lightgray_wrapper_file"}>새마을식당.csv</div>
                </div>
-               <div className={"TaskName"}>
+               <div className={"taskData_table_name"}>
                    <div className={"wrapper_title"}>태스크 데이터 테이블 이름</div>
                    <div className={"lightgray_wrapper"}>이름</div>
                </div>
-               <div className={"TaskSchema"}>
+               <div className={"dataTableSchema"}>
                    <div className={"wrapper_title"}>태스크 데이터 테이블 스키마</div>
                    <ul className={"datatype_list"}>
                        <li>
@@ -190,11 +191,11 @@ export default function Rater_taskDetail(){
                    </ul>
 
                </div>
-               <div className={"TaskPassStandard"}>
+               <div className={"score"}>
                    <div className={"wrapper_title"}>점수</div>
                    <div className={"lightgray_wrapper"}>5점</div>
                </div>
-               <div className={"TaskPassStandard"}>
+               <div className={"passed"}>
                    <div className={"wrapper_title"}>P/NP</div>
                    <div className={"lightgray_wrapper"}>PASS</div>
                </div>
@@ -202,6 +203,7 @@ export default function Rater_taskDetail(){
            </div>
 
 
+       </div>
        </div>
    );
 }
