@@ -181,4 +181,7 @@ dmypy.json
 # pytype static type analyzer
 .pytype/
 
+# node_module
+node_modules/
+
 # End of https://www.toptal.com/developers/gitignore/api/macos,jupyternotebooks,python
