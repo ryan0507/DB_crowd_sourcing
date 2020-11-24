@@ -54,6 +54,6 @@ class ParticipateTaskDetailView(APIView):
 
 class RaterMainView(APIView):
     def get(self, request):
-        queryset = Task.objects.all()
+        queryset = Parsing_Data.objects.all()
         serializer = RaterMainTaskSerializer(queryset, many=True)
         return Response(serializer.data)
