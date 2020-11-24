@@ -4,7 +4,7 @@ from .models import *
 class MainSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
-        fields = ('Name', 'Description')
+        fields = ('TaskID', 'Name', 'Description')
 
 class TaskSerializer(serializers.ModelSerializer):
     class Meta:
@@ -12,10 +12,9 @@ class TaskSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class UserSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = User
-        fields = ('ID', 'Name', 'DateOfBirth', 'Gender', 'PhoneNumber')
+        fields = ('MainID', 'ID', 'Name', 'DateOfBirth', 'Gender', 'PhoneNumber')
 
 class OriginalDataTypeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -39,7 +38,9 @@ class CreateTaskSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         task = Task.objects.create(
-            validated_data["TaskID"], None, None, None, validated_data["Name"], None
+            validated_data["TaskID"], validated_data["SubmissionPeriod"],
+            validated_data["TableName"], validated_data["TaskSchema"],
+            validated_data["Name"], validated_data["Description"]
         )
         return task
 
