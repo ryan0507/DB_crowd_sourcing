@@ -183,5 +183,5 @@ dmypy.json
 
 # node_module
 node_modules/
-
+tsconfig.json
 # End of https://www.toptal.com/developers/gitignore/api/macos,jupyternotebooks,python
