@@ -16,8 +16,6 @@ class AdminMainView(APIView):
         return Response(serializer.data)
 
 class TaskDetailView(APIView):
-    originaldatatypes = OriginalDataTypeSerializer(many=True, read_only=True)
-
     def get_object(self, pk):
         return get_object_or_404(Task, pk=pk)
     def get(self, request, pk, format=None):

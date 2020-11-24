@@ -12,6 +12,7 @@ class TaskSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class UserSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = User
         fields = ('ID', 'Name', 'DateOfBirth', 'Gender', 'PhoneNumber')
@@ -19,7 +20,7 @@ class UserSerializer(serializers.ModelSerializer):
 class OriginalDataTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Original_Data_Type
-        fields = ('OriginalTypeID', 'TaskID', 'OriginalSchema')
+        fields = ('OriginalTypeID', 'OriginalSchema')
 
 class ParsingDataSerializer(serializers.ModelSerializer):
     class Meta:
@@ -56,10 +57,10 @@ class CreateTaskSchemaSerializer(serializers.ModelSerializer):
 class CreateOriginalDataTypeSerializer(serializers.ModelSerializer):
     class Meta :
         model = Original_Data_Type
-        fields = ('OriginalTypeID', 'TaskID', 'OriginalSchema')
+        fields = ('OriginalTypeID', 'OriginalSchema')
 
     def create(self, validated_data):
         datatype = Original_Data_Type.objects.create(
-            None, validated_data["TaskID"], validated_data["OriginalSchema"]
+            None, validated_data["OriginalSchema"]
         )
         return datatype

@@ -9,11 +9,11 @@ urlpatterns = [
     # admin_main
     path('', AdminMainView.as_view()),
     # admin_taskInfo
-    path('<pk>/', TaskDetailView.as_view()),
+    path('<int:pk>/', TaskDetailView.as_view()),
     # admin_userList
     path('user/', UserListView.as_view()),
     # user info (not finished)
-    path('user/<pk>/', UserDetailView.as_view()),
+    path('user/<int:pk>/', UserDetailView.as_view()),
     # original data type list (no need)
     path('originaldatatype/', OriginalDataTypeView.as_view()),
     # parsing data list (no need maybe)
