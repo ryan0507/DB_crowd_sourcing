@@ -27,7 +27,7 @@ class Original_Data_Type(models.Model):
         null=False,
         on_delete=models.CASCADE
     )
-    OriginSchema = models.TextField(null=False)
+    OriginalSchema = models.TextField(null=False)
     Mapping = models.TextField(null=False)
     TaskThresHold = models.DecimalField(max_digits=6, decimal_places=4, null=False, default=0)
 

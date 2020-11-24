@@ -19,6 +19,7 @@ from catalog.views import *
 
 from rest_framework import routers
 from adminUI import views
+from raterUI import rater_views
 
 router = routers.DefaultRouter()
 router.register("admin_main", views.Task, "admin_main")
@@ -27,4 +28,5 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include('catalog.urls')),
     path("adminUI/", include('adminUI.urls')),
+    path("raterUI/", include('raterUI.urls')),
 ]

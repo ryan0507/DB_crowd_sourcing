@@ -40,7 +40,7 @@ function Admin_taskAdd(){
         setOpen(true);
     };
    return(
-       <div className="wrapper">
+       <div className="submit_submitFile">
            <div className="Title">(태스크 이름) 제출하기</div>
            <Link to = "/submit/taskinfo2" className="right_side_small">뒤로가기</Link>
            <div className="formContent">

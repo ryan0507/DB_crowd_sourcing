@@ -3,7 +3,7 @@ import React from 'react';
 
 function submit_main2(){
    return(
-       <div className="wrapper">
+       <div className="submit_main2">
            <div className="Title">참여중인 태스크</div>
            <Link to = "/submit/main" className="right_side_small">현재 나의 평가 점수: 10점</Link>
            <ul className={"task_list"}>

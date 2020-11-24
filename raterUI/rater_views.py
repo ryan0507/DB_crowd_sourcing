@@ -2,19 +2,12 @@ from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
 
-from .models import *
-
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import generics
 from .serializers import *
 
-class AdminMainView(APIView):
-    def get(self, request):
-        queryset = Task.objects.all()
-        serializer = MainSerializer(queryset, many=True)
-        return Response(serializer.data)
-
+## [BASIC] Views ##
 class TaskDetailView(APIView):
     def get_object(self, pk):
         return get_object_or_404(Task, pk=pk)
@@ -57,47 +50,10 @@ class ParticipateTaskDetailView(APIView):
         serializer = ParticipateTaskSerializer(participate_task)
         return Response(serializer.data)
 
-class CreatingTaskView(generics.GenericAPIView):
-    serializer_class = CreateTaskSerializer
+## [PAGE] Views ##
 
-    def post(self, request, *args):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        task = serializer.save()
-        return Response(
-            {
-                "task": TaskSerializer(
-                    task, context=self.get_serializer_context()
-                ).data,
-            }
-        )
-
-class CreatingTaskSchemaView(generics.GenericAPIView):
-    serializer_class = CreateTaskSchemaSerializer
-
-    def post(self, request, *args):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        taskschema = serializer.save()
-        return Response(
-            {
-                "task scema": TaskSerializer(
-                    taskschema, context=self.get_serializer_context()
-                ).data,
-            }
-        )
-
-class CreatingOriginalDataTypeView(generics.GenericAPIView):
-    serializer_class = CreateOriginalDataTypeSerializer
-
-    def post(self, request, *args):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        datatype = serializer.save()
-        return Response(
-            {
-                "data type" : OriginalDataTypeSerializer(
-                    datatype, context=self.get_serializer_context()
-                ).data,
-            }
-        )
+class RaterMainView(APIView):
+    def get(self, request):
+        queryset = Parsing_Data.objects.all()
+        serializer = RaterMainTaskSerializer(queryset, many=True)
+        return Response(serializer.data)
