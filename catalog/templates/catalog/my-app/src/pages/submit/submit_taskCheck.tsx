@@ -81,7 +81,7 @@ export default function Submit_taskCheck(){
         setPage(0);
     };
    return(
-       <div className="wrapper">
+       <div className="submit_taskCheck">
            <div className="Title">개인정보 이용동의서</div>
            <Link to = "/submit/taskinfo" className="right_side_small">뒤로가기</Link>
            <div className="formContent">

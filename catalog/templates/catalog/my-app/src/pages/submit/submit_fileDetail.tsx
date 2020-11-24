@@ -66,7 +66,7 @@ export default function Submit_fileDetail(){
         setPage(0);
     };
    return(
-       <div className="wrapper">
+       <div className="submit_fileDetail">
            <div className="Title">file name</div>
            <Link to = "/submit/taskinfo2" className="right_side_small">뒤로가기</Link>
            <Link to = "/submit/taskinfo2" className="right_side_small">파일 다운로드</Link>

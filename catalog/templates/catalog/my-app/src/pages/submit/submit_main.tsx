@@ -3,7 +3,7 @@ import React from 'react';
 
 function submit_main(){
    return(
-       <div className="wrapper">
+       <div className="submit_main">
            <div className="Title">태스크 목록</div>
            <ul className={"task_list"}>
                <li>

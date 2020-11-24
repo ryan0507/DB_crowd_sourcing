@@ -81,7 +81,7 @@ export default function Submit_taskInfo(){
         setPage(0);
     };
    return(
-       <div className="wrapper">
+       <div className="submit_taskInfo">
            <div className="Title">태스크 이름</div>
            <Link to = "/submit/main" className="right_side_small">뒤로가기</Link>
            <div className="formContent">

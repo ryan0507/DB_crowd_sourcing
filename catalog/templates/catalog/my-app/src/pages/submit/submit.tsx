@@ -14,7 +14,7 @@ import "./submit.css";
 function submit() {
   return (
       <Router>
-        <div className="admin">
+        <div className="submit">
             <body>
                 <div className="fixed-header">
                     <div className="container">

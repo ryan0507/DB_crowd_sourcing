@@ -1,13 +1,13 @@
 import React, {useState} from 'react';
 import { BrowserRouter as Router, Route, Link, Switch, NavLink, } from 'react-router-dom';
-import '../home/home.css';
+import './submit.css';
 
 function Submit_changeInfo() {
   return (
-      <div className = 'home'>
+      <div className = 'submit_changeInfo'>
           <div className = 'home-white'>
               <div className = "signup__select selected">
-                  개인정보 수정
+                  제출자 개인정보 수정
               </div>
               <div className='home__inputs'>
                   <div className={"signup-inputs"}>
@@ -52,12 +52,9 @@ function Submit_changeInfo() {
                           <span className="phone">-</span>
                           <input type="number" className="signup__input3"></input>
                       </div>
-                      <div className="type__select">
-                          <div className="type-select1 white" >제출자</div>
-                      </div>
-                      <div className="submit__button">
-                          <Link to ="/">
-                          <button className="signup-submit">수정하기</button></Link>
+                      <div className="submit__button_s">
+                          <Link to ="/submit/main">
+                          <button className="signup-submit_s">수정하기</button></Link>
                       </div>
                   </div>
               </div>
