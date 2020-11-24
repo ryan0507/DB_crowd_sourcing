@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Route,Link } from 'react-router-dom';
-import React, {useEffect, useState} from 'react';
+import React, { Fragment, useEffect, useState} from 'react';
 import axios from "axios";
 import InputBase from "@material-ui/core/InputBase";
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
@@ -8,6 +8,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Button from '@material-ui/core/Button';
+import Admin_tableSchema_add from './admin_tableSchema_add';
+import {FaceRounded} from "@material-ui/icons";
 
 axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
@@ -36,7 +38,32 @@ interface Task{
 }
 
 
+interface Value {
+    id: number,
+    datatypeName: string;
+    datatypeType: string;
+}
+const defaultValue: Value = {
+    id: 0,
+    datatypeName: '',
+    datatypeType: '',
+}
+type tempValue = {
+    name: string;
+    type: string;
+}
+
+const defaultTempValue: tempValue ={
+    name: '',
+    type: '',
+}
+
 function Admin_taskAdd(){
+    const [_list, setList] = useState<Value[]>( [{id : 0, datatypeName : "음식점 이름", datatypeType: "string"}, {id : 1, datatypeName : "월 매출", datatypeType: "integer"}]);
+    const [count, setCount] = useState<number>(_list.length + 1);
+
+    const [toggleSchema, setToggleSchema] = useState<boolean>(true);
+    const [toggleData, setToggleData] = useState<boolean>(true);
     const initialTask = {
         TaskID : "",
         SubmissionPeriod : "",
@@ -66,7 +93,7 @@ function Admin_taskAdd(){
     const handleInputChange =<P extends keyof Task> (item : P, value: Task[P]) =>{
         setTask({...task, [item] : value});
     }
-    const handleSubmit = ( event : React.FormEvent<HTMLFormElement> ) =>{
+    const handleSubmitDD = ( event : React.FormEvent<HTMLFormElement> ) =>{
         event.preventDefault();
         axios.post('http://127.0.0.1:8000/adminUI/create/', {
             TaskID : task.TaskID,
@@ -90,13 +117,64 @@ function Admin_taskAdd(){
         // _Description};
     };
 
+    const handleToggleSchema = () => {
+        setToggleSchema(!toggleSchema);
+    }
+    const handleToggleData = () => {
+        setToggleData(!toggleData);
+    }
+
+    const handleTableSchemaTypeAdd = ( e: React.FormEvent<HTMLFormElement> ) => {
+        e.preventDefault();
+        let content : Value ={
+          id: count,
+          datatypeName: _tempValue.name,
+          datatypeType: _tempValue.type,
+      };
+      setCount(count + 1);
+      let l : Value[] = Object.assign([], _list);
+      l.push(content);
+      setList(l);
+    }
+
+    const onSchemaChange = <P extends keyof tempValue> (prop: P, value: tempValue[P]) => {
+          setTempValue({..._tempValue, [prop]: value});
+      }
+
+    const datatypeList = _list.map((item) => {
+        return (
+          <div key={item.datatypeName}>
+              <li>
+                  <div className={"dataName"}>{item.datatypeName}</div>
+                  <div className={"dataType"}>{item.datatypeType}</div>
+                  <div><button className={"deleteButton"} onClick={e => handleRemove(item.id)}>[삭제하기]</button></div>
+              </li>
+          </div>
+        );
+      });
+
+    const handleRemove = (id: number) => {
+      let l : Value[] = [];
+      _list.map((content) => {
+          if(content.id !== id){
+              l.push(content);
+          }
+      });
+      setList(l);
+    }
+    const [_tempValue, setTempValue] = useState(defaultTempValue);
+      const onValueChange =<P extends keyof tempValue> (prop: P, value: any) =>
+      {
+          setTempValue({..._tempValue, [prop]: value});
+      }
+
    return(
        <div className={"taskAdd"}>
        <div className="wrapper">
            <div className="Title">태스크 추가</div>
            <Link to = "/admin/main" className="right_side_small">뒤로가기</Link>
            <div className="formContent">
-               <form onSubmit={(event) => handleSubmit(event)}>
+               <form onSubmit={(event) => handleSubmitDD(event)}>
                <div className={"task_name"}>
                    <div className={"wrapper_title"}>태스크 이름</div>
                        <InputBase
@@ -170,18 +248,32 @@ function Admin_taskAdd(){
 
                <div className={"dataTableSchema"}>
                    <div className={"wrapper_title"}>태스크 데이터 테이블 스키마</div>
-                   <Link className={"addDataType"} to = "/admin/tableschemaadd">태스크 데이터 테이블 스키마 수정하기</Link>
-                   <ul className={"dataTableSchema_list"}>
-                       <li>음식점 이름</li>
-                       <li>월 매출</li>
-                       <li>월 고객 수</li>
-                       <li>월 순이익</li>
-                       <li>직원 수</li>
-                   </ul>
+                   <button className={"addDataTypeButton"} onClick={handleToggleSchema}>
+                       {toggleSchema ? (<Fragment >태스크 데이터 테이블 스키마 수정</Fragment>) : (<Fragment>태스크 데이터 테이블 스키마 저장</Fragment>)}
+                   </button>
+                   {toggleSchema ? (
+                       <ul className={"dataTableSchema_list"}>
+                           {_list.map((item) =>{
+                               return(<li>{item.datatypeName}</li>)
+                           })}
+                       </ul>
+                   ) : (
+                       <div className={"editDatatypeList"}>
+                           <div className={"datatypeList"}><ul className={"decimalList"}>{datatypeList}</ul></div>
+                           <Admin_tableSchema_add onSchemaChange={onSchemaChange}/>
+                          <form className="input" onClick={(e)  => handleTableSchemaTypeAdd(e)}>
+                              <button type={"submit"}>추가</button>
+                          </form>
+                        </div>
+                   )}
                </div>
 
                <div className={"originDataType_add"}>
                    <div className={"wrapper_title"}>원본 데이터 타입</div>
+                   <button className={"addDataTypeButton"} onClick={handleToggleData}>
+                       {toggleData ? (<Fragment>원본 데이터 타입 추가</Fragment>) : (<Fragment>원본 데이터 타입 저장</Fragment>)}
+                   </button>
+
                    <Link className={"addDataType"} to = "/admin/datatypeadd">원본 데이터 타입 추가하기</Link>
                    <ul className={"datatype_list"}>
                        <li>
