@@ -28,6 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
+//table schema add
 interface Task{
     TaskID : string;
     SubmissionPeriod : string;
@@ -38,16 +39,37 @@ interface Task{
 }
 
 
-interface Value {
+interface dataTable {
     id: number,
-    datatypeName: string;
-    datatypeType: string;
+    valueName: string;
+    valueType: string;
 }
-const defaultValue: Value = {
+type tempDataTable = {
+    name: string;
+    type: string;
+}
+
+const defaultTempDataTable: tempDataTable ={
+    name: '',
+    type: '',
+}
+
+//datatype Add
+interface Type {
+    id: number;
+    originName: string;
+    decidedName: string;
+}
+interface TypeList {
+    id : number;
+    types : Type[];
+}
+const defaultValue: Type = {
     id: 0,
-    datatypeName: '',
-    datatypeType: '',
+    originName: '',
+    decidedName: '',
 }
+
 type tempValue = {
     name: string;
     type: string;
@@ -59,8 +81,8 @@ const defaultTempValue: tempValue ={
 }
 
 function Admin_taskAdd(){
-    const [_list, setList] = useState<Value[]>( [{id : 0, datatypeName : "음식점 이름", datatypeType: "string"}, {id : 1, datatypeName : "월 매출", datatypeType: "integer"}]);
-    const [count, setCount] = useState<number>(_list.length + 1);
+    const [valueList, setValueList] = useState<dataTable[]>( [{id : 0, valueName : "음식점 이름", valueType: "string"}, {id : 1, valueName : "월 매출", valueType: "integer"}]);
+    const [valueCount, setValueCount] = useState<number>(valueList.length + 1);
 
     const [toggleSchema, setToggleSchema] = useState<boolean>(true);
     const [toggleData, setToggleData] = useState<boolean>(true);
@@ -74,14 +96,7 @@ function Admin_taskAdd(){
     }
     const [task, setTask] = useState<Task>(initialTask);
     const classes = useStyles();
-    const [minUpload, setMinUpload] = React.useState<string>('');
     const [open, setOpen] = React.useState(false);
-
-    // const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    //     setMinUpload(event.target.value as number);
-    //
-    // };
-
     const handleClose = () => {
         setOpen(false);
     };
@@ -106,7 +121,7 @@ function Admin_taskAdd(){
         console.log(res);
         console.log(res.data);
         console.log('hhhhhhhhhhhhhhhh');
-      }).catch((error) => console.log( error.response.request._response ) );;
+      }).catch((error) => console.log( error.response.request._response ) );
         // const taskName = {event.target.name}
         // setTask({e.target.name.task_name, 0, '', '', '', ''}) ;
         // {_TaskID: {e.target.elements.task_name},
@@ -126,46 +141,113 @@ function Admin_taskAdd(){
 
     const handleTableSchemaTypeAdd = ( e: React.FormEvent<HTMLFormElement> ) => {
         e.preventDefault();
-        let content : Value ={
-          id: count,
-          datatypeName: _tempValue.name,
-          datatypeType: _tempValue.type,
+        let content : dataTable ={
+          id: valueCount,
+          valueName: _tempDataTable.name,
+          valueType: _tempDataTable.type,
       };
-      setCount(count + 1);
-      let l : Value[] = Object.assign([], _list);
+      setValueCount(valueCount + 1);
+      let l : dataTable[] = Object.assign([], valueList);
       l.push(content);
-      setList(l);
+      setValueList(l);
     }
 
-    const onSchemaChange = <P extends keyof tempValue> (prop: P, value: tempValue[P]) => {
-          setTempValue({..._tempValue, [prop]: value});
+    const onSchemaChange = <P extends keyof tempDataTable> (prop: P, value: tempDataTable[P]) => {
+          setTempDataTable({..._tempDataTable, [prop]: value});
       }
 
-    const datatypeList = _list.map((item) => {
+    const schemaList = valueList.map((item) => {
         return (
-          <div key={item.datatypeName}>
+          <div key={item.valueName}>
               <li>
-                  <div className={"dataName"}>{item.datatypeName}</div>
-                  <div className={"dataType"}>{item.datatypeType}</div>
-                  <div><button className={"deleteButton"} onClick={e => handleRemove(item.id)}>[삭제하기]</button></div>
+                  <div className={"dataName"}>{item.valueName}</div>
+                  <div className={"dataType"}>{item.valueType}</div>
+                  <div><button className={"deleteButton"} onClick={e => handleValueRemove(item.id)}>[삭제하기]</button></div>
               </li>
           </div>
         );
       });
 
-    const handleRemove = (id: number) => {
-      let l : Value[] = [];
-      _list.map((content) => {
+    const handleValueRemove = (id: number) => {
+      let l : dataTable[] = [];
+      valueList.map((content) => {
           if(content.id !== id){
               l.push(content);
           }
       });
-      setList(l);
+      setValueList(l);
     }
-    const [_tempValue, setTempValue] = useState(defaultTempValue);
-      const onValueChange =<P extends keyof tempValue> (prop: P, value: any) =>
+    const [_tempDataTable, setTempDataTable] = useState(defaultTempDataTable);
+
+    //datatype add
+    const [dataTypeList, setDataTypeList] = useState<TypeList[]>([
+        {id:1, types:[{id:0, originName:'음식점 이름',decidedName:'음식점 이름'},
+                {id:0, originName:'월 매출',decidedName:'월 매출'},
+                {id:0, originName:'월 고객 수',decidedName:'월 고객 수'},
+                {id:0, originName:'월 순이익',decidedName:'월 순이익'}]},
+        ]);
+    const [_list, setList] = useState<Type[]>( []);
+    const [typeCount, setTypeCount] = useState<number>(dataTypeList.length+1);
+    const [count, setCount] = useState<number>(1);
+      const [_Value, setValue] = useState(defaultValue);
+      // const [_list, setList] = useState()
+      const pushButton = <P extends keyof tempValue>(prop:P, x : any) => setTempValue({..._tempValue, [prop] : x});
+      const [_tempValue, setTempValue] = useState(defaultTempValue);
+      const onValueChange =<P extends keyof tempValue> (prop: P, value: tempValue[P]) =>
       {
           setTempValue({..._tempValue, [prop]: value});
+      }
+      const handleSubmit = (e:any) =>{
+          let content : Type ={
+              id: count,
+              originName: _tempValue.type,
+              decidedName: _tempValue.name,
+          };
+          setCount(count + 1);
+          let l : Type[] = Object.assign([], _list);
+          l.push(content);
+          setList(l);
+          e.preventDefault();
+      }
+      const datatypeList = _list.map((item) => {
+        return (
+          <div key={item.originName}>
+              <li>
+                  <div className={"dataName"}>{item.decidedName}</div>
+                  <div className={"dataType"}>{item.originName}</div>
+                  <div><button className={"deleteButton"} onClick={e => handleRemove(item.id)}>[삭제하기]</button></div>
+              </li>
+          </div>
+        );
+      });
+      const handleRemove = (id: number) => {
+          let l : Type[] = [];
+          _list.map((content) => {
+              if(content.id !== id){
+                  l.push(content);
+              }
+          });
+          setList(l);
+      }
+      const handleTypeRemove = (id: number) => {
+      let l : TypeList[] = [];
+      dataTypeList.map((content) => {
+          if(content.id !== id){
+              l.push(content);
+          }
+      });
+      setDataTypeList(l);
+    }
+    const handleTypeSubmit = (e:any) =>{
+          let content : TypeList ={
+              id: typeCount,
+              types: _list,
+          };
+          setCount(count + 1);
+          let l : TypeList[] = Object.assign([], dataTypeList);
+          l.push(content);
+          setDataTypeList(l);
+          e.preventDefault();
       }
 
    return(
@@ -182,7 +264,7 @@ function Admin_taskAdd(){
                             className={"nameTask"}
                             placeholder="태스크 이름을 작성해주세요."
                             inputProps={{ 'aria-label': '태스크 이름' }}
-                           onChange={e=> handleInputChange('TaskID', e.target.value)}
+                            onChange={e=> handleInputChange('TaskID', e.target.value)}
                           />
                </div>
 
@@ -253,13 +335,13 @@ function Admin_taskAdd(){
                    </button>
                    {toggleSchema ? (
                        <ul className={"dataTableSchema_list"}>
-                           {_list.map((item) =>{
-                               return(<li>{item.datatypeName}</li>)
+                           {valueList.map((item) =>{
+                               return(<li>{item.valueName}</li>)
                            })}
                        </ul>
                    ) : (
                        <div className={"editDatatypeList"}>
-                           <div className={"datatypeList"}><ul className={"decimalList"}>{datatypeList}</ul></div>
+                           <div className={"datatypeList"}><ul className={"decimalList"}>{schemaList}</ul></div>
                            <Admin_tableSchema_add onSchemaChange={onSchemaChange}/>
                           <form className="input" onClick={(e)  => handleTableSchemaTypeAdd(e)}>
                               <button type={"submit"}>추가</button>
@@ -273,31 +355,76 @@ function Admin_taskAdd(){
                    <button className={"addDataTypeButton"} onClick={handleToggleData}>
                        {toggleData ? (<Fragment>원본 데이터 타입 추가</Fragment>) : (<Fragment>원본 데이터 타입 저장</Fragment>)}
                    </button>
-
-                   <Link className={"addDataType"} to = "/admin/datatypeadd">원본 데이터 타입 추가하기</Link>
-                   <ul className={"datatype_list"}>
-                       <li>
-                           <div className={"datatypeID"}>ID : 001</div>
-                           <ul className={"value_list"}>
-                               <li>
-                                   <div className={"decidedName"}>음식점 이름</div>
-                                   <div className={"originName"}>음식점 이름</div>
-                               </li>
-                               <li>
-                                   <div className={"decidedName"}>월 매출</div>
-                                   <div className={"originName"}>월 매출</div>
-                               </li>
-                               <li>
-                                   <div className={"decidedName"}>월 고객 수</div>
-                                   <div className={"originName"}>월 고객 수</div>
-                               </li>
-                               <li>
-                                   <div className={"decidedName"}>월 순이익</div>
-                                   <div className={"originName"}>월 순이익</div>
-                               </li>
-                           </ul>
-                       </li>
+                   {toggleData ? (
+                       <ul className={"datatype_list"}>
+                           {dataTypeList.map((item) =>{
+                               return(
+                                   <li className={"dataTT"}>
+                                       <div className={"datatypeID"}>ID : {item.id}</div>
+                                        <ul className={"value_list"}>
+                                       {item.types.map((type) =>{
+                                           return(
+                                               <li>
+                                                   <div className={"decidedName"}>{type.decidedName}</div>
+                                                   <div className={"originName"}>{type.originName}</div>
+                                               </li>);
+                                       })}
+                                        </ul>
+                                   </li>);
+                           })}
                    </ul>
+                   ) : (
+                       <div className={"admin_datatype_add"}>
+
+                           <ul className={"datatype_list"}>
+                               {dataTypeList.map((item) =>{
+                                   return(
+                                       <li>
+                                           <div className={"datatypeID"}>ID : {item.id}</div>
+                                            <ul className={"value_list"}>
+                                           {item.types.map((type) =>{
+                                               return(
+                                                   <li>
+                                                       <div className={"decidedName"}>{type.decidedName}</div>
+                                                       <div className={"originName"}>{type.originName}</div>
+                                                   </li>);
+                                           })}
+                                            </ul>
+                                           <div><button className={"deleteButton"} onClick={e => handleTypeRemove(item.id)}>[삭제하기]</button></div>
+                                       </li>
+                                   );
+                               })}
+                       </ul>
+
+                           <div className={"valueList"}>
+                               {valueList.map((item)=>{
+                                   return(<button className="valueName" onClick={e => pushButton('type', item.valueName)}>{item.valueName}</button>);
+                               })}
+                          </div>
+                          <div className={"datatypeInput"}>
+                                <div className={"small_lightgray_wrapper"}>{_tempValue.type}</div>
+                                <InputBase
+                                  className={"datatypeName"}
+                                  placeholder="해당 원본 데이터 타입의 이름을 작성해주세요"
+                                  inputProps={{ 'aria-label': '원본 데이터 타입' }}
+                                  value={_tempValue.name}
+                                  onChange={e=> {
+                                      onValueChange('name', e.target.value)
+                                  }}
+                                />
+                              <form className="input" onClick={e => handleSubmit(e)}>
+                                  <button type="submit">추가</button>
+                              </form>
+                          </div>
+                      <div className={"datatypeList"}><ul className={"decimalList"}>{datatypeList}</ul></div>
+                       <form className="input" onClick={e => handleTypeSubmit(e)}>
+                          <button type="submit">원본 데이터타입 추가</button>
+                      </form>
+
+                       </div>
+                   )}
+                   {/*<Link className={"addDataType"} to = "/admin/datatypeadd">원본 데이터 타입 추가하기</Link>*/}
+
                </div>
                <input type="submit" value="제출"/>
                </form>

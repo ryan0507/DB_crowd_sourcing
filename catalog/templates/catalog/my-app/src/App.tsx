@@ -41,7 +41,7 @@ function App() {
                     <Route exact={true} path="/" component={home_signInUp}/>
                     <Route exact path="/admin/main" component={admin}/>
                     <Route exact path="/admin/taskadd" component={admin}/>
-                    <Route exact path="/admin/taskinfo" component={admin}/>
+                    <Route exact path="/admin/taskinfo/:task_id" component={admin}/>
                     <Route exact path="/admin/filedetail" component={admin}/>
                     <Route exact path="/admin/tableschemaadd" component={admin}/>
                     <Route exact path="/admin/datatypeadd" component={admin}/>

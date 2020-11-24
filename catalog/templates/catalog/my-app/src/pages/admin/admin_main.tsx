@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route,Link } from 'react-router-dom';
+import { RouteComponentProps, BrowserRouter as Router, Route,Link } from 'react-router-dom';
 import React, {useEffect, useState} from 'react';
 import axios from "axios";
 
@@ -11,7 +11,7 @@ interface Task{
 }
 
 
-function Admin_main(){
+const Admin_main = (props : RouteComponentProps<{}>,)=>{
     const[task, setTask] = useState<Task[]>([]);
     const getApi = async() =>{
         await axios.get('http://127.0.0.1:8000/adminUI/').then((r)=>{
@@ -32,7 +32,7 @@ function Admin_main(){
                return(
                    <ul className={"task_list"}>
                        <li>
-                           <Link to = "/admin/taskinfo">
+                           <Link to = {`/admin/taskinfo/2`}>
                                <div className="content_list">
                                    <div className={"taskName"}>{item.Name}</div>
                                    <div className={"applicant"}>새로운 신청자 1명</div>

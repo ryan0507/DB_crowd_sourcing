@@ -21,7 +21,7 @@
 }
 
 /*admin_taskInfo*/
-.task_howToPass, .originDataType {
+.task_howToPass, .Submission_Period, .originDataType {
     margin-top: 20px;
     clear: both;
 }
@@ -39,6 +39,9 @@
 .datatype_list{
     clear: both;
     padding-top: 10px;
+}
+.dataTT{
+    clear: both;
 }
 .datatype_list .datatypeID{
     float: left;
@@ -224,7 +227,7 @@
     color: #A7A7A7;
     font-weight: 600;
 }
-.editDatatypeList{
+.editDatatypeList, .admin_datatype_add{
     clear : both;
     border-radius: 20px;
     padding: 10px 20px;
@@ -322,6 +325,9 @@
 }
 
 /*admin datatype add*/
+.admin_datatype_add .valueList{
+    margin: 10px;
+}
 .admin_datatype_add .valueList button{
     background-color: #F6F6F6;
     border-radius: 0px;
@@ -412,26 +418,26 @@
 .datatypeList .decimalList{
     list-style: decimal;
     transform: translate(30px, 0px);
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 600;
-    color:#707070;
+    /*color:#707070;*/
 }
 .datatypeList li{
-    padding : 13px 10px;
+    padding : 10px;
 }
 
 .datatypeList .dataName{
     float: left;
     margin-left: 20px;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 600;
-    color:#707070;
+    /*color:#707070;*/
 }
 .datatypeList .dataType{
     float: left;
     color: #6EB9E8;
     transform: translate(30px, 0);
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 650;
 }
 .datatypeList .deleteButton{
@@ -440,7 +446,7 @@
     color: #E86E77;
     transform: translate(50px, -3px);
     padding: 0px;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 650;
 }
 .admin_tableSchema_add .wrapper_title,

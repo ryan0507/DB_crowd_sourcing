@@ -72,7 +72,7 @@ const Admin_tableSchema_add = ({onSchemaChange}:Props) => {
               <div className={"datatypeInput"}>
                     <InputBase
                       className={"datatypeName"}
-                      placeholder="해당 속성의 이름을 작성해주세요."
+                      placeholder="새로운 속성의 이름을 작성해주세요."
                       inputProps={{ 'aria-label': '테이블 스키마 속성' }}
                       value={_tempValue.name}
                       onChange={e=> {

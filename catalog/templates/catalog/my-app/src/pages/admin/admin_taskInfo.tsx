@@ -1,5 +1,5 @@
-import { BrowserRouter as Router, Route,Link } from 'react-router-dom';
-import React from 'react';
+import { RouteComponentProps, BrowserRouter as Router, Route,Link } from 'react-router-dom';
+
 import {makeStyles} from "@material-ui/core/styles";
 import TableContainer from "@material-ui/core/TableContainer";
 import Table from "@material-ui/core/Table";
@@ -9,6 +9,19 @@ import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TablePagination from "@material-ui/core/TablePagination";
 import Paper from "@material-ui/core/Paper";
+import React, {useEffect, useState} from 'react';
+import axios from "axios";
+
+axios.defaults.xsrfCookieName = "csrftoken";
+axios.defaults.xsrfHeaderName = "X-CSRFToken";
+interface taskInfo{
+    TaskID : string;
+    SubmissionPeriod : number;
+    TableName : string;
+    TaskSchema : string;
+    Name : string;
+    Description: string;
+}
 
 interface Column {
   id: 'name' | 'date' | 'time' | 'fileName' | 'pNp';
@@ -66,7 +79,20 @@ const rows = [
   createData('조민주', '20.11.02', '23 : 15 : 30', '새마을식당_10월.csv', 'Pass'),
 ];
 
-export default function Admin_taskInfo(){
+export default function Admin_taskInfo(props : RouteComponentProps<{task_id : string}>,){
+    const [info, setInfo] = useState<taskInfo>({TaskID : '', SubmissionPeriod: 0, TableName:'', TaskSchema: '', Name: '', Description: ''});
+    const getApi = async() =>{
+        await axios.get(`http://127.0.0.1:8000/adminUI/${props.match.params.task_id}/`).then((r)=>{
+            let temp: taskInfo = r.data;
+            setInfo(temp);
+        })
+    }
+
+    useEffect(()=>{
+        getApi()
+    },[])
+
+
     const classes = useStyles();
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -79,17 +105,22 @@ export default function Admin_taskInfo(){
     };
    return(
        <div className="wrapper">
-           <div className="Title">태스크 이름</div>
+           <div className="Title">{info.Name}</div>
            <Link to = "/admin/main" className="right_side_small">뒤로가기</Link>
            <div className="formContent">
                <div className={"task_info"}>
                    <div className={"wrapper_title"}>태스크 설명</div>
-                   <div className={"lightgray_wrapper"}>이 태스크는 이런 태스크입니다.</div>
+                   <div className={"lightgray_wrapper"}>{info.Description}</div>
                </div>
 
                <div className={"task_howToPass"}>
                    <div className={"wrapper_title"}>태스크 PASS 기준</div>
                    <div className={"lightgray_wrapper"}>이 태스크는 이렇게 해야 통과되는 태스크입니다.</div>
+               </div>
+
+               <div className={"Submission_Period"}>
+                   <div className={"wrapper_title"}>최소 업로드 주기</div>
+                   <div className={"lightgray_wrapper"}>{info.SubmissionPeriod} 일</div>
                </div>
 
                <div className={"originDataType"}>
@@ -176,6 +207,7 @@ export default function Admin_taskInfo(){
                </div>
 
                <div className={"taskStatistic"}>
+                   //참여자 명단, 제출자 점수
                    <div className={"wrapper_title"}>태스크 통계</div>
                    <div className={"lightgray_wrapper"}>
                        <div className={"submitFiles"}>제출된 파일 수 : {rows.length}개</div>
