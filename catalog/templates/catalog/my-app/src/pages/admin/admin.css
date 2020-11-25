@@ -40,8 +40,15 @@
     clear: both;
     padding-top: 10px;
 }
-.dataTT{
+.dataVertical{
     clear: both;
+    margin-bottom : 60px;
+    padding-bottom: 20px;
+
+}
+.admin_datatype_add .dataVertical{
+    margin-bottom : 60px;
+    padding-bottom: 0px;
 }
 .datatype_list .datatypeID{
     float: left;
@@ -59,7 +66,7 @@
     font-size: 14px;
     font-weight: 700;
 }
-.originDataTypeRequest{
+.presenters{
     clear: both;
     margin-top: 80px;
 }
@@ -72,31 +79,46 @@
 .applicantList{
     padding-top: 10px;
 }
+.presenters .lightgray_wrapper{
+    width: 305px;
+    padding-bottom: 30px;
+}
 .applicantList .lightgray_wrapper{
     width : 500px;
 }
+.presenters .name,
 .applicantList .name{
     position: absolute;
     left: 150px;
     font-weight: 600;
 }
+.presenters .score,
 .applicantList .score{
     position: absolute;
     left: 250px;
     font-weight: 600;
 }
-.applicants li{
-    font-weight: 600;
+.presenters .applicants li{
+    margin-top: 15px;
+    padding-bottom: 15px;
 }
-.applicants li .sequenceNum{
+.presenters .applicants li,
+.applicantList .applicants li{
+    font-weight: 600;
+    clear: both;
+}
+.presenters .applicants li .sequenceNum,
+.applicantList .applicants li .sequenceNum{
     float:left;
     transform: translate(-30px, 100%);
 }
-.applicants li .personal_name{
+.presenters .applicants li .personal_name,
+.applicantList .applicants li .personal_name{
     float: left;
     transform: translate(20%, 100%);
 }
-.applicants li .personal_score{
+.presenters .applicants li .personal_score,
+.applicantList.applicants li .personal_score{
     float: left;
     transform: translate(390%, 100%);
 }
@@ -124,6 +146,7 @@
     color: #56baed;
     font-weight: 500;
 }
+
 
 /*alter Password*/
 .adminAlterPassword .formContent{
@@ -326,10 +349,12 @@
 
 /*admin datatype add*/
 .admin_datatype_add .valueList{
+    clear: both;
     margin: 10px;
+    padding-top: 30px;
 }
 .admin_datatype_add .valueList button{
-    background-color: #F6F6F6;
+    background-color: white;
     border-radius: 0px;
     border: 0.3px solid #707070;
     font-weight: 500;
@@ -350,11 +375,24 @@
     width : 380px;
     float: left;
 }
-.admin_datatype_add button[type="submit"]{
-    width : 120px;
+.taskAdd .admin_datatype_add .short{
+    width : 100px;
     padding : 10px 20px;
     font-weight: 650;
     margin-top: 26px;
+    background-color: #A7A7A7;
+    box-shadow: 0 10px 40px 0 #cccccc;
+}
+.taskAdd .admin_datatype_add .long{
+    width : 200px;
+    height: 50px;
+    padding : 10px 20px;
+    font-size: 16px;
+    font-weight: 650;
+    transform: translate(30px, -40px);
+}
+.taskAdd .admin_datatype_add .long{
+    width : 200px;
 }
 .admin_datatype_add .datatypeList .decimalList{
     list-style: decimal;
@@ -379,6 +417,15 @@
     color: #6EB9E8;
     transform: translate(30px, 0);
     font-size: 18px;
+    font-weight: 650;
+}
+.admin_datatype_add .datatype_list .deleteButton{
+    border: 0px;
+    background-color: white;
+    transform: translate(10px, 18px);
+    color: #E86E77;
+    padding: 0px;
+    font-size: 16px;
     font-weight: 650;
 }
 .admin_datatype_add .datatypeList .deleteButton{
@@ -410,7 +457,7 @@
     float: left;
 }
 .taskAdd button[type="submit"]{
-    width : 120px;
+    width : 100px;
     padding : 10px 20px;
     font-weight: 650;
     margin-top: 13px;

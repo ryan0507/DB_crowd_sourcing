@@ -151,36 +151,55 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
                    </ul>
 
                </div>
-
-               <div className={"originDataTypeRequest"}>
-                   <div className={"wrapper_title"}>원본 데이터 타입 요청</div>
-                   <ul className={"datatype_list"}>
-                       <li>
-                           <div className={"datatypeID"}>ID : 001</div>
-                           <ul className={"value_list"}>
-                               <li>
-                                   <div className={"decidedName"}>음식점 이름</div>
-                                   <div className={"originName"}>음식점 이름</div>
-                               </li>
-                               <li>
-                                   <div className={"decidedName"}>월 매출</div>
-                                   <div className={"originName"}>월 매출</div>
-                               </li>
-                               <li>
-                                   <div className={"decidedName"}>월 고객 수</div>
-                                   <div className={"originName"}>월 고객 수</div>
-                               </li>
-                               <li>
-                                   <div className={"decidedName"}>월 순이익</div>
-                                   <div className={"originName"}>월 순이익</div>
-                               </li>
-
-                           </ul>
-                           <button className={"_button"} id={"yes"}>승인</button>
-                           <button className={"_button"} id={"no"}>거절</button>
-                       </li>
-                   </ul>
+               <div className={"presenters"}>
+                   <div className={"wrapper_title"}>참여자 명단</div>
+                   <div className={"lightgray_wrapper"}>
+                       <div className={"name"}>이름</div>
+                       <div className={"score"}>평가점수</div>
+                       <ul className={"applicants"}>
+                           <li>
+                               <div className={"sequenceNum"}>1.</div>
+                               <div className={"personal_name"}>한채은</div>
+                               <div className={"personal_score"}>8점</div>
+                           </li>
+                           <li>
+                               <div className={"sequenceNum"}>2.</div>
+                               <div className={"personal_name"}>이수현</div>
+                               <div className={"personal_score"}>3점</div>
+                           </li>
+                       </ul>
+                   </div>
                </div>
+
+               {/*<div className={"originDataTypeRequest"}>*/}
+               {/*    <div className={"wrapper_title"}>원본 데이터 타입 요청</div>*/}
+               {/*    <ul className={"datatype_list"}>*/}
+               {/*        <li>*/}
+               {/*            <div className={"datatypeID"}>ID : 001</div>*/}
+               {/*            <ul className={"value_list"}>*/}
+               {/*                <li>*/}
+               {/*                    <div className={"decidedName"}>음식점 이름</div>*/}
+               {/*                    <div className={"originName"}>음식점 이름</div>*/}
+               {/*                </li>*/}
+               {/*                <li>*/}
+               {/*                    <div className={"decidedName"}>월 매출</div>*/}
+               {/*                    <div className={"originName"}>월 매출</div>*/}
+               {/*                </li>*/}
+               {/*                <li>*/}
+               {/*                    <div className={"decidedName"}>월 고객 수</div>*/}
+               {/*                    <div className={"originName"}>월 고객 수</div>*/}
+               {/*                </li>*/}
+               {/*                <li>*/}
+               {/*                    <div className={"decidedName"}>월 순이익</div>*/}
+               {/*                    <div className={"originName"}>월 순이익</div>*/}
+               {/*                </li>*/}
+
+               {/*            </ul>*/}
+               {/*            <button className={"_button"} id={"yes"}>승인</button>*/}
+               {/*            <button className={"_button"} id={"no"}>거절</button>*/}
+               {/*        </li>*/}
+               {/*    </ul>*/}
+               {/*</div>*/}
 
                <div className={"applicantList"}>
                    <div className={"wrapper_title"}>참여 신청자 명단</div>
@@ -207,7 +226,6 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
                </div>
 
                <div className={"taskStatistic"}>
-                   //참여자 명단, 제출자 점수
                    <div className={"wrapper_title"}>태스크 통계</div>
                    <div className={"lightgray_wrapper"}>
                        <div className={"submitFiles"}>제출된 파일 수 : {rows.length}개</div>
@@ -244,6 +262,14 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
                                                     </Link>
                                               </TableCell>
                                             );
+                                        }else if(column.id =="name"){
+                                          return (
+                                              <TableCell key={column.id} align='center'
+                                                  style={{fontSize: '14px', fontWeight: 'normal', color:'black' }}>
+                                                    <Link to ="/admin/presenterDetail">
+                                                        {column.format && typeof value === 'number' ? column.format(value) : value}
+                                                    </Link>
+                                              </TableCell>);
                                         }else{
                                             return (
                                               <TableCell key={column.id} align='center'

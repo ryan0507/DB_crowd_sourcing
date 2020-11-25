@@ -243,11 +243,13 @@ function Admin_taskAdd(){
               id: typeCount,
               types: _list,
           };
-          setCount(count + 1);
+          setTypeCount(typeCount + 1);
           let l : TypeList[] = Object.assign([], dataTypeList);
           l.push(content);
           setDataTypeList(l);
           e.preventDefault();
+          setList([]);
+          setCount(1);
       }
 
    return(
@@ -359,7 +361,7 @@ function Admin_taskAdd(){
                        <ul className={"datatype_list"}>
                            {dataTypeList.map((item) =>{
                                return(
-                                   <li className={"dataTT"}>
+                                   <li className={"dataVertical"}>
                                        <div className={"datatypeID"}>ID : {item.id}</div>
                                         <ul className={"value_list"}>
                                        {item.types.map((type) =>{
@@ -379,7 +381,7 @@ function Admin_taskAdd(){
                            <ul className={"datatype_list"}>
                                {dataTypeList.map((item) =>{
                                    return(
-                                       <li>
+                                       <li className={"dataVertical"}>
                                            <div className={"datatypeID"}>ID : {item.id}</div>
                                             <ul className={"value_list"}>
                                            {item.types.map((type) =>{
@@ -394,7 +396,7 @@ function Admin_taskAdd(){
                                        </li>
                                    );
                                })}
-                       </ul>
+                            </ul>
 
                            <div className={"valueList"}>
                                {valueList.map((item)=>{
@@ -413,12 +415,12 @@ function Admin_taskAdd(){
                                   }}
                                 />
                               <form className="input" onClick={e => handleSubmit(e)}>
-                                  <button type="submit">추가</button>
+                                  <button className={"short"} type="submit">추가</button>
                               </form>
                           </div>
                       <div className={"datatypeList"}><ul className={"decimalList"}>{datatypeList}</ul></div>
                        <form className="input" onClick={e => handleTypeSubmit(e)}>
-                          <button type="submit">원본 데이터타입 추가</button>
+                          <button className={"long"} type="submit">원본 데이터타입 추가</button>
                       </form>
 
                        </div>

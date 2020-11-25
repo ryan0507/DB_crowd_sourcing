@@ -6,6 +6,7 @@ axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
 
 interface Task{
+    TaskID: string;
     Name : string;
     Description: string;
 }
@@ -32,7 +33,7 @@ const Admin_main = (props : RouteComponentProps<{}>,)=>{
                return(
                    <ul className={"task_list"}>
                        <li>
-                           <Link to = {`/admin/taskinfo/2`}>
+                           <Link to = {`/admin/taskinfo/${item.TaskID}`}>
                                <div className="content_list">
                                    <div className={"taskName"}>{item.Name}</div>
                                    <div className={"applicant"}>새로운 신청자 1명</div>
