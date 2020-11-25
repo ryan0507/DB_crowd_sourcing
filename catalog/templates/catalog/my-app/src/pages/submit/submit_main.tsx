@@ -4,6 +4,7 @@ import React from 'react';
 function submit_main(){
    return(
        <div className="submit_main">
+           <div className="wrapper">
            <div className="Title">태스크 목록</div>
            <ul className={"task_list"}>
                <li>
@@ -16,6 +17,7 @@ function submit_main(){
                     </Link>
                </li>
            </ul>
+       </div>
        </div>
    );
 }

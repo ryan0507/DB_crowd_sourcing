@@ -82,30 +82,32 @@ export default function Submit_taskCheck(){
     };
    return(
        <div className="submit_taskCheck">
-           <div className="Title">개인정보 이용동의서</div>
-           <Link to = "/submit/taskinfo" className="right_side_small">뒤로가기</Link>
-           <div className="formContent">
-               <div className={"task_name"}>
-                   <div className={"wrapper_title"}>개인정보 이용동의서</div>
-                   <div className={"lightgray_wrapper"}>
-                       <p>본인은 귀사에 이력서를 제출함에 따라 [개인정보 보호법] 제15조 및 제17조에 따라 아래의 내용으로 개인정보를 수집, 이용 및 제공하는데 동의합니다.</p>
-                       <p>□ 개인정보의 수집 및 이용에 관한 사항 </p>
-                       <p> - 수집하는 개인정보 항목 : 성명, 주소, 생년월일, 휴대전화 등 기본 정보</p>
-                       <p> - 개인정보의 이용 목적 : 데이터의 품질 관리 및 회원관리을 위해서 활용하며, 목적 외에 용도로는 사용하지 않습니다.</p>
-                       <p>□ 개인정보의 보관 및 이용 기간</p>
-                       <p>- 귀하의 개인정보를 다음과 같이 보관하며, 수집, 이용 및 제공목적이 달성된 경우 [개인정보 보호법] 제21조에 따라 처리합니다.</p>
+           <div className="wrapper">
+               <div className="Title">개인정보 이용동의서</div>
+               <Link to = "/submit/taskinfo" className="right_side_small">뒤로가기</Link>
+               <div className="formContent">
+                   <div className={"task_name"}>
+                       <div className={"wrapper_title"}>개인정보 이용동의서</div>
+                       <div className={"lightgray_wrapper"}>
+                           <p>본인은 귀사에 이력서를 제출함에 따라 [개인정보 보호법] 제15조 및 제17조에 따라 아래의 내용으로 개인정보를 수집, 이용 및 제공하는데 동의합니다.</p>
+                           <p>□ 개인정보의 수집 및 이용에 관한 사항 </p>
+                           <p> - 수집하는 개인정보 항목 : 성명, 주소, 생년월일, 휴대전화 등 기본 정보</p>
+                           <p> - 개인정보의 이용 목적 : 데이터의 품질 관리 및 회원관리을 위해서 활용하며, 목적 외에 용도로는 사용하지 않습니다.</p>
+                           <p>□ 개인정보의 보관 및 이용 기간</p>
+                           <p>- 귀하의 개인정보를 다음과 같이 보관하며, 수집, 이용 및 제공목적이 달성된 경우 [개인정보 보호법] 제21조에 따라 처리합니다.</p>
+                       </div>
+                   </div>
+
+                   <div className={"TaskParticipate"}>
+                       <div className={"wrapper_title"}>
+                           <Link to ="/submit/main" className="link-task-participate"><button className="task-participate">본인은 개인정보 수집 및 이용에 대하여 동의합니다.</button></Link>
+                       </div>
+
                    </div>
                </div>
 
-               <div className={"TaskParticipate"}>
-                   <div className={"wrapper_title"}>
-                       <Link to ="/submit/main" className="link-task-participate"><button className="task-participate">본인은 개인정보 수집 및 이용에 대하여 동의합니다.</button></Link>
-                   </div>
 
-               </div>
            </div>
-
-
        </div>
    );
 }

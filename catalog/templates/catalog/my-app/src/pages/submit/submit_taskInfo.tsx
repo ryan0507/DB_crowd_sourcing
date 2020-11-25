@@ -82,114 +82,116 @@ export default function Submit_taskInfo(){
     };
    return(
        <div className="submit_taskInfo">
-           <div className="Title">태스크 이름</div>
-           <Link to = "/submit/main" className="right_side_small">뒤로가기</Link>
-           <div className="formContent">
-               <div className={"TaskName"}>
-                   <div className={"wrapper_title"}>태스크 데이터 테이블 이름</div>
-                   <div className={"lightgray_wrapper"}>이름</div>
-               </div>
-               <div className={"TaskInfo"}>
-                   <div className={"wrapper_title"}>태스크 설명</div>
-                   <div className={"lightgray_wrapper"}>이 태스크는 이런 태스크입니다.</div>
-               </div>
-               <div className={"TaskPassStandard"}>
-                   <div className={"wrapper_title"}>태스크 PASS 기준</div>
-                   <div className={"lightgray_wrapper"}>패스 기준</div>
-               </div>
-               <div className={"MinUpload"}>
-                   <div className={"wrapper_title"}>최소 업로드 주기</div>
-                   <div className={"lightgray_wrapper"} >00일</div>
-               </div>
-               <div className={"TaskSchema"}>
-                   <div className={"wrapper_title"}>태스크 데이터 테이블 스키마</div>
-                   <ul className={"datatype_list"}>
-                       <li>
-                           <ul className={"value_list"}>
-                               <li>
-                                   <div className={"name"}>음식점 이름</div>
-                                   <div className={"type"}>(String)</div>
-                               </li>
-                               <li>
-                                   <div className={"name"}>월매출</div>
-                                   <div className={"type"}>(Int)</div>
-                               </li>
-                               <li>
-                                   <div className={"name"}>월 고객 수</div>
-                                   <div className={"type"}>(Int)</div>
-                               </li>
-                               <li>
-                                   <div className={"name"}>월 순이익</div>
-                                   <div className={"type"}>(Int)</div>
-                               </li>
-                               <li>
-                                   <div className={"name"}>직원 수</div>
-                                   <div className={"type"}>(Int)</div>
-                               </li>
-                           </ul>
-                       </li>
-                   </ul>
-
-               </div>
-               <div className={"originDataType"}>
-                   <div className={"wrapper_title"}>원본 데이터 타입</div>
-                   <ul className={"datatype_list"}>
-                       <li>
-                           <ul className={"value_list"}>
-                               <li>
-                                   <div className={"decidedName"}>음식점 이름</div>
-                                   <div className={"originName"}>음식점 이름</div>
-                               </li>
-                               <li>
-                                   <div className={"decidedName"}>월 매출</div>
-                                   <div className={"originName"}>월 매출</div>
-                               </li>
-                               <li>
-                                   <div className={"decidedName"}>월 고객 수</div>
-                                   <div className={"originName"}>월 고객 수</div>
-                               </li>
-                               <li>
-                                   <div className={"decidedName"}>월 순이익</div>
-                                   <div className={"originName"}>월 순이익</div>
-                               </li>
-                           </ul>
-
-                       </li>
-                   </ul>
-                   <ul className={"datatype_list"}>
-                       <li>
-                           <ul className={"value_list"}>
-                               <li>
-                                   <div className={"decidedName"}>음식점 이름</div>
-                                   <div className={"originName"}>음식점 이름</div>
-                               </li>
-                               <li>
-                                   <div className={"decidedName"}>월 매출</div>
-                                   <div className={"originName"}>월 매출</div>
-                               </li>
-                               <li>
-                                   <div className={"decidedName"}>월 고객 수</div>
-                                   <div className={"originName"}>월 고객 수</div>
-                               </li>
-                               <li>
-                                   <div className={"decidedName"}>월 순이익</div>
-                                   <div className={"originName"}>월 순이익</div>
-                               </li>
-                           </ul>
-
-                       </li>
-                   </ul>
-
-               </div>
-               <div className={"TaskParticipate"}>
-                   <div className={"wrapper_title"}>
-                       <Link to ="/submit/taskcheck" className="link-task-participate"><button className="task-participate">참여 신청하기</button></Link>
+           <div className="wrapper">
+               <div className="Title">태스크 이름</div>
+               <Link to = "/submit/main" className="right_side_small">뒤로가기</Link>
+               <div className="formContent">
+                   <div className={"TaskName"}>
+                       <div className={"wrapper_title"}>태스크 데이터 테이블 이름</div>
+                       <div className={"lightgray_wrapper"}>이름</div>
                    </div>
+                   <div className={"TaskInfo"}>
+                       <div className={"wrapper_title"}>태스크 설명</div>
+                       <div className={"lightgray_wrapper"}>이 태스크는 이런 태스크입니다.</div>
+                   </div>
+                   <div className={"TaskPassStandard"}>
+                       <div className={"wrapper_title"}>태스크 PASS 기준</div>
+                       <div className={"lightgray_wrapper"}>패스 기준</div>
+                   </div>
+                   <div className={"MinUpload"}>
+                       <div className={"wrapper_title"}>최소 업로드 주기</div>
+                       <div className={"lightgray_wrapper"} >00일</div>
+                   </div>
+                   <div className={"TaskSchema"}>
+                       <div className={"wrapper_title"}>태스크 데이터 테이블 스키마</div>
+                       <ul className={"datatype_list"}>
+                           <li>
+                               <ul className={"value_list"}>
+                                   <li>
+                                       <div className={"name"}>음식점 이름</div>
+                                       <div className={"type"}>(String)</div>
+                                   </li>
+                                   <li>
+                                       <div className={"name"}>월매출</div>
+                                       <div className={"type"}>(Int)</div>
+                                   </li>
+                                   <li>
+                                       <div className={"name"}>월 고객 수</div>
+                                       <div className={"type"}>(Int)</div>
+                                   </li>
+                                   <li>
+                                       <div className={"name"}>월 순이익</div>
+                                       <div className={"type"}>(Int)</div>
+                                   </li>
+                                   <li>
+                                       <div className={"name"}>직원 수</div>
+                                       <div className={"type"}>(Int)</div>
+                                   </li>
+                               </ul>
+                           </li>
+                       </ul>
 
+                   </div>
+                   <div className={"originDataType"}>
+                       <div className={"wrapper_title"}>원본 데이터 타입</div>
+                       <ul className={"datatype_list"}>
+                           <li>
+                               <ul className={"value_list"}>
+                                   <li>
+                                       <div className={"decidedName"}>음식점 이름</div>
+                                       <div className={"originName"}>음식점 이름</div>
+                                   </li>
+                                   <li>
+                                       <div className={"decidedName"}>월 매출</div>
+                                       <div className={"originName"}>월 매출</div>
+                                   </li>
+                                   <li>
+                                       <div className={"decidedName"}>월 고객 수</div>
+                                       <div className={"originName"}>월 고객 수</div>
+                                   </li>
+                                   <li>
+                                       <div className={"decidedName"}>월 순이익</div>
+                                       <div className={"originName"}>월 순이익</div>
+                                   </li>
+                               </ul>
+
+                           </li>
+                       </ul>
+                       <ul className={"datatype_list"}>
+                           <li>
+                               <ul className={"value_list"}>
+                                   <li>
+                                       <div className={"decidedName"}>음식점 이름</div>
+                                       <div className={"originName"}>음식점 이름</div>
+                                   </li>
+                                   <li>
+                                       <div className={"decidedName"}>월 매출</div>
+                                       <div className={"originName"}>월 매출</div>
+                                   </li>
+                                   <li>
+                                       <div className={"decidedName"}>월 고객 수</div>
+                                       <div className={"originName"}>월 고객 수</div>
+                                   </li>
+                                   <li>
+                                       <div className={"decidedName"}>월 순이익</div>
+                                       <div className={"originName"}>월 순이익</div>
+                                   </li>
+                               </ul>
+
+                           </li>
+                       </ul>
+
+                   </div>
+                   <div className={"TaskParticipate"}>
+                       <div className={"wrapper_title"}>
+                           <Link to ="/submit/taskcheck" className="link-task-participate"><button className="task-participate">참여 신청하기</button></Link>
+                       </div>
+
+                   </div>
                </div>
+
+
            </div>
-
-
        </div>
    );
 }

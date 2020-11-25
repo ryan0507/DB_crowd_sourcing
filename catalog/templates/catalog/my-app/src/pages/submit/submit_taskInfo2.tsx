@@ -89,6 +89,7 @@ export default function Submit_taskInfo2(){
     };
    return(
        <div className="submit_taskInfo2">
+           <div className="wrapper">
            <div className="Title">태스크 이름</div>
            <Link to = "/submit/main2" className="right_side_small">뒤로가기</Link>
            <div className="formContent">
@@ -194,8 +195,8 @@ export default function Submit_taskInfo2(){
                <div className={"taskStatistic"}>
                    <div className={"wrapper_title"}>태스크 통계</div>
                    <div className={"lightgray_wrapper"}>
-                       <div className={"submitFiles"}>제출된 파일 수 : {rows.length}개</div>
-                       <div className={"passFiles"}>Pass된 파일 수 : 0개</div>
+                       <div className={"submitFiles"}>제출(Pass)된 파일 수 : {rows.length}개</div>
+                       <div className={"passFiles"}>Pass된 튜플 수 : 0</div>
                        <div className={"passTuples"}>해당 태스크 평균 점수 : 10점</div>
                        <Paper className={classes.root}>
                           <TableContainer className={classes.container}>
@@ -265,7 +266,7 @@ export default function Submit_taskInfo2(){
 
            </div>
 
-
+           </div>
        </div>
    );
 }

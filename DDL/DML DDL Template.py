@@ -104,5 +104,3 @@ finally:
   # connection을 다 사용하면 반드시 connection 리소스를 닫는다.	
   dbconn.close();
 
-
-출처: https://nowonbun.tistory.com/678 [명월 일지]
