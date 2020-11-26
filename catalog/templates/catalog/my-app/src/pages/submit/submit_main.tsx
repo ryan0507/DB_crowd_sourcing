@@ -53,7 +53,7 @@ interface Task{
 const Submit_main = (props : RouteComponentProps<{}>,)=>{
     const[task, setTask] = useState<Task[]>([]);
     const getApi = async() =>{
-        await axios.get('http://127.0.0.1:8000/adminUI/ds/1/').then((r)=>{
+        await axios.get('http://127.0.0.1:8000/submitUI/').then((r)=>{
             let temp: Task[] = r.data;
             setTask(temp);
         })
