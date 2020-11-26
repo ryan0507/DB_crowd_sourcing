@@ -29,4 +29,5 @@ urlpatterns = [
     path("", include('catalog.urls')),
     path("adminUI/", include('adminUI.urls')),
     path("raterUI/", include('raterUI.urls')),
+    path("homeUI/", include('homeUI.urls')),
 ]

@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     "adminUI",
     "rest_framework",
     "corsheaders",
-    "raterUI"
+    "raterUI",
+    "homeUI",
 ]
 
 MIDDLEWARE = [
