@@ -9,7 +9,7 @@ interface MainData{
     TaskID: string;
     TaskName : string;
     FileName: string;
-    StartDate : Date;
+    SubmissionDate : Date;
 }
 
 const Rater_main = (props : RouteComponentProps<{}>,)=>{
@@ -35,7 +35,7 @@ const Rater_main = (props : RouteComponentProps<{}>,)=>{
                            <Link to={`/rater/fileDetail/${item.TaskID}`}>
                                <div className="content_list">
                                    <div className={"taskName"}>{item.TaskName}</div>
-                                   <div className={"startDate"}>{item.StartDate}</div>
+                                   <div className={"startDate"}>{item.SubmissionDate}</div>
                                    <div className={"fileName"}>{item.FileName}</div>
                                </div>
                            </Link>

@@ -12,10 +12,10 @@ def select(query, bufferd=True):
 
 def RaterMainView(request):
     result_lst = []
-    for row in select("""SELECT T.TASKID, T.NAME, P.FILENAME, P.STARTDATE
+    for row in select("""SELECT T.TASKID, T.NAME, P.FILENAME, P.SUBMISSIONDATE
                       FROM TASK AS T, ORIGINAL_DATA_TYPE AS O, PARSING_DATA AS P
                       WHERE P.ORIGINALTYPEID = O.ORIGINALTYPEID AND O.TASKID = T.TASKID"""):
-        tmp_dict = {"TaskID": row[0], "TaskName" : row[1], "FileName" : row[2], "StartDate" : row[3]}
+        tmp_dict = {"TaskID": row[0], "TaskName" : row[1], "FileName" : row[2], "SubmissionDate" : row[3]}
         result_lst.append(tmp_dict)
     return JsonResponse(result_lst, safe=False)
 
