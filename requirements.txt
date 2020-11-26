@@ -1,10 +1,10 @@
-asgiref==3.2.10
+asgiref @ file:///tmp/build/80754af9/asgiref_1602513567813/work
 certifi==2020.6.20
 Django @ file:///tmp/build/80754af9/django_1601563330930/work
-django-cors-headers==3.5.0
-djangorestframework==3.12.2
+django-cors-headers @ file:///home/conda/feedstock_root/build_artifacts/django-cors-headers_1593129968237/work
+djangorestframework @ file:///home/conda/feedstock_root/build_artifacts/djangorestframework_1601312268278/work
 mysql-connector==2.2.9
-mysqlclient @ file:///opt/concourse/worker/volumes/live/a33db24b-b839-4172-4944-c9d9a20ae0c9/volume/mysqlclient_1594308794192/work
+mysqlclient==2.0.1
 psycopg2 @ file:///opt/concourse/worker/volumes/live/f70b797f-1fea-4855-7694-330b8c27138c/volume/psycopg2_1594305349650/work
 pytz==2020.1
 sqlparse @ file:///tmp/build/80754af9/sqlparse_1602184451250/work
