@@ -19,3 +19,5 @@ def AdminMainView(request):
                     "Name": row[4], "Description": row[5]}
         result_lst.append(tmp_dict)
     return JsonResponse(result_lst, safe=False)
+
+print(list(select("SELECT * FROM TASK")))

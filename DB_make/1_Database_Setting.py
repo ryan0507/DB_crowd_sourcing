@@ -19,15 +19,15 @@ def execute(query, bufferd=True):
 
 
 tmp = []
-tmp.append("DROP TABLE PARTICIPATE_TASK;")
-tmp.append("DROP TABLE PARSING_DATA;")
-tmp.append("DROP TABLE ORIGINAL_DATA_TYPE;")
+# tmp.append("DROP TABLE PARTICIPATE_TASK;")
+# tmp.append("DROP TABLE PARSING_DATA;")
+# tmp.append("DROP TABLE ORIGINAL_DATA_TYPE;")
 tmp.append("DROP TABLE TASK;")
 tmp.append("DROP TABLE USER;")
-# tmp.append("DROP TABLE Rest_Rev_W;")
-# tmp.append("DROP TABLE Rest_Rev;")
-# tmp.append("DROP TABLE Float_pop;")
-# tmp.append("DROP TABLE Float_pop_W;")
+tmp.append("DROP TABLE Rest_Rev_W;")
+tmp.append("DROP TABLE Rest_Rev;")
+tmp.append("DROP TABLE Float_pop;")
+tmp.append("DROP TABLE Float_pop_W;")
 
 
 tmp.append(
@@ -84,7 +84,7 @@ EndDate            DATE,
 FileName           VARCHAR(100)       NOT NULL,
 NumberOfTuple      INT                NOT NULL,
 QuanAssessment     DECIMAL(6,4)       NOT NULL,
-QUalAssessment     DECIMAL(6,4),
+QualAssessment     DECIMAL(6,4),
 P_NP               VARCHAR(2)         NOT NULL    DEFAULT 'W',
 
 FOREIGN KEY (OriginalTypeID) REFERENCES ORIGINAL_DATA_TYPE(OriginalTypeID) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -113,7 +113,9 @@ CONSTRAINT domain_Pass CHECK (Pass = 'P' OR Pass = 'W')
 
 try:	
   for s in tmp:
+    print(s)
     execute(s)
+
 except Exception as e:	
   print(e);	
 finally:
