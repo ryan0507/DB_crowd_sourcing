@@ -14,7 +14,6 @@ import "./submit.css";
 function submit() {
   return (
       <Router>
-        <div className="submit">
             <body>
                 <div className="fixed-header">
                     <div className="container">
@@ -38,7 +37,6 @@ function submit() {
                     <Route exact path="/submit/changeinfo" component={Submit_changeInfo}/>
                 </Switch>
             </body>
-        </div>
       </Router>
   );
 }

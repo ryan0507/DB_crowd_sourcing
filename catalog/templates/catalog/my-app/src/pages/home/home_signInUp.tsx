@@ -1,15 +1,59 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { BrowserRouter as Router, Route, Link, Switch, NavLink, } from 'react-router-dom';
 
 import './home.css';
+import axios from "axios";
+
+axios.defaults.xsrfCookieName = "csrftoken";
+axios.defaults.xsrfHeaderName = "X-CSRFToken";
+
+interface User{
+    ID: string;
+    Password : string;
+}
 
 function Home_signInUp() {
+    const[user, setUser] = useState<User[]>([]);
+    const getApi = async() =>{
+        await axios.get('http://127.0.0.1:8000/homeUI/').then((r)=>{
+            let temp: User[] = r.data;
+            setUser(temp);
+        })
+    }
+
+    useEffect(()=>{
+        getApi()
+    },[])
+
+    const [id, setId] = useState('');
+    const [pw, setPw] = useState('');
+
     const [signIn, setSignIn] = useState(true);
      const shiftInputSignin = () => {
          setSignIn(true);
      }
      const shiftInputSignup = () => {
          setSignIn(false);
+     }
+     const onChangeID = (e:any) => {
+         setId(e.target.value);
+     }
+     const onChangePW = (e:any) => {
+         setPw(e.target.value);
+     }
+     const loginSuccess = () => {
+         let userNum = user.findIndex(i => i.ID === id);
+         if(userNum !== -1){
+             if(user[userNum].Password === pw){
+                 alert('회원');
+             }
+             else{
+                 alert('비회원');
+             }
+         }
+         else{
+             alert('비회원');
+         }
      }
   return (
       <div className = 'home'>
@@ -21,14 +65,14 @@ function Home_signInUp() {
               <div className='home__inputs'>
                   <div className={signIn ? "signin-inputs" : "signin-inputs hidden"}>
                       <div>
-                          <input type="text" placeholder="ID" className="login__input-ID"></input>
+                          <input type="text" placeholder="ID" className="login__input-ID" value={id} onChange={onChangeID}></input>
                       </div>
                       <div>
-                          <input type="password" placeholder="PASSWORD" className="login__input-PW"></input>
+                          <input type="password" placeholder="PASSWORD" className="login__input-PW" value={pw} onChange={onChangePW}></input>
                       </div>
                       <div className="submit__button">
                           <Link to ="/admin/main">
-                          <button className="login-submit">LOG IN</button></Link>
+                          <button className="login-submit" onClick={loginSuccess}>LOG IN</button></Link>
                       </div>
                       <div className="submit__button">
                           <Link to ="/submit/main">

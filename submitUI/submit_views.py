@@ -4,15 +4,13 @@ import mysql.connector
 dbconn = mysql.connector.connect(host = "34.64.198.135", user = "root", passwd = "111111", database = "DB_test")
 
 def select(query, bufferd=True):
-
   global dbconn;
   cursor = dbconn.cursor(buffered=bufferd);
   cursor.execute(query);
   return cursor;
 
 
-
-def AdminMainView(request):
+def SubmitMainView(request):
     result_lst = []
     for row in select("SELECT * FROM TASK"):
         tmp_dict = {"TaskID": row[0], "SubmissionPeriod": row[1], "TableName": row[2], "TaskSchema": row[3],

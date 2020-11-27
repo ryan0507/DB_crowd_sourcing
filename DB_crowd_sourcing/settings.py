@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     "adminUI",
     "rest_framework",
     "corsheaders",
-    "raterUI"
+    "raterUI",
+    "submitUI",
 ]
 
 MIDDLEWARE = [
@@ -93,18 +94,18 @@ WSGI_APPLICATION = "DB_crowd_sourcing.wsgi.application"
 #     }
 # }
 
-DATABASES = {
-    "default": {
-        #'ENGINE': 'django.db.backends.sqlite3',S
-        #'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": "DB_test",  # mysql
-        "USER": "root",  # root
-        "PASSWORD": "111111",
-        "HOST": "34.64.198.135",  # 공백으로 냅두면 default localhost
-        "PORT": "3306",  # 공백으로 냅두면 default 3306
-    }
-}
+# DATABASES = {
+#     "default": {
+#         # 'ENGINE': 'django.db.backends.sqlite3',S
+#         # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#         "ENGINE": "django.db.backends.mysql",
+#         "NAME": "DB_test",  # mysql
+#         "USER": "root",  # root
+#         "PASSWORD": "111111",
+#         "HOST": "34.64.198.135",  # 공백으로 냅두면 default localhost
+#         "PORT": "3306",  # 공백으로 냅두면 default 3306
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
