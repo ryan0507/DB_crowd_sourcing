@@ -31,4 +31,5 @@ urlpatterns = [
     path("adminUI/", include('adminUI.urls')),
     path("raterUI/", include('raterUI.urls')),
     path("submitUI/", include('submitUI.urls')),
+    path("homeUI/", include('homeUI.urls')),
 ]

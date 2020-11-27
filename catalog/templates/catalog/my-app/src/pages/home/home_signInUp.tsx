@@ -8,6 +8,7 @@ axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
 
 interface User{
+    MainID: string;
     ID: string;
     Password : string;
 }
@@ -28,7 +29,17 @@ function Home_signInUp() {
     const [id, setId] = useState('');
     const [pw, setPw] = useState('');
 
+    const [newId, setNewId] = useState('');
+    const [newPw, setNewPw] = useState('');
+    const [newRePw, setNewRePw] = useState('');
+    const [newName, setNewName] = useState('');
+    const [sex, setSex] = useState('');
+    const [newAddress, setNewAddress] = useState('');
+    const [type, setType]= useState('');
+    const [newBirth, setNewBirth] = useState('');
+
     const [signIn, setSignIn] = useState(true);
+
      const shiftInputSignin = () => {
          setSignIn(true);
      }
@@ -41,11 +52,52 @@ function Home_signInUp() {
      const onChangePW = (e:any) => {
          setPw(e.target.value);
      }
+     const signUpID = (e:any) => {
+         setNewId(e.target.value);
+    }
+    const signUpPW = (e:any) => {
+         setNewPw(e.target.value);
+    }
+    const signUpRePW = (e:any) => {
+         setNewRePw(e.target.value);
+    }
+    const signUpName = (e:any) => {
+         setNewName(e.target.value);
+    }
+    const setMale = () => {
+         setSex('M');
+    }
+    const setFemale = () => {
+         setSex('F');
+    }
+    const setSubmit = () => {
+         setType('s');
+    }
+    const setRater = () => {
+         setType('r');
+    }
+    const signUpAddress = (e:any) => {
+         setNewAddress(e.target.value);
+    }
+    const signUpBirth = (e:any) => {
+         setNewBirth(e.target.value);
+    }
      const loginSuccess = () => {
          let userNum = user.findIndex(i => i.ID === id);
          if(userNum !== -1){
              if(user[userNum].Password === pw){
-                 alert('회원');
+                 if(user[userNum].MainID.includes('ad')){
+                     alert('관리자');
+                     window.location.replace('/admin/main');
+                 }
+                 if(user[userNum].MainID.includes('su')){
+                     alert('제출자');
+                     window.location.replace('/submit/main');
+                 }
+                 if(user[userNum].MainID.includes('as')){
+                     alert('평가자');
+                     window.location.replace('/rater/main');
+                 }
              }
              else{
                  alert('비회원');
@@ -71,8 +123,7 @@ function Home_signInUp() {
                           <input type="password" placeholder="PASSWORD" className="login__input-PW" value={pw} onChange={onChangePW}></input>
                       </div>
                       <div className="submit__button">
-                          <Link to ="/admin/main">
-                          <button className="login-submit" onClick={loginSuccess}>LOG IN</button></Link>
+                          <button className="login-submit" onClick={loginSuccess}>LOG IN</button>
                       </div>
                       <div className="submit__button">
                           <Link to ="/submit/main">
@@ -88,47 +139,43 @@ function Home_signInUp() {
                       <div className="signup-input__title">
                           ID
                       </div>
-                      <input type="text" className="signup__input1"></input>
+                      <input type="text" className="signup__input1" onChange={signUpID} value={newId}></input>
                       <div className="signup-input__title">
                           Password
                       </div>
-                      <input type="password" className="signup__input1"></input>
+                      <input type="password" className="signup__input1" onChange={signUpPW} value={newPw}></input>
                       <div className="signup-input__title">
                           Repeat Password
                       </div>
-                      <input type="password" className="signup__input1"></input>
+                      <input type="password" className="signup__input1" onChange={signUpRePW} value={newRePw}></input>
                       <div className="signup-input__title">
                           Name
                       </div>
-                      <input type="text" className="signup__input1"></input>
+                      <input type="text" className="signup__input1" onChange={signUpName} value={newName}></input>
                       <div className="signup-input__title">
                           Sex
                       </div>
                       <div className="signup__input2">
-                          <div id='select__male' className="select__male white" >Male</div>
-                          <div id='select__female' className="select__female white" >Female</div>
+                          <div id='select__male' className={sex === 'M' ? "select__male blue" : "select__male white"} onClick={setMale} >Male</div>
+                          <div id='select__female' className={sex === 'F' ? "select__female blue" : "select__female white"} onClick = {setFemale}>Female</div>
                       </div>
                       <div className="signup-input__title">
                           Address
                       </div>
-                      <input type="text" className="signup__input1"></input>
+                      <input type="text" className="signup__input1" onChange={signUpAddress} value={newAddress}></input>
                       <div className="signup-input__title">
                           Birth
                       </div>
-                      <input type="date" className="select__birth"></input>
+                      <input type="date" className="select__birth" onChange={signUpBirth}></input>
                       <div className="signup-input__title">
                           Phone number
                       </div>
                       <div className="phone-number">
-                          <input type="number" className="signup__input3"></input>
-                          <span className="phone">-</span>
-                          <input type="number" className="signup__input3"></input>
-                          <span className="phone">-</span>
-                          <input type="number" className="signup__input3"></input>
+                          <input placeholder="- 생략하고 적어주세요."type="text" className="signup__input1"></input>
                       </div>
                       <div className="type__select">
-                          <div className="type-select1 white" >제출자</div>
-                          <div className="type-select2 white" >평가자</div>
+                          <div className={type==='s' ? "type-select1 blue" : "type-select1 white"} onClick={setSubmit} >제출자</div>
+                          <div className={type==='r' ? "type-select2 blue" : "type-select2 white"} onClick={setRater}>평가자</div>
                       </div>
                       <div className="submit__button">
                           <Link to ="/">

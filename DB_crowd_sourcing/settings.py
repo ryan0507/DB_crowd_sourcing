@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "raterUI",
     "submitUI",
+    "homeUI",
 ]
 
 MIDDLEWARE = [

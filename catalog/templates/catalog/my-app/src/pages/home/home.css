@@ -167,7 +167,7 @@ input::placeholder {
 .phone-number .phone{
     float: left;
     line-height: 46px;
-    margin: 0 10px 0 10px;
+    margin: 0 0 0 0px;
 }
 .phone-number input[type="number"]{
     float: left;
@@ -181,9 +181,6 @@ input::placeholder {
     font: normal normal 800 20px Apple SD Gothic Neo;
     letter-spacing: 0px;
     color: #A7A7A7;
-}
-.phone-number{
-    margin-left :4%;
 }
 .phone {
     text-align: left;
