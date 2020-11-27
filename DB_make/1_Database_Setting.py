@@ -22,12 +22,12 @@ tmp = []
 # tmp.append("DROP TABLE PARTICIPATE_TASK;")
 # tmp.append("DROP TABLE PARSING_DATA;")
 # tmp.append("DROP TABLE ORIGINAL_DATA_TYPE;")
-tmp.append("DROP TABLE TASK;")
-tmp.append("DROP TABLE USER;")
-tmp.append("DROP TABLE Rest_Rev_W;")
-tmp.append("DROP TABLE Rest_Rev;")
-tmp.append("DROP TABLE Float_pop;")
-tmp.append("DROP TABLE Float_pop_W;")
+# tmp.append("DROP TABLE TASK;")
+# tmp.append("DROP TABLE USER;")
+# tmp.append("DROP TABLE Rest_Rev_W;")
+# tmp.append("DROP TABLE Rest_Rev;")
+# tmp.append("DROP TABLE Float_pop;")
+# tmp.append("DROP TABLE Float_pop_W;")
 
 
 tmp.append(
@@ -47,19 +47,19 @@ PRIMARY KEY(MainID),
 UNIQUE(ID)
 );
 """)
-tmp.append(
-"""
-CREATE TABLE TASK(
-TaskID               INT                AUTO_INCREMENT PRIMARY KEY,
-SubmissionPeriod     INT                NOT NULL,
-TableName            VARCHAR(40)        NOT NULL,
-TaskSchema           TEXT               NOT NULL,
-Name                 VARCHAR(40)        NOT NULL,
-Description          MEDIUMTEXT         NOT NULL,
-TaskThreshold        TEXT               NOT NULL,
-UNIQUE(TableName)
-);
-""")
+# tmp.append(
+# """
+# CREATE TABLE TASK(
+# TaskID               INT                AUTO_INCREMENT PRIMARY KEY,
+# SubmissionPeriod     INT                NOT NULL,
+# TableName            VARCHAR(40)        NOT NULL,
+# TaskSchema           TEXT               NOT NULL,
+# Name                 VARCHAR(40)        NOT NULL,
+# Description          MEDIUMTEXT         NOT NULL,
+# TaskThreshold        TEXT               NOT NULL,
+# UNIQUE(TableName)
+# );
+# """)
 tmp.append(
 """
 CREATE TABLE ORIGINAL_DATA_TYPE(
