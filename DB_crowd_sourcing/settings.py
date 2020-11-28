@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
-import os
+import os,datetime
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -44,13 +44,31 @@ INSTALLED_APPS = [
     "submitUI",
     "homeUI",
 ]
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
+}
+
+JWT_AUTH = {
+    'JWT_SECRET_KEY': SECRET_KEY,
+    'JWT_ALGORITHM': 'HS256',
+    'JWT_ALLOW_REFRESH': True,
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7),
+    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=28),
+}
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
+    # "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -59,8 +77,11 @@ MIDDLEWARE = [
 CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ORIGIN_WHITELIST = (
-    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    # 'localhost:3000'
 )
+SESSION_COOKIE_HTTPONLY = False
+
 
 ROOT_URLCONF = "DB_crowd_sourcing.urls"
 
@@ -95,18 +116,18 @@ WSGI_APPLICATION = "DB_crowd_sourcing.wsgi.application"
 #     }
 # }
 
-# DATABASES = {
-#     "default": {
-#         # 'ENGINE': 'django.db.backends.sqlite3',S
-#         # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#         "ENGINE": "django.db.backends.mysql",
-#         "NAME": "DB_test",  # mysql
-#         "USER": "root",  # root
-#         "PASSWORD": "111111",
-#         "HOST": "34.64.198.135",  # 공백으로 냅두면 default localhost
-#         "PORT": "3306",  # 공백으로 냅두면 default 3306
-#     }
-# }
+DATABASES = {
+    "default": {
+        # 'ENGINE': 'django.db.backends.sqlite3',S
+        # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "DB_test",  # mysql
+        "USER": "root",  # root
+        "PASSWORD": "111111",
+        "HOST": "34.64.198.135",  # 공백으로 냅두면 default localhost
+        "PORT": "3306",  # 공백으로 냅두면 default 3306
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
