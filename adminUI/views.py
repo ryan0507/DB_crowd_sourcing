@@ -136,11 +136,11 @@ def UserListView(request):
         tmp_dict["age"] = age
         if tmp_dict["MainID"][:2] == "su":
             tmp_dict["role"] = "submitter"
-            tmp_dict["MainID"] = tmp_dict["MainID"][2:]
+            tmp_dict["MainID"] = tmp_dict["MainID"][3:]
             result_lst.append(tmp_dict)
         elif tmp_dict["MainID"][:2] == "as":
             tmp_dict["role"] = "assessor"
-            tmp_dict["MainID"] = tmp_dict["MainID"][2:]
+            tmp_dict["MainID"] = tmp_dict["MainID"][3:]
             result_lst.append(tmp_dict)
 
     return JsonResponse(result_lst, safe=False)
