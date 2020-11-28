@@ -18,7 +18,7 @@ def selectDetail(query, thisID, buffered=True):
     cursor = dbconn.cursor(buffered=buffered);
     cursor.execute(query, thisID)
     result = cursor.fetchall()
-    print("result : ", result)
+    #print("result : ", result)
     return result;
 
 def merge(query, values, buffered=True):
@@ -53,7 +53,7 @@ def TaskAddView(request):
         value_lst.append(val_dict)
         return JsonResponse(value_lst, safe=False)
     else:
-        print("No data")
+        #print("No data")
         return JsonResponse({})
 
 def TaskInfoView(request, infoID):
@@ -69,10 +69,10 @@ def TaskInfoView(request, infoID):
 
     for info in selectDetail(sql, list_arg):
         info_dict = {"TaskID": info[0], "Name": info[1], "Description": info[2]}
-        print(info_dict)
+        #print(info_dict)
         info_lst.append(info_dict)
 
-    return JsonResponse(info_lst, safe=False)
+    return JsonResponse(info_dict, safe=False)
 
 def FileDetailView(request, infoID, fileID):
 
@@ -84,14 +84,14 @@ def FileDetailView(request, infoID, fileID):
     list_arg = []
     list_arg.append(infoID)
     list_arg.append(fileID)
-    print("list_arg : ", list_arg)
+    #print("list_arg : ", list_arg)
 
     for file in selectDetail(sql, list_arg):
-        info_dict = {"OriginalTypeID": file[0], "TaskID": file[1], "OriginSchema": file[2]}
-        print(info_dict)
-        file_lst.append(info_dict)
+        file_dict = {"OriginalTypeID": file[0], "TaskID": file[1], "OriginSchema": file[2]}
+        #print(file_dict)
+        file_lst.append(file_dict)
 
-    return JsonResponse(file_lst, safe=False)
+    return JsonResponse(file_dict, safe=False)
 
 def DataTypeAddView(request, infoID):
 
@@ -105,7 +105,7 @@ def DataTypeAddView(request, infoID):
         value_lst.append(val_dict)
         return JsonResponse(value_lst, safe=False)
     else:
-        print("No data")
+        #print("No data")
         return JsonResponse({})
 
 def TableSchemaAddView(request, infoID):
@@ -120,7 +120,7 @@ def TableSchemaAddView(request, infoID):
         value_lst.append(val_dict)
         return JsonResponse(value_lst, safe=False)
     else:
-        print("No data")
+        #print("No data")
         return JsonResponse({})
 
 def UserListView(request):
@@ -145,7 +145,7 @@ def UserListView(request):
 
 def PresenterDetailView(request, su_ID):
 
-    print("ID: ", su_ID)
+    #print("ID: ", su_ID)
     pre_lst = []
 
     sql = """SELECT SubmissionID, SubmissionDate, StartDate, FileName, P_NP 
@@ -155,17 +155,17 @@ def PresenterDetailView(request, su_ID):
     su_ID = "su " + str(su_ID)
     list_arg = []
     list_arg.append(su_ID)
-    print("list_arg: ", list_arg)
+    #print("list_arg: ", list_arg)
 
     for row in selectDetail(sql, list_arg):
         pre_dict = {"SubmissionID": row[0], "SubmissionDate": row[1], "StartDate": row[2],
                     "FileName": row[3], "P_NP": row[4]}
         pre_lst.append(pre_dict)
-    return JsonResponse(pre_lst, safe=False)
+    return JsonResponse(pre_dict, safe=False)
 
 def EstimatorDetailView(request, as_ID):
 
-    print("ID: ", as_ID)
+    #print("ID: ", as_ID)
     est_lst = []
 
     sql = """SELECT SubmissionID, FileName, P_NP
@@ -175,10 +175,9 @@ def EstimatorDetailView(request, as_ID):
     as_ID = "as " + str(as_ID)
     list_arg = []
     list_arg.append(as_ID)
-    print("list_arg: ", list_arg)
+    #print("list_arg: ", list_arg)
 
     for row in selectDetail(sql, list_arg):
-        print("in")
         est_dict = {"SubmissionID": row[0], "SubmissionDate": row[1], "P_NP": row[2]}
         est_lst.append(est_dict)
-    return JsonResponse(est_lst, safe=False)
+    return JsonResponse(est_dict, safe=False)
