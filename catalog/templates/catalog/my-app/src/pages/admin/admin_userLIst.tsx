@@ -8,6 +8,7 @@ import { RouteComponentProps, BrowserRouter as Router, Route,Link } from 'react-
 
 axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
+// npm install @types/js-cookie
 
 interface User{
     MainID : string,

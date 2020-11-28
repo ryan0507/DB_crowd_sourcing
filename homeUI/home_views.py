@@ -1,7 +1,14 @@
-from django.shortcuts import render, get_object_or_404
-from django.http import JsonResponse
+import json
+from django.shortcuts import render, redirect
+from django.http import HttpResponse, JsonResponse
 import mysql.connector
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
+
 dbconn = mysql.connector.connect(host = "34.64.198.135", user = "root", passwd = "111111", database = "DB_test")
+
+
 
 def select(query, bufferd=True):
   global dbconn;
@@ -9,72 +16,36 @@ def select(query, bufferd=True):
   cursor.execute(query);
   return cursor;
 
+def give_sessionID(request):
+    request.session["d"] = 1
+    print("init",request.session.session_key)
+    return redirect("/")
 
-def HomeMainView(request):
-    result_lst = []
-    for row in select("""SELECT MAINID, ID, PASSWORD, NAME, GENDER, ADDRESS, DATEOFBIRTH, PHONENUMBER
-                      FROM USER"""):
-        tmp_dict = {"MainID": row[0], "ID" : row[1], "Password" : row[2], "Name" : row[3], "Gender" : row[4], "Address" : row[5], "DateOfBirth" : row[6], "PhoneNumber" : row[7]}
-        result_lst.append(tmp_dict)
-    return JsonResponse(result_lst, safe=False)
+@api_view(['GET'])
+@permission_classes((IsAuthenticated, ))
+@authentication_classes((JSONWebTokenAuthentication,))
+def Login(request):
+    print(request.session.session_key)
+    data = json.loads(request.body)
+    for i in select("SELECT MainID, ID, Name FROM USER WHERE ID = '{}' and Password = '{}'".format(data["ID"],data["Password"])):
+        request.session['MainID'] = i[0]
+        request.session['ID'] = i[1]
+        request.session['Name'] = i[2]
 
+        return JsonResponse({"MainID": i[0], "ID": i[1], "Name": i[2]})
+    request.session['MainID'] = "-1"
+    request.session['ID'] = "-1"
+    request.session['Name'] = "-1"
+    return JsonResponse({"MainID": "-1", "ID": "-1", "Name": "-1"}) # post에서 response에 status넣으면 안돼요!!
 
-# from django.shortcuts import render, get_object_or_404
-#
-# # Create your views here.
-#
-# from rest_framework.response import Response
-# from rest_framework.views import APIView
-# from rest_framework import generics
-# from .serializers import *
-#
-# ## [BASIC] Views ##
-# class TaskDetailView(APIView):
-#     def get_object(self, pk):
-#         return get_object_or_404(Task, pk=pk)
-#     def get(self, request, pk, format=None):
-#         task = self.get_object(pk)
-#         serializer = TaskSerializer(task)
-#         return Response(serializer.data)
-#
-# class UserListView(APIView):
-#     def get(self, request):
-#         queryset = User.objects.all()
-#         serializer = UserSerializer(queryset, many=True)
-#         return Response(serializer.data)
-#
-# class UserDetailView(APIView):
-#     def get_object(self, pk):
-#         return get_object_or_404(User, pk=pk)
-#     def get(self, request, pk, format=None):
-#         user = self.get_object(pk)
-#         serializer = UserSerializer(user)
-#         return Response(serializer.data)
-#
-# class OriginalDataTypeView(APIView):
-#     def get(self, request):
-#         queryset = Original_Data_Type.objects.all()
-#         serializer = OriginalDataTypeSerializer(queryset, many=True)
-#         return Response(serializer.data)
-#
-# class ParsingDataView(APIView):
-#     def get(self, request):
-#         queryset = Parsing_Data.objects.all()
-#         serializer = ParsingDataSerializer(queryset, many=True)
-#         return Response(serializer.data)
-#
-# class ParticipateTaskDetailView(APIView):
-#     def get_object(self, pk):
-#         return get_object_or_404(Participate_Task, pk=pk)
-#     def get(self, request, pk, format=None):
-#         participate_task = self.get_object(pk)
-#         serializer = ParticipateTaskSerializer(participate_task)
-#         return Response(serializer.data)
-#
-# ## [PAGE] Views ##
-#
-# class RaterMainView(APIView):
-#     def get(self, request):
-#         queryset = Parsing_Data.objects.all()
-#         serializer = RaterMainTaskSerializer(queryset, many=True)
-#         return Response(serializer.data)
+def GetUser(request):
+    print(request.session.session_key)
+    # return JsonResponse({"MainID": request.session['MainID'], "ID": request.session['ID'], "Name": request.session['Name']})
+    return JsonResponse({})
+
+def logout(request):
+    try:
+        del request.session['member_id']
+    except KeyError:
+        pass
+    return HttpResponse("You're logged out.")

@@ -11,7 +11,11 @@ import Submit_changeInfo from "./submit_changeInfo";
 
 import "./submit.css";
 
-function submit() {
+type GreetingsProps = {
+  name: string;
+};
+
+function submit({name}: GreetingsProps) {
   return (
       <Router>
             <body>
@@ -23,6 +27,7 @@ function submit() {
 
                             <a className="nr" href="/">Log out</a>
                             <a className="nr" href="/submit/changeinfo">개인정보 수정</a>
+                            <span className="nr" >안녕하세요 {name}님</span>
                         </nav>
                     </div>
                 </div>
@@ -42,3 +47,4 @@ function submit() {
 }
 
 export default submit;
+

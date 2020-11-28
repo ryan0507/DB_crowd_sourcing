@@ -48,19 +48,29 @@ interface Task{
     TaskID: string;
     Name : string;
     Description: string;
+    Participate : string;
 }
 
 const Submit_main = (props : RouteComponentProps<{}>,)=>{
     const[task, setTask] = useState<Task[]>([]);
     const getApi = async() =>{
-        await axios.get('http://127.0.0.1:8000/submitUI/').then((r)=>{
+        await axios.get('http://127.0.0.1:8000/submitUI/main1task').then((r)=>{
             let temp: Task[] = r.data;
             setTask(temp);
+        })
+    }
+    const getApi2 = async() =>{
+        await axios.get('http://127.0.0.1:8000/homeUI/getuser').then((r)=>{
+            // let temp: Task[] = r.data;
+            // setTask(temp);
         })
     }
 
     useEffect(()=>{
         getApi()
+    },[])
+    useEffect(()=>{
+        getApi2()
     },[])
 
    return(
@@ -73,7 +83,7 @@ const Submit_main = (props : RouteComponentProps<{}>,)=>{
                            <Link to = {`/submit/taskinfo/${item.TaskID}`}>
                                <div className="content_list">
                                    <div className={"taskName"}>{item.Name}</div>
-                                   <div className={"applicant"}>참여 신청 완료</div>
+                                   <div className={"applicant"}>{item.Participate ? "참여 신청 완료": ""}</div>
                                    <div className={"aboutTask"}>{item.Description}</div>
                                </div>
                             </Link>

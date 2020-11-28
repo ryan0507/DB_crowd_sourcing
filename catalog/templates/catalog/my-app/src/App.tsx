@@ -34,11 +34,15 @@ import rater_taskDetail from "./pages/rater/rater_taskDetail";
 
 import { BrowserRouter as Router, Route, Link, Switch, NavLink, } from 'react-router-dom';
 
+type GreetingsProps = {
+  name: string;
+};
+
 function App() {
   return (
             <Router>
                 <Switch>
-                    <Route exact={true} path="/" component={home_signInUp}/>
+                    <Route exact={true} path="/" component = {home_signInUp}/>
                     <Route exact path="/admin/main" component={admin}/>
                     <Route exact path="/admin/taskadd" component={admin}/>
                     <Route exact path="/admin/taskinfo/:task_id" component={admin}/>
