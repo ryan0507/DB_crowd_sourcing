@@ -47,19 +47,19 @@ PRIMARY KEY(MainID),
 UNIQUE(ID)
 );
 """)
-# tmp.append(
-# """
-# CREATE TABLE TASK(
-# TaskID               INT                AUTO_INCREMENT PRIMARY KEY,
-# SubmissionPeriod     INT                NOT NULL,
-# TableName            VARCHAR(40)        NOT NULL,
-# TaskSchema           TEXT               NOT NULL,
-# Name                 VARCHAR(40)        NOT NULL,
-# Description          MEDIUMTEXT         NOT NULL,
-# TaskThreshold        TEXT               NOT NULL,
-# UNIQUE(TableName)
-# );
-# """)
+tmp.append(
+"""
+CREATE TABLE TASK(
+TaskID               INT                AUTO_INCREMENT PRIMARY KEY,
+SubmissionPeriod     INT                NOT NULL,
+TableName            VARCHAR(40)        NOT NULL,
+TaskSchema           TEXT               NOT NULL,
+Name                 VARCHAR(40)        NOT NULL,
+Description          MEDIUMTEXT         NOT NULL,
+TaskThreshold        TEXT               NOT NULL,
+UNIQUE(TableName)
+);
+""")
 tmp.append(
 """
 CREATE TABLE ORIGINAL_DATA_TYPE(
@@ -111,13 +111,13 @@ CONSTRAINT domain_Pass CHECK (Pass = 'P' OR Pass = 'W')
 );
 """)
 
-try:	
+try:
   for s in tmp:
     print(s)
     execute(s)
 
-except Exception as e:	
-  print(e);	
+except Exception as e:
+  print(e);
 finally:
   dbconn.close();
 

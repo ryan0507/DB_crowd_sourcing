@@ -72,7 +72,7 @@ if (True):
   execute("""
     CREATE TABLE Rest_Rev(
     SubmissionID INT,
-    Name         VARCHAR(250),
+    Name         VARCHAR(50),
     Rev          FLOAT,
     Pop          INT,
     Pas           INT check (Pas = 0 or Pas = 1),
@@ -82,7 +82,7 @@ if (True):
   execute("""
       CREATE TABLE Rest_Rev_W(
       SubmissionID INT,
-      Name         VARCHAR(250),
+      Name         VARCHAR(50),
       Rev          FLOAT,
       Pop          INT,
       Pas           INT check (Pas = 0 or Pas = 1),
@@ -100,7 +100,7 @@ if (True):
   execute("""
     CREATE TABLE Float_pop(
     SubmissionID INT,
-    Loc          VARCHAR(250),
+    Loc          VARCHAR(50),
     Tem          FLOAT,
     Fpop         INT,
     Lpop           INT,
@@ -110,7 +110,7 @@ if (True):
   execute("""
     CREATE TABLE Float_pop_W(
     SubmissionID INT,
-    Loc          VARCHAR(250),
+    Loc          VARCHAR(50),
     Tem          FLOAT,
     Fpop         INT,
     Lpop           INT,
