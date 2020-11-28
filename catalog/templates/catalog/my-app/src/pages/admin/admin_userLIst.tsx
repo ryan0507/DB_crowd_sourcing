@@ -9,11 +9,16 @@ axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
 
 interface User{
-    ID : string;
-    Name : string;
-    DateOfBirth : string;
-    Gender : string;
-    PhoneNumber: string;
+    MainID : string,
+    ID : string,
+    Password : string,
+    Name : string,
+    Gender : string,
+    Address : string,
+    DateOfBirth : string,
+    PhoneNumber: string,
+    age : string,
+    role : string,
 }
 
 interface Column {
@@ -37,6 +42,7 @@ const columns: Column[] = [
 ];
 
 
+
 interface Data {
     ID: string;
     name: string;
@@ -56,9 +62,10 @@ function createData( ID: string, name: string, birth: string ,ages: string, sex:
 export default function Admin_userList() {
     const[user, setUser] = useState<User[]>([]);
     const getApi = async() =>{
-        await axios.get('http://127.0.0.1:8000/adminUI/').then((r)=>{
+        await axios.get('http://127.0.0.1:8000/adminUI/user').then((r)=>{
             let temp: User[] = r.data;
             setUser(temp);
+            console.log(r.data);
         })
     }
 
@@ -67,19 +74,23 @@ export default function Admin_userList() {
     },[]);
 
     const rows = [
-        createData('music_is_my_life', '박선종',  '98.05.07', '20대', '남', '제출자', '음식점', '01011111111'),
-        createData('Chaechae', '한채은',  '98.04.22', '20대', '여', '평가자', '', '01012345678'),
-        createData('Chaechae', '한채은',  '98.04.22', '20대', '여', '평가자', '', '01012345678'),
-        createData('Chaechae', '한채은',  '98.04.22', '20대', '여', '평가자', '', '01012345678'),
-        createData('Chaechae', '한채은',  '98.04.22', '20대', '여', '평가자', '', '01012345678'),
-        createData('Chaechae', '한채은',  '98.04.22', '20대', '여', '평가자', '', '01012345678'),
-        createData('Chaechae', '한채은',  '98.04.22', '20대', '여', '평가자', '', '01012345678'),
+        user.map((item)=>{
+            return(createData(item.ID, item.Name, item.DateOfBirth, item.age, item.Gender, item.role, '음식점', item.PhoneNumber))
+        })
+        // createData('music_is_my_life', '박선종',  '98.05.07', '20대', '남', '제출자', '음식점', '01011111111'),
+        // createData('Chaechae', '한채은',  '98.04.22', '20대', '여', '평가자', '', '01012345678'),
+        // createData('Chaechae', '한채은',  '98.04.22', '20대', '여', '평가자', '', '01012345678'),
+        // createData('Chaechae', '한채은',  '98.04.22', '20대', '여', '평가자', '', '01012345678'),
+        // createData('Chaechae', '한채은',  '98.04.22', '20대', '여', '평가자', '', '01012345678'),
+        // createData('Chaechae', '한채은',  '98.04.22', '20대', '여', '평가자', '', '01012345678'),
+        // createData('Chaechae', '한채은',  '98.04.22', '20대', '여', '평가자', '', '01012345678'),
     ];
 
   return (
       <div className={"userList"}>
       <div className="wrapper">
            <div className="Title">회원 List</div>
+
           <div className={"userTable"}>
            <MaterialTable
                title={""}

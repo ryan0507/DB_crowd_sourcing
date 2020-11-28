@@ -17,12 +17,9 @@ import Admin_tableSchema_add from "./admin_tableSchema_add";
 axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
 interface taskInfo{
-    TaskID : string;
-    SubmissionPeriod : number;
-    TableName : string;
-    TaskSchema : string;
-    Name : string;
-    Description: string;
+    TaskID : string,
+    Name : string,
+    Description: string,
 }
 
 interface Column {
@@ -128,10 +125,10 @@ const defaultTempValue: tempValue ={
 
 
 export default function Admin_taskInfo(props : RouteComponentProps<{task_id : string}>,){
-    const [info, setInfo] = useState<taskInfo>({TaskID : '', SubmissionPeriod: 0, TableName:'', TaskSchema: '', Name: '', Description: ''});
+    const [info, setInfo] = useState<taskInfo>({TaskID : '', Name: '', Description: ''});
     const getApi = async() =>{
         await axios.get(`http://127.0.0.1:8000/adminUI/${props.match.params.task_id}/`).then((r)=>{
-            let temp: taskInfo = r.data;
+            let temp: taskInfo = r.data[0];
             setInfo(temp);
         })
     }
@@ -234,6 +231,7 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
 
 
    return(
+       <div className={"taskInfo"}>
        <div className="wrapper">
            <div className="Title">{info.Name}</div>
            <Link to = "/admin/main" className="right_side_small">뒤로가기</Link>
@@ -250,7 +248,7 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
 
                <div className={"Submission_Period"}>
                    <div className={"wrapper_title"}>최소 업로드 주기</div>
-                   <div className={"lightgray_wrapper"}>{info.SubmissionPeriod} 일</div>
+                   <div className={"lightgray_wrapper"}> -- 일</div>
                </div>
 
 
@@ -258,7 +256,9 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
                    <div className={"wrapper_title"}>태스크 데이터 테이블 스키마</div>
                        <ul className={"dataTableSchema_list"}>
                            {valueList.map((item) =>{
-                               return(<li>{item.valueName}{item.valueType}</li>)
+                               return(<li>{item.valueName}
+                                   <div className={"valueType"}>{item.valueType}</div>
+                               </li>)
                            })}
                        </ul>
                </div>
@@ -486,6 +486,7 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
                    </div>
                </div>
            </div>
+       </div>
        </div>
    );
 }

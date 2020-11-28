@@ -338,7 +338,9 @@ function Admin_taskAdd(){
                    {toggleSchema ? (
                        <ul className={"dataTableSchema_list"}>
                            {valueList.map((item) =>{
-                               return(<li>{item.valueName}</li>)
+                                return(<li>{item.valueName}
+                                   <div className={"valueType"}>{item.valueType}</div>
+                               </li>)
                            })}
                        </ul>
                    ) : (
