@@ -83,7 +83,6 @@ export default function Admin_userList() {
     },[]);
 
     const row = createData(_user);
-
     const handleClick = (event :React.MouseEvent<Element, MouseEvent>, data : Data) =>{
 
         console.log(data)
@@ -94,6 +93,7 @@ export default function Admin_userList() {
         console.log(tempID)
         window.location.replace("/admin/estimatorDetail/");
     }
+
   return (
       <div className={"userList"}>
       <div className="wrapper">
@@ -123,7 +123,19 @@ export default function Admin_userList() {
                 {title: 'phoneNum', field: 'phoneNum', type:"numeric", hideFilterIcon: true, cellStyle: {textAlign:"center"}},
               ]}
                data={row}
-               onRowClick={((event, rowData) => handleClick)}
+               // onRowClick={((event, rowData) => handleClick)}
+               onRowClick={(event, rowData) => {
+                  // Get your id from rowData and use with link.
+                  // window.open(`mysite.com/product/${rowData.}`, "_blank")
+                  // event.stopPropagation();
+                   let tempID : string = ''
+                    _user.map((item)=>{
+                        // @ts-ignore
+                        if(item.ID === rowData.ID){tempID = item.MainID}
+                    })
+
+                    window.location.replace("/admin/estimatorDetail/"+tempID);
+               }}
               options={{
                 filtering: true,
                   filterRowStyle:{backgroundColor:'#F6F6F6'},
