@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 import mysql.connector
 import json
+from datetime import date
 dbconn = mysql.connector.connect(host = "34.64.198.135", user = "root", passwd = "111111", database = "DB_test")
 
 def select(query, bufferd=True):
@@ -125,11 +126,21 @@ def TableSchemaAddView(request, infoID):
 def UserListView(request):
 
     result_lst = []
+    today = date.today()
     sql = "SELECT * FROM USER"
     for row in select(sql):
         tmp_dict = {"MainID": row[0], "ID": row[1], "Password": row[2], "Name": row[3],
                     "Gender": row[4], "Address": row[5], "DateOfBirth": row[6], "PhoneNumber": row[7]}
+        age = today - tmp_dict["DateOfBirth"]
+        age = int(int(age.days) / 365)
+        tmp_dict["age"] = age
+        if tmp_dict["MainID"][:2] == "su":
+            tmp_dict["role"] = "submitter"
+        elif tmp_dict["MainID"][:2] == "as":
+            tmp_dict["role"] = "assessor"
+        else: tmp_dict["role"] = "administrator"
         result_lst.append(tmp_dict)
+
     return JsonResponse(result_lst, safe=False)
 
 def PresenterDetailView(request, su_ID):
