@@ -128,7 +128,7 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
     const [info, setInfo] = useState<taskInfo>({TaskID : '', Name: '', Description: ''});
     const getApi = async() =>{
         await axios.get(`http://127.0.0.1:8000/adminUI/${props.match.params.task_id}/`).then((r)=>{
-            let temp: taskInfo = r.data[0];
+            let temp: taskInfo = r.data;
             setInfo(temp);
         })
     }

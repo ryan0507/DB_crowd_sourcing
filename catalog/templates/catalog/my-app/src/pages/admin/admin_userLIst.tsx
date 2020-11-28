@@ -1,9 +1,10 @@
 // import React, { Fragment,forwardRef} from 'react';
-import { BrowserRouter as Router, Route,Link } from 'react-router-dom';
+// import { BrowserRouter as Router, Route,Link } from 'react-router-dom';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import MaterialTable from 'material-table';
 import React, {useEffect, useState} from 'react';
 import axios from "axios";
+import { RouteComponentProps, BrowserRouter as Router, Route,Link } from 'react-router-dom';
 
 axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
@@ -54,18 +55,26 @@ interface Data {
     phoneNum: string;
 }
 
-function createData( ID: string, name: string, birth: string ,ages: string, sex: string, role:string, joined:string, phoneNum:string): Data {
-  return { ID, name, birth, ages, sex, role, joined, phoneNum };
+function createData(user : User[]): Data[] {
+    let temp : Data[] = [];
+    user.map((item)=>{
+        temp.push({ID : item.ID, name: item.Name, birth: item.DateOfBirth, ages: item.DateOfBirth, sex: item.Gender, role:item.role, joined: '', phoneNum: item.PhoneNumber})
+    })
+  return temp;
 }
 
 
+
+
 export default function Admin_userList() {
-    const[user, setUser] = useState<User[]>([]);
+
+    const[_user, setUser] = useState<User[]>([]);
+
     const getApi = async() =>{
         await axios.get('http://127.0.0.1:8000/adminUI/user').then((r)=>{
             let temp: User[] = r.data;
             setUser(temp);
-            console.log(r.data);
+            // set(temp);
         })
     }
 
@@ -73,24 +82,22 @@ export default function Admin_userList() {
         getApi()
     },[]);
 
-    const rows = [
-        user.map((item)=>{
-            return(createData(item.ID, item.Name, item.DateOfBirth, item.age, item.Gender, item.role, '음식점', item.PhoneNumber))
-        })
-        // createData('music_is_my_life', '박선종',  '98.05.07', '20대', '남', '제출자', '음식점', '01011111111'),
-        // createData('Chaechae', '한채은',  '98.04.22', '20대', '여', '평가자', '', '01012345678'),
-        // createData('Chaechae', '한채은',  '98.04.22', '20대', '여', '평가자', '', '01012345678'),
-        // createData('Chaechae', '한채은',  '98.04.22', '20대', '여', '평가자', '', '01012345678'),
-        // createData('Chaechae', '한채은',  '98.04.22', '20대', '여', '평가자', '', '01012345678'),
-        // createData('Chaechae', '한채은',  '98.04.22', '20대', '여', '평가자', '', '01012345678'),
-        // createData('Chaechae', '한채은',  '98.04.22', '20대', '여', '평가자', '', '01012345678'),
-    ];
+    const row = createData(_user);
 
+    const handleClick = (event :React.MouseEvent<Element, MouseEvent>, data : Data) =>{
+
+        console.log(data)
+        let tempID : string = ''
+        _user.map((item)=>{
+            if(item.ID === data.ID){tempID = item.MainID.substring(3,)}
+        })
+        console.log(tempID)
+        window.location.replace("/admin/estimatorDetail/");
+    }
   return (
       <div className={"userList"}>
       <div className="wrapper">
            <div className="Title">회원 List</div>
-
           <div className={"userTable"}>
            <MaterialTable
                title={""}
@@ -105,17 +112,18 @@ export default function Admin_userList() {
                 {
                   title: 'sex',
                   field: 'sex',
-                  lookup: { '남': '남', '여': '여' }, hideFilterIcon: true, cellStyle: {textAlign:"center"}
+                  lookup: { 'M': '남', 'F': '여' }, hideFilterIcon: true, cellStyle: {textAlign:"center"}
                 },
                 {
                   title: 'role',
                   field: 'role',
-                  lookup: { '제출자': '제출자', '평가자': '평가자' }, hideFilterIcon: true, cellStyle: {textAlign:"center"}
+                  lookup: { 'submitter': '제출자', 'assessor': '평가자' }, hideFilterIcon: true, cellStyle: {textAlign:"center"}
                 },
                 { title: 'joined', field: 'joined', hideFilterIcon: true, cellStyle: {textAlign:"center"}},
                 {title: 'phoneNum', field: 'phoneNum', type:"numeric", hideFilterIcon: true, cellStyle: {textAlign:"center"}},
               ]}
-              data={rows}
+               data={row}
+               onRowClick={((event, rowData) => handleClick)}
               options={{
                 filtering: true,
                   filterRowStyle:{backgroundColor:'#F6F6F6'},

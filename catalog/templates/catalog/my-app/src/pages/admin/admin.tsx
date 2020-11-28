@@ -38,8 +38,8 @@ function admin() {
                     <Route exact path="/admin/datatypeadd" component={admin_datatype_add}/>
                     <Route exact path="/admin/datatypeadd_exist" component={admin_datatype_add_exist}/>
                     <Route exact path="/admin/userlist" component={admin_userList}/>
-                    <Route exact path="/admin/estimatorDetail" component={admin_estimatorDetail}/>
-                    <Route exact path="/admin/presenterDetail" component={admin_presenterDetail}/>
+                    <Route exact path="/admin/estimatorDetail/:ad_ID" component={admin_estimatorDetail}/>
+                    <Route exact path="/admin/presenterDetail/:su_ID" component={admin_presenterDetail}/>
                     <Route exact path="/admin/alterpw" component={admin_alterPassword}/>
                 </Switch>
             </body>
