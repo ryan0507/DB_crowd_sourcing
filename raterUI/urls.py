@@ -12,4 +12,6 @@ urlpatterns = [
     path('main2/', RaterMain2View),
     # [TaskDetail]
     path('taskDetail/<int:submissionID>/', RaterTaskDetailView),
+    # [FileDetail]
+    path('fileDetail/<int:submissionID>/', RaterFileDetailView),
 ]

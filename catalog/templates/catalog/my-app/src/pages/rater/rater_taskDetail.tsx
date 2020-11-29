@@ -22,16 +22,7 @@ interface taskDetail{
     SubmissionNumber : number,
     OriginSchemaMapping : string,
     OriginTypeID : number
-}
-
-
-interface Data {
-  name: string;
-  date: string;
-  time: string;
-  fileName: string;
-  pNp: string;
-  score: string;
+    QuanAssessment : number,
 }
 
 
@@ -131,7 +122,7 @@ export default function Rater_taskDetail(props : RouteComponentProps<{submission
 
                            </div>
                            <div className={"originDataType"}>
-                               <div className={"wrapper_title"}>선택된 원본 데이터 타입 - ID : {item.OriginTypeID}, OriginSchema : {item.OriginSchema}</div>
+                               <div className={"wrapper_title"}>선택된 원본 데이터 타입 - ID : {item.OriginTypeID}[{item.OriginSchema}]</div>
                                <ul className={"datatype_list"}>
                                    <ul className={"value_list"}>
                                        {originSchemaList}
@@ -139,12 +130,16 @@ export default function Rater_taskDetail(props : RouteComponentProps<{submission
                                </ul>
 
                            </div>
+                           <div className={"quanScore"}>
+                               <div className={"wrapper_title"}>정량평가 점수</div>
+                               <div className={"lightgray_wrapper"}>{item.QuanAssessment}</div>
+                           </div>
                            <div className={"score"}>
-                               <div className={"wrapper_title"}>점수</div>
+                               <div className={"wrapper_title"}>정성평가 점수</div>
                                <div className={"lightgray_wrapper"}>{item.QualAssessment}</div>
                            </div>
                            <div className={"passed"}>
-                               <div className={"wrapper_title"}>[평가자] P/NP</div>
+                               <div className={"wrapper_title"}>P/NP</div>
                                <div className={"lightgray_wrapper"}>{isPass ? "PASS" : "NONPASS"}</div>
                            </div>
                        </div>

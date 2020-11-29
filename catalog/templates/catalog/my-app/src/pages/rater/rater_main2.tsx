@@ -36,7 +36,7 @@ const Rater_main2 = (props : RouteComponentProps<{}>,)=>{
                            <Link to = {`/rater/taskDetail/${item.SubmissionID}`}>
                                <div className="content_list">
                                    <div className={"taskName"}>{item.TaskName}</div>
-                                   <div className={"doneDate"}>[전체] {isPass ? "PASS" : "NONPASS"}</div>
+                                   <div className={"doneDate"}>{isPass ? "PASS" : "NONPASS"}</div>
                                    <div className={"fileName"}>{item.FileName}</div>
                                </div>
                             </Link>
