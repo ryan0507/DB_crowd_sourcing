@@ -32,7 +32,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 //table schema add
 interface Task{
-    TaskID : string;
     Name : string;
     Description : string;
     TaskThreshold : string;
@@ -90,7 +89,6 @@ function Admin_taskAdd(){
     const [toggleSchema, setToggleSchema] = useState<boolean>(true);
     const [toggleData, setToggleData] = useState<boolean>(true);
     const initialTask = {
-        TaskID : "",
         Name : "",
         Description :"",
         TaskThreshold : '',
@@ -237,7 +235,6 @@ function Admin_taskAdd(){
     const handleSubmitDD = ( event : React.FormEvent<HTMLFormElement> ) =>{
         event.preventDefault();
         axios.post('http://127.0.0.1:8000/adminUI/create/', {
-            TaskID : task.TaskID,
             Name : task.Name,
             Description :task.Description,
             TaskThreshold :'',
