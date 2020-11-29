@@ -241,9 +241,9 @@ function Admin_taskAdd(){
             Name : task.Name,
             Description :task.Description,
             TaskThreshold :'',
-            SubmissionPeriod : '0',
-            TableName : task.TableName,
-            TaskSchema : task.TaskSchema,
+            SubmissionPeriod : task.SubmissionPeriod,
+            TableName : 'task.TableName',
+            TaskSchema : 'task.TaskSchema',
         }).then((r) => {
         console.log(r);
         console.log(r.data);
@@ -276,7 +276,7 @@ function Admin_taskAdd(){
                             className={"nameTask"}
                             placeholder="태스크 이름을 작성해주세요."
                             inputProps={{ 'aria-label': '태스크 이름' }}
-                            onChange={e=> handleInputChange('TaskID', e.target.value)}
+                            onChange={e=> handleInputChange('Name', e.target.value)}
                           />
                </div>
 
