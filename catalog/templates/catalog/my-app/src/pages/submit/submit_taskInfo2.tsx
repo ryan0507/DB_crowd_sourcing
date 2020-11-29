@@ -92,6 +92,17 @@ function createData(pars : ParsingData): Data[] {
   return temp;
 }
 
+interface TaskForStat{
+    TaskID: string;
+    Name : string;
+    Description: string;
+    NSubmittedFile : string;
+    NpassedFile : string;
+    avgRate : string;
+}
+interface Score {
+    score : string;
+}
 
 export default function Submit_taskInfo2(props : RouteComponentProps<{task_id : string}>,){
     const[task, setTask] = useState<Task>({name : "Error", tablename : "Error", description: "Error", original_schema : [],
@@ -121,6 +132,29 @@ export default function Submit_taskInfo2(props : RouteComponentProps<{task_id : 
 
     const row = createData(parsing);
 
+    const[stat, setStat] = useState<TaskForStat>({"TaskID": "Error", "Name": "Error", "Description": "Error", "NSubmittedFile": "Error",
+                        "NpassedFile": "Error", "avgRate": "Error"});
+    const getApi3 = async() =>{
+        await axios.get(`http://127.0.0.1:8000/submitUI/taskinfo2_3/${props.match.params.task_id}/`).then((r)=>{
+            let temp: TaskForStat = r.data;
+            setStat(temp);
+        })
+    }
+    useEffect(()=>{
+        getApi3()
+    },[])
+
+    const[score, setScore] = useState<Score>({score: "0"});
+    const getApi4 = async() =>{
+        await axios.get(`http://127.0.0.1:8000/submitUI/taskinfo2_4/${props.match.params.task_id}/`).then((r)=>{
+            let temp: Score = r.data;
+            setScore(temp);
+        })
+    }
+
+    useEffect(()=>{
+        getApi4()
+    },[])
 
     return(
         <div className="submitTaskList">
@@ -144,6 +178,18 @@ export default function Submit_taskInfo2(props : RouteComponentProps<{task_id : 
                     <div className={"MinUpload"}>
                         <div className={"wrapper_title"}>최소 업로드 주기</div>
                         <div className={"lightgray_wrapper"} >{task.period}일</div>
+                    </div>
+                    <div className={"MinUpload"}>
+                        <div className={"wrapper_title"}>제출한 파일 수</div>
+                        <div className={"lightgray_wrapper"} >{stat.NSubmittedFile}개</div>
+                    </div>
+                    <div className={"MinUpload"}>
+                        <div className={"wrapper_title"}>Pass된 파일 수</div>
+                        <div className={"lightgray_wrapper"} >{stat.NpassedFile}개</div>
+                    </div>
+                     <div className={"MinUpload"}>
+                        <div className={"wrapper_title"}>평균 점수</div>
+                        <div className={"lightgray_wrapper"} >{score.score}</div>
                     </div>
                     <div className={"TaskSchema"}>
                         <div className={"wrapper_title"}>태스크 데이터 테이블 스키마</div>

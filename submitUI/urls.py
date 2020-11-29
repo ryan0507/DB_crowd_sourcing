@@ -11,5 +11,7 @@ urlpatterns = [
     path('gettask/',GetTask),
     path('jointask/',JoinTask),
     path('taskinfo2/<int:infoID>/', SubmitTaskInfo2),
-    path('taskinfo2_2/<int:infoID>/', SubmitTaskInfo2_2)
+    path('taskinfo2_2/<int:infoID>/', SubmitTaskInfo2_2),
+    path('taskinfo2_3/<int:infoID>/', SubmitTaskInfo2_3),
+    path('taskinfo2_4/<int:infoID>/', SubmitTaskInfo2_4)
 ]

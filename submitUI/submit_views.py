@@ -258,6 +258,57 @@ def SubmitTaskInfo2_2(request, infoID): # submit info
     finally:
         dbconn.close();
 
+def SubmitTaskInfo2_3(request, infoID):
+    try:
+        dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
+        result_lst = []
+        for i in select(dbconn,"""SELECT T.TaskID, T.Name, T.Description  FROM PARTICIPATE_TASK P, TASK T 
+        WHERE P.TaskID = T.TaskID and P.Pass = 'P' and P.SubmitterID = '{}' and T.TaskID ={}""".format(request.session['MainID'], infoID)):
+            tmp_dict = {"TaskID": "Error", "Name": "Error", "Description": "Error", "NSubmittedFile": "Error",
+                        "NpassedFile": "Error", "avgRate": "Error"}
+            tmp_dict["TaskID"], tmp_dict["Name"], tmp_dict["Description"] = i[0], i[1], i[2]
+            tmp_dict["NSubmittedFile"] = list(select(dbconn,"""
+            SELECT COUNT(*) FROM PARSING_DATA P, ORIGINAL_DATA_TYPE O, TASK T 
+            WHERE O.OriginalTypeID =  P.OriginalTypeID and O.TaskID = T.TaskID
+             and P.SubmitterID = '{}'and T.TaskID = {}""".format(request.session['MainID'], i[0])))[0]
+
+            tmp =  list(select(dbconn,"""SELECT COUNT(*) FROM PARSING_DATA P, ORIGINAL_DATA_TYPE O, TASK T 
+            WHERE O.OriginalTypeID =  P.OriginalTypeID and O.TaskID = T.TaskID
+             and P.SubmitterID = '{}' and P.P_NP = 'P'and T.TaskID = {}""".format(request.session['MainID'], i[0])))[0]
+
+            tmp_dict["NpassedFile"] = tmp[0]
+            print(tmp_dict)
+
+            tmp = list(select(dbconn, """SELECT AVG(QuanAssessment), AVG(QualAssessment) FROM PARSING_DATA P, ORIGINAL_DATA_TYPE O, TASK T 
+            WHERE O.OriginalTypeID =  P.OriginalTypeID and O.TaskID = T.TaskID
+            and P.SubmitterID = '{}' and T.TaskID = {} and P.P_NP != 'W'""".format(request.session['MainID'],i[0])))[0]
+
+
+            try:
+                tmp_dict["avgRate"] = round((tmp[0] + tmp[1]) / 2, 2)
+            except:
+                tmp_dict["avgRate"] = 0
+            result_lst.append(tmp_dict)
+        return JsonResponse(result_lst, safe=False)
+    except Exception as e:
+        return JsonResponse([], safe=False)
+    finally:
+        dbconn.close();
+
+def SubmitTaskInfo2_4(request, infoID):
+    try:
+        dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
+        rate = list(select(dbconn,"""SELECT AVG(QuanAssessment), AVG(QualAssessment) 
+        FROM PARSING_DATA P, ORIGINAL_DATA_TYPE AS O
+        WHERE P.SubmitterID = '{}' and P.P_NP != 'W' and O.ORIGINALTYPEID = P.ORIGINALTYPEID
+        AND TASKID = {}""".format(request.session['MainID'], infoID)))[0]
+        tmp_dict = {"score" : round((rate[0] + rate[1]) / 2, 2)}
+        return JsonResponse(tmp_dict)
+    except Exception as e:
+        return JsonResponse([], safe=False)
+    finally:
+        dbconn.close();
+
 
 
 
