@@ -64,10 +64,10 @@ def RaterMain2View(request):
                           FROM TASK AS T, ORIGINAL_DATA_TYPE AS O, PARSING_DATA AS P
                           WHERE P.ORIGINALTYPEID = O.ORIGINALTYPEID AND O.TASKID = T.TASKID AND NOT P.P_NP = 'W'
                          """):
-            tmp_dict = {"SubmissionID": row[0], "TaskName": row[1], "FileName": row[2], "PassNonpass": row[3],
+            tmp_dict = {"SubmissionID": row[0], "TaskName": row[1], "FileName": row[2], "P_NP": row[3],
                         "A" : request.session['MainID'], "B" : row[4]}
             if tmp_dict["A"] == tmp_dict["B"]:
-                tmp_dict = {"SubmissionID": row[0], "TaskName": row[1], "FileName": row[2], "SubmissionDate": row[3]}
+                tmp_dict = {"SubmissionID": row[0], "TaskName": row[1], "FileName": row[2], "P_NP": row[3]}
                 result_lst.append(tmp_dict)
         return JsonResponse(result_lst, safe=False)
 
@@ -84,7 +84,7 @@ def RaterTaskDetailView(request, submissionID):
                 P.ENDDATE, T.TABLENAME, T.TASKSCHEMA, O.ORIGINSCHEMA, P.QUALASSESSMENT, 
                 P.P_NP, T.NAME, P.SUBMISSIONNUMBER, O.MAPPING, O.ORIGINALTYPEID, P.QUANASSESSMENT, P.ASSESSORID
                 FROM TASK AS T, ORIGINAL_DATA_TYPE AS O, PARSING_DATA AS P
-                WHERE P.ORIGINALTYPEID = O.ORIGINALTYPEID AND O.TASKID = T.TASKID AND P.SUBMISSIONID = %s AND NOT P_NP = 'W'"""
+                WHERE P.ORIGINALTYPEID = O.ORIGINALTYPEID AND O.TASKID = T.TASKID AND P.SUBMISSIONID = %s AND NOT P.P_NP = 'W'"""
         result_lst = []
         for row in selectDetail(dbconn, sql, list_arg):
             tmp_dict = {"SubmissionID": row[0], "TaskDescription": row[1], "TaskThreshold": row[2], "StartDate": row[3],

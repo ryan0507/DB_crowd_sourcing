@@ -9,7 +9,7 @@ interface Main2Data{
     SubmissionID: number;
     TaskName : string;
     FileName: string;
-    PassNonpass : string;
+    P_NP : string;
 }
 
 const Rater_main2 = (props : RouteComponentProps<{}>,)=>{
@@ -29,7 +29,7 @@ const Rater_main2 = (props : RouteComponentProps<{}>,)=>{
        <div className="wrapper">
            <div className="Title">평가 내역</div>
            {task.map((item)=> {
-               const isPass = item.PassNonpass === "P";
+               const isPass = item.P_NP === "P";
                return(
                    <ul className={"task_list"}>
                        <li>
