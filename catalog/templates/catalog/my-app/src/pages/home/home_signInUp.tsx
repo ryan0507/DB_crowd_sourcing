@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { BrowserRouter as Router, Route, Link, Switch, NavLink, } from 'react-router-dom';
+import {BrowserRouter as Router, Route, Link, Switch, NavLink, RouteComponentProps,} from 'react-router-dom';
 import VueCookies from 'vue-cookies';
 import './home.css';
 import axios from "axios";
@@ -8,13 +8,24 @@ axios.defaults.xsrfCookieName = 'csrftoken'
 axios.defaults.xsrfHeaderName = 'X-CSRFToken'
 axios.defaults.withCredentials = true
 
-
+interface Ids{
+    Id : string;
+}
 interface User{
     MainID: string;
     ID: string;
     Name : string;
 }
-
+interface NewUser{
+    MainID : string;
+    ID : string;
+    Password : string;
+    Name : string;
+    Gender : string;
+    Address : string;
+    DateOfBirth : string;
+    PhoneNumber : string;
+}
 function Home_signInUp() {
     const [id, setId] = useState('');
     const [pw, setPw] = useState('');
@@ -29,7 +40,17 @@ function Home_signInUp() {
     const [newBirth, setNewBirth] = useState('');
 
     const [signIn, setSignIn] = useState(true);
-
+    const initialUser = {
+        MainID : "",
+        ID : "",
+        Password : "",
+        Name : "",
+        Gender : "",
+        Address : "",
+        DateOfBirth : "",
+        PhoneNumber : "",
+    }
+    const [newUser, setNewUser] = useState<NewUser>(initialUser);
 
     const shiftInputSignin = () => {
         setSignIn(true);
@@ -42,6 +63,9 @@ function Home_signInUp() {
     }
     const onChangePW = (e:any) => {
         setPw(e.target.value);
+    }
+    const handleInputChange = <P extends keyof NewUser> (item : P, value: NewUser[P]) => {
+        setNewUser({...newUser, [item] : value});
     }
     const signUpID = (e:any) => {
         setNewId(e.target.value);
@@ -62,10 +86,10 @@ function Home_signInUp() {
         setSex('F');
     }
     const setSubmit = () => {
-        setType('s');
+        setType('su');
     }
     const setRater = () => {
-        setType('r');
+        setType('as');
     }
     const signUpAddress = (e:any) => {
         setNewAddress(e.target.value);
@@ -73,7 +97,54 @@ function Home_signInUp() {
     const signUpBirth = (e:any) => {
         setNewBirth(e.target.value);
     }
+    const handleSignUp = (event : React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        console.log("signup");
+        var exist = false;
+        for(var i = 0; i<ids.length ; i++){
+            if(ids[i].Id === newUser.ID){
+                exist = true;
+            }
+        }
+        if(newUser.Password === newRePw && !exist){
+            axios.post('http://127.0.0.1:8000/homeUI/signup/', {
+            MainID : type+''+ids.length,
+            ID : newUser.ID,
+            Password : newUser.Password,
+            Name : newUser.Name,
+            Gender : sex,
+            Address : newUser.Address,
+            DateOfBirth : newUser.DateOfBirth,
+            PhoneNumber : newUser.PhoneNumber,
+        }).then((r) => {
+            console.log(r);
+            console.log(r.data);
+            console.log('hhhhhhhhhhhhhhhh');
+        }).catch((err) => {
+            console.log(err.response.data);
+            console.log(err.response.status);
+            console.log(err.response.headers); } )
+        }
+        else if(newUser.Password !== newRePw){
+            console.log("password error");
+            alert("비밀번호가 같지 않습니다.");
+        }
+        else{
+            console.log("id error");
+            alert("이미 존재하는 ID 입니다.");
+        }
+    };
+    const[ids, setIds] = useState<Ids[]>([]);
+    const getId = async() =>{
+        await axios.get('http://127.0.0.1:8000/homeUI/id/').then((r)=>{
+            let temp: Ids[] = r.data;
+            setIds(temp);
+        })
+    }
 
+    useEffect(()=>{
+        getId()
+    },[])
 
     function loginSuccess() {
         axios.post('http://127.0.0.1:8000/homeUI/login/', {
@@ -96,7 +167,6 @@ function Home_signInUp() {
             else {
                 alert('비회원');
             }
-
         })
     }
 
@@ -122,14 +192,15 @@ function Home_signInUp() {
 
                     </div>
                     <div className={signIn ? "signup-inputs hidden" : "signup-inputs"}>
+                        <form onSubmit={(event) => handleSignUp(event)}>
                         <div className="signup-input__title">
                             ID
                         </div>
-                        <input type="text" className="signup__input1" onChange={signUpID} value={newId}></input>
+                        <input type="text" className="signup__input1" onChange={e=> handleInputChange('ID', e.target.value)}></input>
                         <div className="signup-input__title">
                             Password
                         </div>
-                        <input type="password" className="signup__input1" onChange={signUpPW} value={newPw}></input>
+                        <input type="password" className="signup__input1" onChange={e=> handleInputChange('Password', e.target.value)}></input>
                         <div className="signup-input__title">
                             Repeat Password
                         </div>
@@ -137,7 +208,7 @@ function Home_signInUp() {
                         <div className="signup-input__title">
                             Name
                         </div>
-                        <input type="text" className="signup__input1" onChange={signUpName} value={newName}></input>
+                        <input type="text" className="signup__input1" onChange={e=> handleInputChange('Name', e.target.value)}></input>
                         <div className="signup-input__title">
                             Sex
                         </div>
@@ -148,11 +219,11 @@ function Home_signInUp() {
                         <div className="signup-input__title">
                             Address
                         </div>
-                        <input type="text" className="signup__input1" onChange={signUpAddress} value={newAddress}></input>
+                        <input type="text" className="signup__input1" onChange={e=> handleInputChange('Address', e.target.value)}></input>
                         <div className="signup-input__title">
                             Birth
                         </div>
-                        <input type="date" className="select__birth" onChange={signUpBirth}></input>
+                        <input type="date" className="select__birth" onChange={e=> handleInputChange('DateOfBirth', e.target.value)}></input>
                         <div className="signup-input__title">
                             Phone number
                         </div>
@@ -160,13 +231,15 @@ function Home_signInUp() {
                             <input placeholder="- 생략하고 적어주세요."type="text" className="signup__input1"></input>
                         </div>
                         <div className="type__select">
-                            <div className={type==='s' ? "type-select1 blue" : "type-select1 white"} onClick={setSubmit} >제출자</div>
-                            <div className={type==='r' ? "type-select2 blue" : "type-select2 white"} onClick={setRater}>평가자</div>
+                            <div className={type==='su' ? "type-select1 blue" : "type-select1 white"} onClick={setSubmit} >제출자</div>
+                            <div className={type==='as' ? "type-select2 blue" : "type-select2 white"} onClick={setRater}>평가자</div>
                         </div>
                         <div className="submit__button">
                             <Link to ="/">
-                                <button className="signup-submit">SIGN UP</button></Link>
+                                <input type="submit" value="제출" className="signup-submit"/>
+                            </Link>
                         </div>
+                        </form>
                     </div>
                 </div>
             </div>
