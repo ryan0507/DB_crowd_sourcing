@@ -57,13 +57,20 @@ def SubmitMain2View(request):
             WHERE O.OriginalTypeID =  P.OriginalTypeID and O.TaskID = T.TaskID
              and P.SubmitterID = '{}'and T.TaskID = {}""".format(request.session['MainID'], i[0])))[0]
 
-            tmp =  list(select(dbconn,"""
-            SELECT COUNT(*), AVG(QuanAssessment), AVG(QualAssessment) FROM PARSING_DATA P, ORIGINAL_DATA_TYPE O, TASK T 
+            tmp =  list(select(dbconn,"""SELECT COUNT(*) FROM PARSING_DATA P, ORIGINAL_DATA_TYPE O, TASK T 
             WHERE O.OriginalTypeID =  P.OriginalTypeID and O.TaskID = T.TaskID
              and P.SubmitterID = '{}' and P.P_NP = 'P'and T.TaskID = {}""".format(request.session['MainID'], i[0])))[0]
+
             tmp_dict["NpassedFile"] = tmp[0]
+            print(tmp_dict)
+
+            tmp = list(select(dbconn, """SELECT AVG(QuanAssessment), AVG(QualAssessment) FROM PARSING_DATA P, ORIGINAL_DATA_TYPE O, TASK T 
+            WHERE O.OriginalTypeID =  P.OriginalTypeID and O.TaskID = T.TaskID
+            and P.SubmitterID = '{}' and T.TaskID = {} and P.P_NP != 'W'""".format(request.session['MainID'],i[0])))[0]
+
+
             try:
-                tmp_dict["avgRate"] = round((tmp[1] + tmp[2]) / 2, 2)
+                tmp_dict["avgRate"] = round((tmp[0] + tmp[1]) / 2, 2)
             except:
                 tmp_dict["avgRate"] = 0
             result_lst.append(tmp_dict)
@@ -77,7 +84,7 @@ def SubmitMain2_2View(request):
     try:
         dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
         rate = list(select(dbconn,"""SELECT AVG(QuanAssessment), AVG(QualAssessment) FROM PARSING_DATA P
-        WHERE P.SubmitterID = '{}' and P.P_NP = 'P'""".format(request.session['MainID'])))[0]
+        WHERE P.SubmitterID = '{}' and P.P_NP != 'W'""".format(request.session['MainID'])))[0]
         tmp_dict = {"score" : round((rate[0] + rate[1]) / 2, 2)}
         return JsonResponse(tmp_dict)
     except Exception as e:
