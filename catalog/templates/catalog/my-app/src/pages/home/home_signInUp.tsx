@@ -4,9 +4,9 @@ import VueCookies from 'vue-cookies';
 import './home.css';
 import axios from "axios";
 
-
-axios.defaults.xsrfCookieName = "csrftoken";
-axios.defaults.xsrfHeaderName = "X-CSRFToken";
+axios.defaults.xsrfCookieName = 'csrftoken'
+axios.defaults.xsrfHeaderName = 'X-CSRFToken'
+axios.defaults.withCredentials = true
 
 
 interface User{
@@ -16,9 +16,6 @@ interface User{
 }
 
 function Home_signInUp() {
-    const getApi2 = async() =>{await axios.get('http://127.0.0.1:8000/homeUI/init/').then((r)=>{})}
-    getApi2();
-    getApi2();
     const [id, setId] = useState('');
     const [pw, setPw] = useState('');
 
@@ -79,7 +76,6 @@ function Home_signInUp() {
 
 
     function loginSuccess() {
-
         axios.post('http://127.0.0.1:8000/homeUI/login/', {
             ID: id,
             Password: pw
@@ -122,14 +118,6 @@ function Home_signInUp() {
                         </div>
                         <div className="submit__button">
                             <button className="login-submit" onClick={loginSuccess}>LOG IN</button>
-                        </div>
-                        <div className="submit__button">
-                            <Link to ="/submit/main">
-                                <button className="login-submit">임시 제출자 연결</button></Link>
-                        </div>
-                        <div className="submit__button">
-                            <Link to ="/rater/main">
-                                <button className="login-submit">임시 평가자 연결</button></Link>
                         </div>
 
                     </div>

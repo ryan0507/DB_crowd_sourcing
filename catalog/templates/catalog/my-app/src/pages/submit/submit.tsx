@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { BrowserRouter as Router, Route, Link, Switch, NavLink, } from 'react-router-dom';
 import submit_main from "./submit_main";
 import submit_main2 from "./submit_main2";
@@ -8,14 +8,39 @@ import Submit_taskCheck from "./submit_taskCheck";
 import Submit_fileDetail from "./submit_fileDetail";
 import Submit_submitFile from "./submit_submitFile";
 import Submit_changeInfo from "./submit_changeInfo";
-
+import axios from "axios";
 import "./submit.css";
+axios.defaults.xsrfCookieName = 'csrftoken'
+axios.defaults.xsrfHeaderName = 'X-CSRFToken'
+axios.defaults.withCredentials = true
 
-type GreetingsProps = {
-  name: string;
-};
 
-function submit({name}: GreetingsProps) {
+
+interface User{
+    MainID: string;
+    ID: string;
+    Name : string;
+}
+
+
+axios.defaults.xsrfCookieName = 'csrftoken'
+axios.defaults.xsrfHeaderName = 'X-CSRFToken'
+axios.defaults.withCredentials = true
+
+
+
+function Submit() {
+    const[user, setUser] = useState<User>({MainID: "", ID: "", Name : ""});
+    const getApi = async() =>{
+        await axios.get('http://127.0.0.1:8000/homeUI/getuser').then((r)=>{
+            let temp: User = r.data;
+            setUser(temp);
+            console.log(temp);
+        })
+    }
+    useEffect(()=>{
+        getApi()
+    },[])
   return (
       <Router>
             <body>
@@ -27,7 +52,7 @@ function submit({name}: GreetingsProps) {
 
                             <a className="nr" href="/">Log out</a>
                             <a className="nr" href="/submit/changeinfo">개인정보 수정</a>
-                            <span className="nr" >안녕하세요 {name}님</span>
+                            <span className="nr" >안녕하세요 {user.Name}({user.ID})님</span>
                         </nav>
                     </div>
                 </div>
@@ -46,5 +71,5 @@ function submit({name}: GreetingsProps) {
   );
 }
 
-export default submit;
+export default Submit;
 

@@ -1,6 +1,14 @@
 {
   "dependencies": {
+    "@material-ui/icons": "^4.9.1",
+    "@types/cookie-parser": "^1.4.2",
+    "@types/cors": "^2.8.8",
+    "@types/express-session": "^1.17.3",
     "@types/react-redux": "^7.1.11",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
     "js-cookie": "^2.2.1",
     "react-router-dom": "^5.2.0",
     "vue-cookies": "^1.7.4"

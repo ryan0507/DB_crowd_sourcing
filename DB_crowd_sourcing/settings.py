@@ -24,8 +24,8 @@ SECRET_KEY = "-)2jnlrt+0dfb=qa74p*z#u^&m56y6a3blmi9uomcep48uc1o@"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
-
+ALLOWED_HOSTS = ["*"]
+# ALLOWED_HOSTS = ['127.0.0.1:3000']
 
 # Application definition
 
@@ -37,31 +37,14 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "catalog",
-    "adminUI",
+    # "adminUI",
     "rest_framework",
     "corsheaders",
-    "raterUI",
-    "submitUI",
-    "homeUI",
+    # "raterUI",
+    # "submitUI",
+    # "homeUI",
 ]
-REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
-    ),
-}
 
-JWT_AUTH = {
-    'JWT_SECRET_KEY': SECRET_KEY,
-    'JWT_ALGORITHM': 'HS256',
-    'JWT_ALLOW_REFRESH': True,
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7),
-    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=28),
-}
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
@@ -74,12 +57,19 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
+
+# CORS_ORIGIN_WHITELIST = (
+#     "http://127.0.0.1:3000",
+#     # 'localhost:3000'
+# )
 
 CORS_ORIGIN_WHITELIST = (
-    "http://127.0.0.1:3000",
-    # 'localhost:3000'
+       'http://127.0.0.1:3000',    #React 도메인
+       # 'http://127.0.0.1:8000',    #Django 도메인
 )
+
 SESSION_COOKIE_HTTPONLY = False
 
 
