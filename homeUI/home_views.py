@@ -21,9 +21,7 @@ def give_sessionID(request):
     print("init",request.session.session_key)
     return redirect("/")
 
-@api_view(['GET'])
-@permission_classes((IsAuthenticated, ))
-@authentication_classes((JSONWebTokenAuthentication,))
+
 def Login(request):
     print(request.session.session_key)
     data = json.loads(request.body)
