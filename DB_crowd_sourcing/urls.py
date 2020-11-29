@@ -21,8 +21,10 @@ from rest_framework import routers
 from adminUI import views
 from raterUI import rater_views
 from submitUI import submit_views
+from rest_framework_jwt.views import obtain_jwt_token, verify_jwt_token, refresh_jwt_token
 
 router = routers.DefaultRouter()
+
 # router.register("admin_main", views.AdminMainView, "admin_main")
 
 urlpatterns = [
@@ -32,4 +34,7 @@ urlpatterns = [
     path("raterUI/", include('raterUI.urls')),
     path("submitUI/", include('submitUI.urls')),
     path("homeUI/", include('homeUI.urls')),
+    path('api/token/', obtain_jwt_token),
+    path('api/token/verify/', verify_jwt_token),
+    path('api/token/refresh/', refresh_jwt_token),
 ]

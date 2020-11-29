@@ -6,7 +6,7 @@ axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
 
 interface MainData{
-    TaskID: string;
+    SubmissionID: number;
     TaskName : string;
     FileName: string;
     SubmissionDate : Date;
@@ -32,7 +32,7 @@ const Rater_main = (props : RouteComponentProps<{}>,)=>{
                return(
                    <ul className={"task_list"}>
                        <li>
-                           <Link to={`/rater/fileDetail/${item.TaskID}`}>
+                           <Link to={`/rater/fileDetail/${item.SubmissionID}`}>
                                <div className="content_list">
                                    <div className={"taskName"}>{item.TaskName}</div>
                                    <div className={"startDate"}>{item.SubmissionDate}</div>

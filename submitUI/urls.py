@@ -7,5 +7,5 @@ from django.views.generic import TemplateView
 
 urlpatterns = [
     # Rater [MAIN]
-    path('', SubmitMainView),
+    path('main1task/', SubmitMainView),
 ]

@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Link, Switch, NavLink, } from 'react-ro
 
 import rater_changeInfo from "./rater_changeInfo";
 import Rater_main from "./rater_main";
-import rater_main2 from "./rater_main2";
+import Rater_main2 from "./rater_main2";
 import Rater_fileDetail from "./rater_fileDetail";
 import Rater_taskDetail from "./rater_taskDetail";
 
@@ -27,10 +27,10 @@ function rater() {
                 </div>
                 <Switch>
                     <Route exact={true} path="/rater/main" component={Rater_main}/>
-                    <Route exact path="/rater/main2" component={rater_main2}/>
+                    <Route exact path="/rater/main2" component={Rater_main2}/>
                     <Route exact path="/rater/changeInfo" component={rater_changeInfo}/>
                     <Route exact path="/rater/fileDetail" component={Rater_fileDetail}/>
-                    <Route exact path="/rater/taskDetail" component={Rater_taskDetail}/>
+                    <Route exact path="/rater/taskDetail/:submission_id" component={Rater_taskDetail}/>
                 </Switch>
             </body>
         </div>

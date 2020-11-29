@@ -6,6 +6,10 @@ from django.contrib import admin
 from django.views.generic import TemplateView
 
 urlpatterns = [
-    # Rater [MAIN]
+    # [MAIN]
     path('', RaterMainView),
+    # [MAIN2]
+    path('main2/', RaterMain2View),
+    # [TaskDetail]
+    path('taskDetail/<int:submissionID>/', RaterTaskDetailView),
 ]
