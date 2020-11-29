@@ -52,7 +52,7 @@ def TaskAddView(request):
         print(val_tuple)
         value_lst.append(val_tuple)
 
-        merge("INSERT INTO TASK VALUES (%s %s %s %s %s %s %s)", value_lst)
+        merge("INSERT INTO TASK VALUES (%d, %s, %s, %s, %d, %s, %s)", value_lst)
         return JsonResponse(value_lst, safe=False)
     else:
         print("No data")
