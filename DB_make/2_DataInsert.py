@@ -43,8 +43,8 @@ if (True):
             ('as 7', 'hce0006', 'hce0006', '한채은', 'F', '경기도', '1998.09.03', '01012341234')]
   merge_bulk("INSERT INTO USER VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", values)
 
-  values = [('20', 'Rest_Rev', '식당이름%string%매출%float%손님수%integer%정부지원%boolean', '식당 매출', '식당 매출 정보를 파악', 'null 값 50% 이하'),
-            ('10', 'Float_pop', '지역%string%기온%float%유동인구%integer%지역인구%integer', '유동 인구', '한반도의 유동인구를 파악', 'tuple 10개이상')]
+  values = [('20', 'Rest_Rev', 'Name%string%Rev%float%Pop%integer%Pas%boolean', '식당 매출', '식당 매출 정보를 파악', 'null 값 50% 이하'),
+            ('10', 'Float_pop', 'Loc%string%Tem%float%Fpop%integer%Lpop%integer', '유동 인구', '한반도의 유동인구를 파악', 'tuple 10개이상')]
   merge_bulk("INSERT INTO TASK(SubmissionPeriod, TableName, TaskSchema, Name, Description, TaskThreshold) VALUES (%s, %s, %s, %s, %s, %s)", values)
 
   values = [('1', '서울식당', '서울식당이름%Name%판매량%Rev%손님수%Pop%정부지원%Pas'),

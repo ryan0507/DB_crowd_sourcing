@@ -6,4 +6,5 @@ from .home_views import *
 urlpatterns = [
     path('login/', Login),
     path('getuser/', GetUser),
+    path('logout/', logout)
 ]

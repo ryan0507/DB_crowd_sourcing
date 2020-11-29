@@ -4,6 +4,7 @@ import axios from "axios";
 
 axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
+axios.defaults.withCredentials = true
 
 interface MainData{
     SubmissionID: number;
@@ -18,6 +19,7 @@ const Rater_main = (props : RouteComponentProps<{}>,)=>{
         await axios.get('http://127.0.0.1:8000/raterUI/').then((r)=>{
             let temp: MainData[] = r.data;
             setTask(temp);
+            console.log(temp);
         })
     }
 
