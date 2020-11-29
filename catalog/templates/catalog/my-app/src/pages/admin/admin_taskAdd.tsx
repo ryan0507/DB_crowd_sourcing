@@ -236,16 +236,19 @@ function Admin_taskAdd(){
         event.preventDefault();
         axios.post('http://127.0.0.1:8000/adminUI/create/', {
             TaskID : task.TaskID,
-            SubmissionPeriod : 0,
+            SubmissionPeriod : '0',
             TableName : task.TableName,
             TaskSchema : task.TaskSchema,
             Name : task.Name,
             Description :task.Description,
-        }).then(res => {
-        console.log(res);
-        console.log(res.data);
+        }).then((r) => {
+        console.log(r);
+        console.log(r.data);
         console.log('hhhhhhhhhhhhhhhh');
-      }).catch((error) => console.log( error.response.request._response ) );
+      }).catch((err) => {
+         console.log(err.response.data);
+         console.log(err.response.status);
+         console.log(err.response.headers); } )
         // const taskName = {event.target.name}
         // setTask({e.target.name.task_name, 0, '', '', '', ''}) ;
         // {_TaskID: {e.target.elements.task_name},

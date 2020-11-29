@@ -37,12 +37,12 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "catalog",
-    "adminUI",
+    #"adminUI",
     "rest_framework",
     "corsheaders",
-    "raterUI",
-    "submitUI",
-    "homeUI",
+    #"raterUI",
+    #"submitUI",
+    #"homeUI",
 ]
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
