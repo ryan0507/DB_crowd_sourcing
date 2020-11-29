@@ -6,6 +6,7 @@ import Rater_main from "./rater_main";
 import Rater_main2 from "./rater_main2";
 import Rater_fileDetail from "./rater_fileDetail";
 import Rater_taskDetail from "./rater_taskDetail";
+
 import axios from "axios";
 import "./rater.css";
 
@@ -33,6 +34,12 @@ function Rater(){
         getApi()
     },[])
 
+    function logoutSuccess() {
+        axios.get('http://127.0.0.1:8000/homeUI/logout/').then((r)=> {
+            window.location.replace("/");
+        })
+    }
+
   return (
       <Router>
         <div className="admin">
@@ -43,7 +50,7 @@ function Rater(){
                             <a className="n" href="/rater/main">할당된 파일 목록</a>
                             <a className="n" href="/rater/main2">평가 내역</a>
 
-                            <a className="nr" href="/">Log out</a>
+                            <button className="nr" onClick={logoutSuccess}>Log out</button>
                             <a className="nr" href="/rater/changeInfo">개인정보 수정</a>
                             <span className="nr" >안녕하세요 {user.Name}({user.ID})님</span>
 
