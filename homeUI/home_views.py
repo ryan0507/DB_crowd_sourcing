@@ -26,8 +26,6 @@ def Login(request):
     return JsonResponse({"MainID": "-1", "ID": "-1", "Name": "-1"}) # post에서 response에 status넣으면 안돼요!!
 
 def GetUser(request):
-    print({"MainID": request.session['MainID'], "ID": request.session['ID'], "Name": request.session['Name']})
-
     return JsonResponse({"MainID": request.session['MainID'], "ID": request.session['ID'], "Name": request.session['Name']})
 
 def logout(request):
