@@ -47,18 +47,10 @@ def TaskAddView(request):
         body_unicode = request.body.decode('utf-8')
         data = json.loads(body_unicode)
 #        print("data: ", data)
-        value_lst.append(data["TaskID"])
-        value_lst.append(data["Name"])
-        value_lst.append(data["Description"])
-#        value_lst.append(data["TaskThreshold"])
-        value_lst.append(data["SubmissionPeriod"])
-        value_lst.append(data["TableName"])
-        value_lst.append(data["TaskSchema"])
-#        print("values: ", value_lst)
-
-#        val_dict = {"TaskID": data["TaskID"], "SubmissionPeriod": data["SubmissionPeriod"],
-#                    "TableName": data["TableName"], "TaskSchema": data["TaskSchema"],
-#                    "Name": data["Name"], "Description": data["Description"]}
+        val_tuple = (data["TaskID"], data["Name"], data["Description"], data["TaskThreshold"],
+                     data["SubmissionPeriod"], data["TableName"], data["TaskSchema"])
+        print(val_tuple)
+        value_lst.append(val_tuple)
 
         merge("INSERT INTO TASK VALUES (%s %s %s %s %s %s %s)", value_lst)
         return JsonResponse(value_lst, safe=False)
