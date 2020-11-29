@@ -49,7 +49,7 @@ def TaskAddView(request):
         val_dict = {"TaskID": data["TaskID"], "SubmissionPeriod": data["SubmissionPeriod"],
                     "TableName": data["TableName"], "TaskSchema": data["TaskSchema"],
                     "Name": data["Name"], "Description": data["Description"]}
-        merge("INSERT INTO TASK VALUES (%s, %s, %s, %s, %s, %s)", val_dict)
+        merge("INSERT INTO TASK VALUES (%s %s %s %s %s %s)", val_dict)
         value_lst.append(val_dict)
         return JsonResponse(value_lst, safe=False)
     else:
