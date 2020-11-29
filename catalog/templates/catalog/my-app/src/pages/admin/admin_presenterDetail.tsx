@@ -1,5 +1,6 @@
-import { BrowserRouter as Router, Route,Link } from 'react-router-dom';
-import React from 'react';
+import { RouteComponentProps, BrowserRouter as Router, Route,Link } from 'react-router-dom';
+import React, { Fragment, useEffect, useState} from 'react';
+import axios from "axios";
 import {makeStyles} from "@material-ui/core/styles";
 import TableContainer from "@material-ui/core/TableContainer";
 import Table from "@material-ui/core/Table";
@@ -9,6 +10,17 @@ import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TablePagination from "@material-ui/core/TablePagination";
 import Paper from "@material-ui/core/Paper";
+
+axios.defaults.xsrfCookieName = "csrftoken";
+axios.defaults.xsrfHeaderName = "X-CSRFToken";
+
+interface submitter {
+    SubmissionID: number,
+    SubmissionDate: string,
+    StartDate: string,
+    FileName: string,
+    P_NP: string,
+}
 
 interface Column {
   id:  'date' | 'time' | 'fileName' | 'pNp';
@@ -64,7 +76,21 @@ const rows = [
   createData( '20.11.02', '23 : 15 : 30', '새마을식당_10월.csv', 'Pass'),
 ];
 
-export default function Admin_presenterDetail(){
+export default function Admin_presenterDetail(props : RouteComponentProps<{su_ID : string}>,){
+    const [submitter, setSubmitter] = useState<submitter>({SubmissionID: 0, SubmissionDate: "", StartDate: "", FileName: "", P_NP: "",});
+    const getApi = async() =>{
+        await axios.get(`http://127.0.0.1:8000/adminUI/user/submitter/${props.match.params.su_ID}`).then((r)=>{
+            let temp: submitter = r.data;
+            setSubmitter(temp);
+        })
+    }
+
+    useEffect(()=>{
+        getApi()
+    },[])
+
+
+
     const classes = useStyles();
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -75,10 +101,14 @@ export default function Admin_presenterDetail(){
         setRowsPerPage(+event.target.value);
         setPage(0);
     };
+
+
+
    return(
        <div className={"presenterDetail"}>
        <div className="wrapper">
-           <div className="Title">제출자 ID</div>
+           {submitter.FileName}
+           <div className="Title">{submitter.SubmissionID}</div>
            <Link to = "/admin/main" className="right_side_small">뒤로가기</Link>
            <div className="formContent">
                <div className={"taskStatistic"}>

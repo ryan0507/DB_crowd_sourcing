@@ -108,29 +108,6 @@ function Admin_taskAdd(){
     const handleInputChange =<P extends keyof Task> (item : P, value: Task[P]) =>{
         setTask({...task, [item] : value});
     }
-    const handleSubmitDD = ( event : React.FormEvent<HTMLFormElement> ) =>{
-        event.preventDefault();
-        axios.post('http://127.0.0.1:8000/adminUI/create/', {
-            TaskID : task.TaskID,
-            SubmissionPeriod : 0,
-            TableName : task.TableName,
-            TaskSchema : task.TaskSchema,
-            Name : task.Name,
-            Description :task.Description,
-        }).then(res => {
-        console.log(res);
-        console.log(res.data);
-        console.log('hhhhhhhhhhhhhhhh');
-      }).catch((error) => console.log( error.response.request._response ) );
-        // const taskName = {event.target.name}
-        // setTask({e.target.name.task_name, 0, '', '', '', ''}) ;
-        // {_TaskID: {e.target.elements.task_name},
-        // _SubmissionPeriod : {e.target}
-        // _TableName ,
-        // _TaskSchema,
-        // _Name,
-        // _Description};
-    };
 
     const handleToggleSchema = () => {
         setToggleSchema(!toggleSchema);
@@ -251,6 +228,31 @@ function Admin_taskAdd(){
           setList([]);
           setCount(1);
       }
+
+
+    const handleSubmitDD = ( event : React.FormEvent<HTMLFormElement> ) =>{
+        event.preventDefault();
+        axios.post('http://127.0.0.1:8000/adminUI/create/', {
+            TaskID : task.TaskID,
+            SubmissionPeriod : 0,
+            TableName : task.TableName,
+            TaskSchema : task.TaskSchema,
+            Name : task.Name,
+            Description :task.Description,
+        }).then(res => {
+        console.log(res);
+        console.log(res.data);
+        console.log('hhhhhhhhhhhhhhhh');
+      }).catch((error) => console.log( error.response.request._response ) );
+        // const taskName = {event.target.name}
+        // setTask({e.target.name.task_name, 0, '', '', '', ''}) ;
+        // {_TaskID: {e.target.elements.task_name},
+        // _SubmissionPeriod : {e.target}
+        // _TableName ,
+        // _TaskSchema,
+        // _Name,
+        // _Description};
+    };
 
    return(
        <div className={"taskAdd"}>

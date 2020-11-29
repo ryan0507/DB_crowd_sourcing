@@ -133,8 +133,11 @@ export default function Admin_userList() {
                         // @ts-ignore
                         if(item.ID === rowData.ID){tempID = item.MainID}
                     })
+                   // @ts-ignore
+                   if(rowData.role === 'submitter') window.location.href="/admin/presenterDetail/"+tempID;
+                   // @ts-ignore
+                   if(rowData.role === 'assessor') window.location.href="/admin/estimatorDetail/"+tempID;
 
-                    window.location.replace("/admin/estimatorDetail/"+tempID);
                }}
               options={{
                 filtering: true,

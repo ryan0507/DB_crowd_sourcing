@@ -1,5 +1,6 @@
-import { BrowserRouter as Router, Route,Link } from 'react-router-dom';
-import React from 'react';
+import { RouteComponentProps, BrowserRouter as Router, Route,Link } from 'react-router-dom';
+import React, {useEffect, useState} from 'react';
+import axios from "axios";
 import {makeStyles} from "@material-ui/core/styles";
 import TableContainer from "@material-ui/core/TableContainer";
 import Table from "@material-ui/core/Table";
@@ -9,6 +10,13 @@ import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TablePagination from "@material-ui/core/TablePagination";
 import Paper from "@material-ui/core/Paper";
+
+interface assesor {
+    SubmissionID: number,
+    SubmissionDate: string,
+    P_NP: string,
+}
+
 
 interface Column {
   id:  'taskname'| 'estimatedate' | 'estimatetime' | 'presenter' | 'fileName' | 'presenterScore' | 'pNp';
@@ -67,7 +75,19 @@ const rows = [
   createData('음식점','20.11.02', '23 : 15 : 20','박선종', '음악은_즐거워.csv', '4점', 'Non-pass'),
 ];
 
-export default function Admin_presenterDetail(){
+export default function Admin_presenterDetail(props : RouteComponentProps<{as_ID : string}>,){
+    const [assesor, setAssesor] = useState<assesor>({SubmissionID: 0, SubmissionDate: "", P_NP: "",});
+    const getApi = async() =>{
+        await axios.get(`http://127.0.0.1:8000/adminUI/user/assessor/${props.match.params.as_ID}`).then((r)=>{
+            let temp: assesor = r.data;
+            setAssesor(temp);
+        })
+    }
+
+    useEffect(()=>{
+        getApi()
+    },[])
+
     const classes = useStyles();
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -81,7 +101,7 @@ export default function Admin_presenterDetail(){
    return(
        <div className={"estimatorDetail"}>
        <div className="wrapper">
-           <div className="Title">평가자 ID</div>
+           <div className="Title">{assesor.SubmissionID}</div>
            <Link to = "/admin/main" className="right_side_small">뒤로가기</Link>
            <div className="formContent">
                <div className={"taskStatistic"}>

@@ -47,8 +47,8 @@ function App() {
                     <Route exact path="/admin/datatypeadd" component={admin}/>
                     <Route exact path="/admin/datatypeadd_exist" component={admin}/>
                     <Route exact path="/admin/userlist" component={admin}/>
-                    <Route exact path="/admin/estimatorDetail" component={admin}/>
-                    <Route exact path="/admin/presenterDetail" component={admin}/>
+                    <Route exact path="/admin/estimatorDetail/:as_ID" component={admin}/>
+                    <Route exact path="/admin/presenterDetail/:su_ID" component={admin}/>
                     <Route exact path="/admin/alterpw" component={admin}/>
 
                     <Route exact path="/submit/main" component={submit}/>
