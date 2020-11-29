@@ -41,8 +41,9 @@ import { RouteComponentProps, BrowserRouter as Router, Route,Link } from 'react-
 import React, {useEffect, useState} from 'react';
 import axios from "axios";
 
-axios.defaults.xsrfCookieName = "csrftoken";
-axios.defaults.xsrfHeaderName = "X-CSRFToken";
+axios.defaults.xsrfCookieName = 'csrftoken'
+axios.defaults.xsrfHeaderName = 'X-CSRFToken'
+axios.defaults.withCredentials = true
 
 interface Task{
     TaskID: string;
@@ -57,21 +58,16 @@ const Submit_main = (props : RouteComponentProps<{}>,)=>{
         await axios.get('http://127.0.0.1:8000/submitUI/main1task').then((r)=>{
             let temp: Task[] = r.data;
             setTask(temp);
+            console.log(temp);
         })
     }
-    const getApi2 = async() =>{
-        await axios.get('http://127.0.0.1:8000/homeUI/getuser').then((r)=>{
-            // let temp: Task[] = r.data;
-            // setTask(temp);
-        })
-    }
-
+    // getApi();
+    // getApi2();
+    //
     useEffect(()=>{
         getApi()
     },[])
-    useEffect(()=>{
-        getApi2()
-    },[])
+
 
    return(
        <div className="wrapper">

@@ -34,7 +34,4 @@ urlpatterns = [
     path("raterUI/", include('raterUI.urls')),
     path("submitUI/", include('submitUI.urls')),
     path("homeUI/", include('homeUI.urls')),
-    path('api/token/', obtain_jwt_token),
-    path('api/token/verify/', verify_jwt_token),
-    path('api/token/refresh/', refresh_jwt_token),
 ]

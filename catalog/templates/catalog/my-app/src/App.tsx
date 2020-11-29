@@ -34,9 +34,6 @@ import rater_taskDetail from "./pages/rater/rater_taskDetail";
 
 import { BrowserRouter as Router, Route, Link, Switch, NavLink, } from 'react-router-dom';
 
-type GreetingsProps = {
-  name: string;
-};
 
 function App() {
   return (
