@@ -10,9 +10,6 @@ import Submit_submitFile from "./submit_submitFile";
 import Submit_changeInfo from "./submit_changeInfo";
 import axios from "axios";
 import "./submit.css";
-axios.defaults.xsrfCookieName = 'csrftoken'
-axios.defaults.xsrfHeaderName = 'X-CSRFToken'
-axios.defaults.withCredentials = true
 
 
 
@@ -35,12 +32,18 @@ function Submit() {
         await axios.get('http://127.0.0.1:8000/homeUI/getuser').then((r)=>{
             let temp: User = r.data;
             setUser(temp);
-            console.log(temp);
         })
     }
     useEffect(()=>{
         getApi()
     },[])
+
+    function logoutSuccess() {
+        axios.get('http://127.0.0.1:8000/homeUI/logout/').then((r)=> {
+            window.location.replace("/");
+        })
+    }
+
   return (
       <Router>
             <body>
@@ -50,7 +53,7 @@ function Submit() {
                             <a className="n" href="/submit/main">태스크 목록</a>
                             <a className="n" href="/submit/main2">참여중인 태스크</a>
 
-                            <a className="nr" href="/">Log out</a>
+                            <button className="nr" onClick={logoutSuccess}>Log out</button>
                             <a className="nr" href="/submit/changeinfo">개인정보 수정</a>
                             <span className="nr" >안녕하세요 {user.Name}({user.ID})님</span>
                         </nav>
@@ -59,8 +62,8 @@ function Submit() {
                 <Switch>
                     <Route exact={true} path="/submit/main" component={submit_main}/>
                     <Route exact path="/submit/main2" component={submit_main2}/>
-                    <Route exact path="/submit/taskinfo" component={Submit_taskInfo}/>
-                    <Route exact path="/submit/taskinfo2" component={Submit_taskInfo2}/>
+                    <Route exact path="/submit/taskinfo/:task_id" component={Submit_taskInfo}/>
+                    <Route exact path="/submit/taskinfo2/:task_id" component={Submit_taskInfo2}/>
                     <Route exact path="/submit/taskcheck" component={Submit_taskCheck}/>
                     <Route exact path="/submit/filedetail" component={Submit_fileDetail}/>
                     <Route exact path="/submit/submitfile" component={Submit_submitFile}/>
