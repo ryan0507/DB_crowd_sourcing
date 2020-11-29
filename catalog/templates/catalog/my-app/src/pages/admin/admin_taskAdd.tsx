@@ -33,11 +33,12 @@ const useStyles = makeStyles((theme: Theme) =>
 //table schema add
 interface Task{
     TaskID : string;
+    Name : string;
+    Description : string;
+    TaskThreshold : string;
     SubmissionPeriod : string;
     TableName : string;
     TaskSchema : string;
-    Name : string;
-    Description : string;
 }
 
 
@@ -90,11 +91,12 @@ function Admin_taskAdd(){
     const [toggleData, setToggleData] = useState<boolean>(true);
     const initialTask = {
         TaskID : "",
+        Name : "",
+        Description :"",
+        TaskThreshold : '',
         SubmissionPeriod : "",
         TableName : "",
         TaskSchema : "",
-        Name : "",
-        Description :"",
     }
     const [task, setTask] = useState<Task>(initialTask);
     const classes = useStyles();
@@ -236,11 +238,12 @@ function Admin_taskAdd(){
         event.preventDefault();
         axios.post('http://127.0.0.1:8000/adminUI/create/', {
             TaskID : task.TaskID,
+            Name : task.Name,
+            Description :task.Description,
+            TaskThreshold :'',
             SubmissionPeriod : '0',
             TableName : task.TableName,
             TaskSchema : task.TaskSchema,
-            Name : task.Name,
-            Description :task.Description,
         }).then((r) => {
         console.log(r);
         console.log(r.data);
