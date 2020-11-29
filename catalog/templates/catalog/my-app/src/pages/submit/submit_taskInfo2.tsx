@@ -1,20 +1,59 @@
-import { BrowserRouter as Router, Route,Link } from 'react-router-dom';
-import React from 'react';
-import {makeStyles} from "@material-ui/core/styles";
-import TableContainer from "@material-ui/core/TableContainer";
-import Table from "@material-ui/core/Table";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import TableCell from "@material-ui/core/TableCell";
-import TableBody from "@material-ui/core/TableBody";
-import TablePagination from "@material-ui/core/TablePagination";
-import Paper from "@material-ui/core/Paper";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
+import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import MaterialTable from 'material-table';
+import React, {useEffect, useState} from 'react';
+import axios from "axios";
+import { RouteComponentProps, BrowserRouter as Router, Route,Link } from 'react-router-dom';
+
+axios.defaults.xsrfCookieName = "csrftoken";
+axios.defaults.xsrfHeaderName = "X-CSRFToken";
+
+
+
+const useStyles = makeStyles({
+    root: {
+        width: '100%',
+    },
+    container: {
+        maxHeight: 440,
+    }
+});
+
+interface Task {
+    name: string;
+    tablename: string;
+    description: string;
+    pass_s: string;
+    period: string;
+    schema: EachSchema[];
+    original_schema: OriginalSchema[];
+    participate: string;
+}
+
+interface EachSchema {
+    Big: string;
+    small: string;
+}
+interface OriginalSchema {
+    name : string;
+    schema : EachSchema[];
+}
+
+interface ParsingData {
+    data : parseToTable[];
+}
+
+interface parseToTable{
+    originalTypeID : string;
+    submitNum : number;
+    submitDate : string;
+    submitFileName : string;
+    quanScore : number;
+    qualScore : number;
+    passNonpass : string;
+}
 
 interface Column {
-  id: 'name' | 'date' | 'time' | 'fileName' | 'pNp' | 'score';
+  id: 'originTypeID'| 'submitNum' | 'submitDate' | 'submitFileName' | 'quanScore' | 'qualScore' | 'passNonpass' ;
   label: string;
   minWidth?: number;
   align?: 'center';
@@ -23,250 +62,164 @@ interface Column {
 }
 
 const columns: Column[] = [
-  { id: 'name', label: '제출 회차', minWidth: 80 },
-  { id: 'date', label: '제출일', minWidth: 80 },
-  {
-    id: 'time',
-    label: '제출시간',
-    minWidth: 90,
-  },
-  {
-    id: 'fileName',
-    label: '제출\u00a0파일명',
-    minWidth: 140,
-  },
-  {
-    id: 'pNp',
-    label: 'Pass\u00a0여부',
-    minWidth: 80,
-  },
-  {
-    id: 'score',
-    label: '점수',
-    minWidth: 80,
-  },
+  { id: 'originTypeID', label: '원본 데이터 타입 ID'},
+  { id: 'submitNum', label: '회차'},
+  { id: 'submitDate', label: '제출일' },
+  { id: 'submitFileName',label: '파일 이름'},
+  {id: 'quanScore',label: '정량평가 점수'},
+    {id: 'qualScore',label: '정성평가 점수'},
+    {id: 'passNonpass',label: '패스 여부'},
 ];
-
-const useStyles = makeStyles({
-  root: {
-    width: '100%',
-  },
-  container: {
-    maxHeight: 440,
-  }
-});
 
 
 interface Data {
-  name: string;
-  date: string;
-  time: string;
-  fileName: string;
-  pNp: string;
-  score: string;
+    originTypeID: string;
+    submitNum: number;
+    submitDate: string;
+    submitFileName: string;
+    quanScore: number;
+    qualScore: number;
+    passNonpass: string;
 }
 
-function createData( name: string, date: string, time: string,fileName: string, pNp: string, score: string): Data {
-  return { name, date, time, fileName, pNp, score};
+function createData(pars : ParsingData): Data[] {
+    let temp : Data[] = [];
+    pars.data.map((item)=>{
+        temp.push({originTypeID : item.originalTypeID, submitNum : item.submitNum,
+            submitDate : item.submitDate.substring(0,10), submitFileName : item.submitFileName, quanScore : item.quanScore,
+            qualScore : item.qualScore, passNonpass : item.passNonpass})
+    })
+  return temp;
 }
 
-const rows = [
-  createData('1회', '20.11.01', '23 : 15 : 20', '음악은_즐거워.csv', 'Non-pass', "10점"),
-  createData('2회', '20.11.02', '23 : 15 : 30', '새마을식당_10월.csv', 'Pass', "10점"),
-];
+
+export default function Submit_taskInfo2(props : RouteComponentProps<{task_id : string}>,){
+    const[task, setTask] = useState<Task>({name : "Error", tablename : "Error", description: "Error", original_schema : [],
+        participate : "P", period: "Error", pass_s: "Error", schema: []});
+    const getApi = async() =>{
+        await axios.get(`http://127.0.0.1:8000/submitUI/taskinfo2/${props.match.params.task_id}/`).then((r)=>{
+            let temp: Task = r.data;
+            setTask(temp);
+        })
+    }
+    useEffect(()=>{
+        getApi()
+    },[])
+
+    const[parsing, setParsing] = useState<ParsingData>({data : []});
+    const[toTable, setToTable] = useState<parseToTable[]>([]);
+
+    const getApi2 = async() =>{
+        await axios.get(`http://127.0.0.1:8000/submitUI/taskinfo2_2/${props.match.params.task_id}/`).then((r)=>{
+            let temp: ParsingData = r.data;
+            setParsing(temp);
+        })
+    }
+    useEffect(()=>{
+        getApi2()
+    },[])
+
+    const row = createData(parsing);
 
 
-export default function Submit_taskInfo2(){
-    const classes = useStyles();
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
-    const handleChangePage = (event: unknown, newPage: number) => {
-        setPage(newPage);
-    };
-    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setRowsPerPage(+event.target.value);
-        setPage(0);
-    };
-   return(
-       <div className="submit_taskInfo2">
-           <div className="wrapper">
-           <div className="Title">태스크 이름</div>
-           <Link to = "/submit/main2" className="right_side_small">뒤로가기</Link>
-           <div className="formContent">
-               <div className={"TaskName"}>
-                   <div className={"wrapper_title"}>태스크 데이터 테이블 이름</div>
-                   <div className={"lightgray_wrapper"}>이름</div>
-               </div>
-               <div className={"TaskInfo"}>
-                   <div className={"wrapper_title"}>태스크 설명</div>
-                   <div className={"lightgray_wrapper"}>이 태스크는 이런 태스크입니다.</div>
-               </div>
-               <div className={"TaskPassStandard"}>
-                   <div className={"wrapper_title"}>태스크 PASS 기준</div>
-                   <div className={"lightgray_wrapper"}>패스 기준</div>
-               </div>
-               <div className={"MinUpload"}>
-                   <div className={"wrapper_title"}>최소 업로드 주기</div>
-                   <div className={"lightgray_wrapper"} >00일</div>
-               </div>
-               <div className={"TaskSchema"}>
-                   <div className={"wrapper_title"}>태스크 데이터 테이블 스키마</div>
-                   <ul className={"datatype_list"}>
-                       <li>
+    return(
+        <div className="submitTaskList">
+        <div className="submit_taskInfo">
+            <div className="wrapper">
+                <div className="Title">{task.name}</div>
+                <Link to = "/submit/main2" className="right_side_small">뒤로가기</Link>
+                <div className="formContent">
+                    <div className={"TaskName"}>
+                        <div className={"wrapper_title"}>태스크 데이터 테이블 이름</div>
+                        <div className={"lightgray_wrapper"}>{task.tablename}</div>
+                    </div>
+                    <div className={"TaskInfo"}>
+                        <div className={"wrapper_title"}>태스크 설명</div>
+                        <div className={"lightgray_wrapper"}>{task.description}</div>
+                    </div>
+                    <div className={"TaskPassStandard"}>
+                        <div className={"wrapper_title"}>태스크 PASS 기준</div>
+                        <div className={"lightgray_wrapper"}>{task.pass_s}</div>
+                    </div>
+                    <div className={"MinUpload"}>
+                        <div className={"wrapper_title"}>최소 업로드 주기</div>
+                        <div className={"lightgray_wrapper"} >{task.period}일</div>
+                    </div>
+                    <div className={"TaskSchema"}>
+                        <div className={"wrapper_title"}>태스크 데이터 테이블 스키마</div>
+                        <ul className={"datatype_list"}>
+                            <li>
+                                <ul className={"value_list"}>
+                                    {task.schema.map((item)=>{
+                                        return(
+                                            <li>
+                                                <div className={"name"}>{item.Big}</div>
+                                                <div className={"type"}>({item.small})</div>
+                                            </li>
+                                        )})}
+                                </ul>
+                            </li>
+                        </ul>
 
-                           <ul className={"value_list"}>
-                               <li>
-                                   <div className={"name"}>음식점 이름</div>
-                                   <div className={"type"}>(String)</div>
-                               </li>
-                               <li>
-                                   <div className={"name"}>월매출</div>
-                                   <div className={"type"}>(Int)</div>
-                               </li>
-                               <li>
-                                   <div className={"name"}>월 고객 수</div>
-                                   <div className={"type"}>(Int)</div>
-                               </li>
-                               <li>
-                                   <div className={"name"}>월 순이익</div>
-                                   <div className={"type"}>(Int)</div>
-                               </li>
-                               <li>
-                                   <div className={"name"}>직원 수</div>
-                                   <div className={"type"}>(Int)</div>
-                               </li>
-                           </ul>
-                       </li>
-                   </ul>
+                    </div>
 
-               </div>
-               <div className={"originDataType"}>
-                   <div className={"wrapper_title"}>원본 데이터 타입</div>
-                   <ul className={"datatype_list"}>
-                       <li>
-                           <div className={"datatypeID"}>ID : 001</div>
-                           <ul className={"value_list"}>
-                               <li>
-                                   <div className={"decidedName"}>음식점 이름</div>
-                                   <div className={"originName"}>음식점 이름</div>
-                               </li>
-                               <li>
-                                   <div className={"decidedName"}>월 매출</div>
-                                   <div className={"originName"}>월 매출</div>
-                               </li>
-                               <li>
-                                   <div className={"decidedName"}>월 고객 수</div>
-                                   <div className={"originName"}>월 고객 수</div>
-                               </li>
-                               <li>
-                                   <div className={"decidedName"}>월 순이익</div>
-                                   <div className={"originName"}>월 순이익</div>
-                               </li>
-                           </ul>
+                    <div className={"originDataType"}>
+                        <div className={"wrapper_title"}>원본 데이터 타입</div>
+                        {task.original_schema.map((item)=>{return(
+                            <ul className={"datatype_list"}>
+                                <span>[ {item.name} ]</span>
+                                <li>
+                                    <ul className={"value_list"}>
+                                        {item.schema.map((item2) => {return(
+                                            <li>
+                                                <div className={"decidedName"}>{item2.Big}</div>
+                                                <div className={"originName"}>{item2.small}</div>
+                                            </li>
+                                        )})}
+                                    </ul>
+                                </li>
+                            </ul>
+                        )})}
+                    </div>
+                </div>
 
-                       </li>
-                   </ul>
-                   <ul className={"datatype_list"}>
-                       <li>
-                           <div className={"datatypeID"}>ID : 001</div>
-                           <ul className={"value_list"}>
-                               <li>
-                                   <div className={"decidedName"}>음식점 이름</div>
-                                   <div className={"originName"}>음식점 이름</div>
-                               </li>
-                               <li>
-                                   <div className={"decidedName"}>월 매출</div>
-                                   <div className={"originName"}>월 매출</div>
-                               </li>
-                               <li>
-                                   <div className={"decidedName"}>월 고객 수</div>
-                                   <div className={"originName"}>월 고객 수</div>
-                               </li>
-                               <li>
-                                   <div className={"decidedName"}>월 순이익</div>
-                                   <div className={"originName"}>월 순이익</div>
-                               </li>
-                           </ul>
+             <div className="Title">나의 제출 현황</div>
+          <div className={"userTable"}>
+           <MaterialTable
+               title={""}
+              columns={[
+                { title: '원본 타입[ID]', field: 'originTypeID' , hideFilterIcon: true, headerStyle:{textAlign:'center'}, cellStyle: {textAlign:"center"}},
+                { title: '회차', field: 'submitNum', hideFilterIcon: true, cellStyle: {textAlign:"center"} },
+                { title: '제출일', field: 'submitDate', hideFilterIcon: true, cellStyle: {textAlign:"center"} },
+                {title: '파일이름', field: 'submitFileName', hideFilterIcon: true, cellStyle: {textAlign:"center"}},
+                {title: '정량평가   점수', field: 'quanScore', hideFilterIcon: true, cellStyle: {textAlign:"center"}},
+                {title: '정성평가 점수',field: 'qualScore', hideFilterIcon: true, cellStyle: {textAlign:"center"}},
+                { title: '패스 여부', field: 'passNonpass', lookup: { 'P': 'PASS', 'NP': 'NONPASS' , 'W' : 'WAIT'},
+                    hideFilterIcon: true, cellStyle: {textAlign:"center"}},
+              ]}
+               data={row}
+               // onRowClick={((event, rowData) => handleClick)}
+               onRowClick={(event, rowData) => {
+                  // Get your id from rowData and use with link.
+                  // window.open(`mysite.com/product/${rowData.}`, "_blank")
+                  // event.stopPropagation();
+                   let tempID : string = ''
+                    toTable.map((item)=>{
+                    })
 
-                       </li>
-                   </ul>
+               }}
+              options={{
+                filtering: true,
+                  filterRowStyle:{backgroundColor:'#F6F6F6'},
+                  headerStyle:{textAlign:'center'},
+                  searchFieldStyle:{position:'relative', top:'-38px', backgroundColor:'white', borderRadius:'5px'}
+              }}
 
-               </div>
-               <div className={"taskStatistic"}>
-                   <div className={"wrapper_title"}>태스크 통계</div>
-                   <div className={"lightgray_wrapper"}>
-                       <div className={"submitFiles"}>제출(Pass)된 파일 수 : {rows.length}개</div>
-                       <div className={"passFiles"}>Pass된 튜플 수 : 0</div>
-                       <div className={"passTuples"}>해당 태스크 평균 점수 : 10점</div>
-                       <Paper className={classes.root}>
-                          <TableContainer className={classes.container}>
-                            <Table stickyHeader aria-label="sticky table">
-                              <TableHead>
-                                <TableRow>
-                                  {columns.map((column) => (
-                                    <TableCell
-                                      key={column.id}
-                                      align={'center'}
-                                      style={{ minWidth: column.minWidth, backgroundColor: 'white', fontSize: '16px', fontWeight: 'bold' }}
-                                    >
-                                      {column.label}
-                                    </TableCell>
-                                  ))}
-                                </TableRow>
-                              </TableHead>
-                              <TableBody>
-                                {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                                  return (
-                                    <TableRow hover role="checkbox" tabIndex={-1} key={row.time}>
-                                      {columns.map((column) => {
-                                        const value = row[column.id];
-                                        if (column.id == "fileName"){
-                                           return (
-                                              <TableCell key={column.id} align='center'
-                                                  style={{fontSize: '14px', fontWeight: 'normal', color:'black' }}>
-                                                    <Link to ="/submit/filedetail">
-                                                        {column.format && typeof value === 'number' ? column.format(value) : value}
-                                                    </Link>
-                                              </TableCell>
-                                            );
-                                        }else{
-                                            return (
-                                              <TableCell key={column.id} align='center'
-                                              style={{fontSize: '14px', fontWeight: 'normal' }}>
-                                                {column.format && typeof value === 'number' ? column.format(value) : value}
-                                              </TableCell>
-                                            );
-                                        }
-                                      })}
-                                    </TableRow>
-                                  );
-                                })}
-                              </TableBody>
-                            </Table>
-                          </TableContainer>
-                          <TablePagination
-                            rowsPerPageOptions={[10, 20, 30]}
-                            component="div"
-                            count={rows.length}
-                            rowsPerPage={rowsPerPage}
-                            page={page}
-                            onChangePage={handleChangePage}
-                            onChangeRowsPerPage={handleChangeRowsPerPage}
-                          />
-                        </Paper>
-                   </div>
-               </div>
-
-               <div className={"TaskParticipate"}>
-                   <div className={"wrapper_title"}>
-                       <Link to ="/submit/submitfile" className="link-task-participate"><button className="task-participate">파일 제출하기</button></Link>
-                   </div>
-               </div>
-
-
-           </div>
-
-           </div>
-       </div>
-   );
+            />
+              </div>
+            </div>
+        </div>
+        </div>
+    );
 }
+
