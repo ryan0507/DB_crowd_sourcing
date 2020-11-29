@@ -237,9 +237,9 @@ function Admin_taskAdd(){
         axios.post('http://127.0.0.1:8000/adminUI/create/', {
             Name : task.Name,
             Description :task.Description,
-            TaskThreshold :'',
+            TaskThreshold :'TaskThreshold',
             SubmissionPeriod : task.SubmissionPeriod,
-            TableName : 'task.TableName',
+            TableName : task.TableName,
             TaskSchema : 'task.TaskSchema',
         }).then((r) => {
         console.log(r);
@@ -334,6 +334,7 @@ function Admin_taskAdd(){
                           className={"nameDataTable"}
                         placeholder="태스크 데이터 테이블의 이름을 작성해주세요."
                         inputProps={{ 'aria-label': '데이터 테이블 이름' }}
+                          onChange={e=> handleInputChange('TableName', e.target.value)}
                           />
                </div>
 
