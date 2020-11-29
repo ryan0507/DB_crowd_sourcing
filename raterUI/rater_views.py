@@ -41,14 +41,12 @@ def RaterMainView(request):
     try:
         dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
         result_lst = []
-        for row in select(dbconn, """SELECT P.SUBMISSIONID, T.NAME, P.FILENAME, P.SUBMISSIONDATE, P.ASSESSORID
+        for row in select(dbconn, """SELECT P.SUBMISSIONID, T.NAME, P.FILENAME, P.SUBMISSIONDATE
                           FROM TASK AS T, ORIGINAL_DATA_TYPE AS O, PARSING_DATA AS P
-                          WHERE P.ORIGINALTYPEID = O.ORIGINALTYPEID AND O.TASKID = T.TASKID AND P.P_NP = 'W'"""):
-            tmp_dict = {"SubmissionID": row[0], "TaskName": row[1], "FileName": row[2], "SubmissionDate": row[3],
-                        "A" : request.session['MainID'], "B" : row[4]}
-            if tmp_dict["A"] == tmp_dict["B"]:
-                tmp_dict = {"SubmissionID": row[0], "TaskName": row[1], "FileName": row[2], "SubmissionDate": row[3]}
-                result_lst.append(tmp_dict)
+                          WHERE P.ORIGINALTYPEID = O.ORIGINALTYPEID AND O.TASKID = T.TASKID AND P.P_NP = 'W'
+                          AND P.ASSESSORID = '{}'""".format(request.session['MainID'])):
+            tmp_dict = {"SubmissionID": row[0], "TaskName": row[1], "FileName": row[2], "SubmissionDate": row[3]}
+            result_lst.append(tmp_dict)
         return JsonResponse(result_lst, safe=False)
 
     except Exception as e:
@@ -60,15 +58,12 @@ def RaterMain2View(request):
     try:
         dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
         result_lst = []
-        for row in select(dbconn, """SELECT P.SUBMISSIONID, T.NAME, P.FILENAME, P.P_NP, P.ASSESSORID
+        for row in select(dbconn, """SELECT P.SUBMISSIONID, T.NAME, P.FILENAME, P.P_NP
                           FROM TASK AS T, ORIGINAL_DATA_TYPE AS O, PARSING_DATA AS P
                           WHERE P.ORIGINALTYPEID = O.ORIGINALTYPEID AND O.TASKID = T.TASKID AND NOT P.P_NP = 'W'
-                         """):
-            tmp_dict = {"SubmissionID": row[0], "TaskName": row[1], "FileName": row[2], "P_NP": row[3],
-                        "A" : request.session['MainID'], "B" : row[4]}
-            if tmp_dict["A"] == tmp_dict["B"]:
-                tmp_dict = {"SubmissionID": row[0], "TaskName": row[1], "FileName": row[2], "P_NP": row[3]}
-                result_lst.append(tmp_dict)
+                         AND P.ASSESSORID = '{}'""".format(request.session['MainID'])):
+            tmp_dict = {"SubmissionID": row[0], "TaskName": row[1], "FileName": row[2], "P_NP": row[3]}
+            result_lst.append(tmp_dict)
         return JsonResponse(result_lst, safe=False)
 
     except Exception as e:
@@ -82,23 +77,18 @@ def RaterTaskDetailView(request, submissionID):
         list_arg = [submissionID]
         sql = """SELECT P.SUBMISSIONID, T.DESCRIPTION, T.TASKTHRESHOLD, P.STARTDATE,
                 P.ENDDATE, T.TABLENAME, T.TASKSCHEMA, O.ORIGINSCHEMA, P.QUALASSESSMENT, 
-                P.P_NP, T.NAME, P.SUBMISSIONNUMBER, O.MAPPING, O.ORIGINALTYPEID, P.QUANASSESSMENT, P.ASSESSORID
+                P.P_NP, T.NAME, P.SUBMISSIONNUMBER, O.MAPPING, O.ORIGINALTYPEID, P.QUANASSESSMENT
                 FROM TASK AS T, ORIGINAL_DATA_TYPE AS O, PARSING_DATA AS P
-                WHERE P.ORIGINALTYPEID = O.ORIGINALTYPEID AND O.TASKID = T.TASKID AND P.SUBMISSIONID = %s AND NOT P.P_NP = 'W'"""
+                WHERE P.ORIGINALTYPEID = O.ORIGINALTYPEID AND O.TASKID = T.TASKID AND P.SUBMISSIONID = %s AND NOT P.P_NP = 'W'
+                AND P.ASSESSORID = '{}'""".format(request.session['MainID'])
         result_lst = []
         for row in selectDetail(dbconn, sql, list_arg):
-            tmp_dict = {"SubmissionID": row[0], "TaskDescription": row[1], "TaskThreshold": row[2], "StartDate": row[3],
+            tmp_dict = {"SubmissionID": row[0], "TaskDescription": row[1], "TaskThreshold": row[2],
+                        "StartDate": row[3],
                         "EndDate": row[4], "TableName": row[5], "TaskSchema": row[6], "OriginSchema": row[7],
                         "QualAssessment": row[8], "P_NP": row[9], "TaskName": row[10], "SubmissionNumber": row[11],
-                        "OriginSchemaMapping": row[12], "OriginTypeID": row[13], "QuanAssessment" : row[14],
-                        "A" : request.session['MainID'], "B" : row[15]}
-            if tmp_dict["A"] == tmp_dict["B"]:
-                tmp_dict = {"SubmissionID": row[0], "TaskDescription": row[1], "TaskThreshold": row[2],
-                            "StartDate": row[3],
-                            "EndDate": row[4], "TableName": row[5], "TaskSchema": row[6], "OriginSchema": row[7],
-                            "QualAssessment": row[8], "P_NP": row[9], "TaskName": row[10], "SubmissionNumber": row[11],
-                            "OriginSchemaMapping": row[12], "OriginTypeID": row[13], "QuanAssessment": row[14]}
-                result_lst.append(tmp_dict)
+                        "OriginSchemaMapping": row[12], "OriginTypeID": row[13], "QuanAssessment": row[14]}
+            result_lst.append(tmp_dict)
         return JsonResponse(result_lst, safe=False)
 
     except Exception as e:
@@ -114,24 +104,39 @@ def RaterFileDetailView(request, submissionID):
                 P.ENDDATE, T.TABLENAME, T.TASKSCHEMA, O.ORIGINSCHEMA, P.QUANASSESSMENT, 
                 T.NAME, P.SUBMISSIONNUMBER, O.MAPPING, O.ORIGINALTYPEID, P.ASSESSORID
                 FROM TASK AS T, ORIGINAL_DATA_TYPE AS O, PARSING_DATA AS P
-                WHERE P.ORIGINALTYPEID = O.ORIGINALTYPEID AND O.TASKID = T.TASKID AND P.SUBMISSIONID = %s AND P_NP = 'W'"""
+                WHERE P.ORIGINALTYPEID = O.ORIGINALTYPEID AND O.TASKID = T.TASKID AND P.SUBMISSIONID = %s AND P_NP = 'W'
+                AND P.ASSESSORID = '{}'""".format(request.session['MainID'])
         result_lst = []
         for row in selectDetail(dbconn, sql, list_arg):
-            tmp_dict = {"SubmissionID": row[0], "TaskDescription": row[1], "TaskThreshold": row[2], "StartDate": row[3],
+            tmp_dict = {"SubmissionID": row[0], "TaskDescription": row[1], "TaskThreshold": row[2],
+                        "StartDate": row[3],
                         "EndDate": row[4], "TableName": row[5], "TaskSchema": row[6], "OriginSchema": row[7],
                         "QuanAssessment": row[8], "TaskName": row[9], "SubmissionNumber": row[10],
-                        "OriginSchemaMapping": row[11], "OriginTypeID": row[12],
-                        "A" : request.session['MainID'], "B" : row[13]}
-            if tmp_dict["A"] == tmp_dict["B"]:
-                tmp_dict = {"SubmissionID": row[0], "TaskDescription": row[1], "TaskThreshold": row[2],
-                            "StartDate": row[3],
-                            "EndDate": row[4], "TableName": row[5], "TaskSchema": row[6], "OriginSchema": row[7],
-                            "QuanAssessment": row[8], "TaskName": row[9], "SubmissionNumber": row[10],
-                            "OriginSchemaMapping": row[11], "OriginTypeID": row[12]}
-                result_lst.append(tmp_dict)
+                        "OriginSchemaMapping": row[11], "OriginTypeID": row[12]}
+            result_lst.append(tmp_dict)
         return JsonResponse(result_lst, safe=False)
 
     except Exception as e:
         return JsonResponse([], safe=False)
+    finally:
+        dbconn.close();
+
+def RaterChangeInfoView(request):
+    tmp_dict = {"ID": "Error", "Password": "Error", "Name": "Error", "Gender": "Error",
+                "Address": "Error", "DateOfBirth": "Error", "PhoneNumber": "Error"}
+    try:
+        dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
+        r = select(dbconn,"SELECT * FROM USER WHERE MainID = '{}'".format(request.session["MainID"]))
+        for t in r:
+            tmp_dict["ID"] = t[1]
+            tmp_dict["Password"] = t[2]
+            tmp_dict["Name"] = t[3]
+            tmp_dict["Gender"] = t[4]
+            tmp_dict["Address"] = t[5]
+            tmp_dict["DateOfBirth"] = t[6]
+            tmp_dict["PhoneNumber"] = t[7]
+            return JsonResponse(tmp_dict)
+    except Exception as e:
+        return JsonResponse(tmp_dict)
     finally:
         dbconn.close();

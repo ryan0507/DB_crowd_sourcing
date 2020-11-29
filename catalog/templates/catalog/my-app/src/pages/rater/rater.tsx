@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { BrowserRouter as Router, Route, Link, Switch, NavLink, } from 'react-router-dom';
 
-import rater_changeInfo from "./rater_changeInfo";
+import Rater_changeInfo from "./rater_changeInfo";
 import Rater_main from "./rater_main";
 import Rater_main2 from "./rater_main2";
 import Rater_fileDetail from "./rater_fileDetail";
@@ -53,7 +53,7 @@ function Rater(){
                 <Switch>
                     <Route exact={true} path="/rater/main" component={Rater_main}/>
                     <Route exact path="/rater/main2" component={Rater_main2}/>
-                    <Route exact path="/rater/changeInfo" component={rater_changeInfo}/>
+                    <Route exact path="/rater/changeInfo" component={Rater_changeInfo}/>
                     <Route exact path="/rater/fileDetail/:submission_id" component={Rater_fileDetail}/>
                     <Route exact path="/rater/taskDetail/:submission_id" component={Rater_taskDetail}/>
                 </Switch>
