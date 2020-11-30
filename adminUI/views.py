@@ -46,10 +46,8 @@ def TaskAddView(request):
     if len(request.body) != 0:
         body_unicode = request.body.decode('utf-8')
         data = json.loads(body_unicode)
-#        print("data: ", data)
         val_tuple = (data["Name"], data["Description"], data["TaskThreshold"],
                      data["SubmissionPeriod"], data["TableName"], data["TaskSchema"])
-#        print(val_tuple)
         value_lst.append(val_tuple)
 
         merge("""INSERT INTO TASK(Name, Description, TaskThreshold, SubmissionPeriod, TableName, TaskSchema) 
@@ -139,7 +137,7 @@ def UserListView(request):
                     "Address": row[4], "DateOfBirth": row[5], "PhoneNumber": row[6], "TaskName": row[7]}
         age = today - tmp_dict["DateOfBirth"]
         age = int(int(age.days) / 365)
-        tmp_dict["age"] = age
+        tmp_dict["age"] = age - (age % 10)
         if tmp_dict["MainID"][:2] == "ad":
             continue
         elif tmp_dict["MainID"][:2] == "su":
@@ -198,17 +196,21 @@ def EstimatorDetailView(request, as_ID):
     list_arg.append(as_ID)
 
     total_num = 0
+    check_num = 0
     pass_num = 0
     est_lst = []
     for row in selectDetail(sql, list_arg):
         est_dict = {"ID": row[0]}
         file_dict = {"TaskName": row[1], "SubmitterName": row[2], "Filename": row[3],
                      "QualAssessment": row[4], "P_NP": row[5]}
+        file_dict["QualAssessment"] = int(file_dict["QualAssessment"])
         est_lst.append(file_dict)
         total_num += 1
+        if row[5] != 'W': check_num += 1
         if row[5] == 'P': pass_num += 1
     est_dict["Files"] = est_lst
     est_dict["Total"] = total_num
+    est_dict["Check"] = check_num
     est_dict["Pass"] = pass_num
 
     return JsonResponse(est_dict, safe=False)

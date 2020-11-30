@@ -108,7 +108,7 @@ function Home_signInUp() {
         }
         if(newUser.Password === newRePw && !exist){
             axios.post('http://127.0.0.1:8000/homeUI/signup/', {
-            MainID : type+''+ids.length,
+            MainID : type+' '+(ids.length+1),
             ID : newUser.ID,
             Password : newUser.Password,
             Name : newUser.Name,
@@ -228,7 +228,7 @@ function Home_signInUp() {
                             Phone number
                         </div>
                         <div className="phone-number">
-                            <input placeholder="- 생략하고 적어주세요."type="text" className="signup__input1"></input>
+                            <input placeholder="- 생략하고 적어주세요."type="text" className="signup__input1" onChange={e=> handleInputChange('PhoneNumber', e.target.value)}></input>
                         </div>
                         <div className="type__select">
                             <div className={type==='su' ? "type-select1 blue" : "type-select1 white"} onClick={setSubmit} >제출자</div>
