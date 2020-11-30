@@ -288,10 +288,10 @@ def SubmitTaskInfo2_3(request, infoID):
                 tmp_dict["avgRate"] = round((tmp[0] + tmp[1]) / 2, 2)
             except:
                 tmp_dict["avgRate"] = 0
-            result_lst.append(tmp_dict)
-        return JsonResponse(result_lst, safe=False)
+
+            return JsonResponse(tmp_dict)
     except Exception as e:
-        return JsonResponse([], safe=False)
+        return JsonResponse({}, safe=False)
     finally:
         dbconn.close();
 
