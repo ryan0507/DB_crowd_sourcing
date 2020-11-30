@@ -53,7 +53,7 @@ function Submit() {
                             <a className="n" href="/submit/main">태스크 목록</a>
                             <a className="n" href="/submit/main2">참여중인 태스크</a>
 
-                            <button className="nr" onClick={logoutSuccess}>Log out</button>
+                            <button id={'textButton'} className="nr" onClick={logoutSuccess}>Log out</button>
                             <a className="nr" href="/submit/changeinfo">개인정보 수정</a>
                             <span className="nr" >안녕하세요 {user.Name}({user.ID})님</span>
                         </nav>
