@@ -84,7 +84,7 @@ const Submit_changeInfo = ()=>{
         <div className = "Submit_changeInfo">
             <div className = 'wrapper'>
                 <div className = 'home-white'>
-                    <div className = "signup__select selected">
+                    <div className = "signup__select">
                         제출자 개인정보 수정
                     </div>
                     <div className='home__inputs'>
@@ -127,8 +127,8 @@ const Submit_changeInfo = ()=>{
                                 <input placeholder="- 생략하고 적어주세요."type="text" className="signup__input1"onChange={signUpPhone} value = {newPhone}></input>
                             </div>
                             <div className="submit__button_s">
-                                <Link to ="/submit/main">
-                                    <button className="signup-submit_s">수정하기</button></Link>
+                                <Link to ="/submit/main"><button className="signup-submit_s">저장</button></Link>
+                                <button className="signup-submit_s">탈퇴</button>
                             </div>
                         </div>
                     </div>

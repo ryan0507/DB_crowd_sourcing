@@ -471,25 +471,25 @@
     transform: translate(13px, -23px);
 }
 .submit__button_s {
-    margin-left: 30%;
-    margin-right: 30%;
+    margin : 0px 120px;
 }
 
 .signup-submit_s{
     text-align: center;
-    font: normal normal 600 25px Apple SD Gothic Neo;
+    font: normal normal 600 20px Apple SD Gothic Neo;
     letter-spacing: 0px;
     color: #FFFAFA;
     border : none;
     background: #6EB9E8 0% 0% no-repeat padding-box;
     box-shadow: 0px 3px 6px #00000029;
     border-radius: 5px;
-    width: 200%;
+    width: 120px;
     height: 50px;
     margin-top: 20px;
     margin-left : auto;
     margin-right: auto;
     display: table;
+    float: right;
 }
 
 .changeInfo_main selected{
@@ -524,3 +524,11 @@
     color : #F6F6F6;
 }
 
+/*SubmitChangeInfo*/
+.Submit_changeInfo{
+    margin-top: 30px;
+}
+.Submit_changeInfo .wrapper .home-white .signup__select{
+    margin: 15px 130px;
+
+}
