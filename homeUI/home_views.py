@@ -6,18 +6,16 @@ DB_ROOT = "root"
 DB_PASSWD = "111111"
 DB_DATABASE = "DB_test"
 
-dbconn = mysql.connector.connect(host="34.64.198.135", user="root", passwd="111111", database="DB_test")
+#dbconn = mysql.connector.connect(host="34.64.198.135", user="root", passwd="111111", database="DB_test")
 
 
-def select(query, bufferd=True):
-  global dbconn;
+def select(dbconn, query, bufferd=True):
   cursor = dbconn.cursor(buffered=bufferd);
   cursor.execute(query);
   return cursor;
 
 
-def merge(query, values, buffered=True):
-    global dbconn;
+def merge(dbconn, query, values, buffered=True):
     try:
         cursor = dbconn.cursor(buffered=buffered);
         cursor.execute(query, values);
@@ -56,13 +54,15 @@ def GetUser(request):
 
 def UserAddView(request):
     value_lst = []
+    dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
+
     if len(request.body) != 0:
         body_unicode = request.body.decode('utf-8')
         data = json.loads(body_unicode)
         val_tuple = (data["MainID"], data["ID"], data["Password"], data["Name"], data["Gender"], data["Address"], data["DateOfBirth"], data["PhoneNumber"])
         value_lst.append(val_tuple)
 
-        merge("""INSERT INTO USER(MainID, ID, Password, Name, Gender, Address, DateOfBirth, PhoneNumber) 
+        merge(dbconn, """INSERT INTO USER(MainID, ID, Password, Name, Gender, Address, DateOfBirth, PhoneNumber)
               VALUES (%s, %s, %s, %s, %s, %s, %s, %s)""", val_tuple)
         return JsonResponse(value_lst, safe=False)
     else:
@@ -71,7 +71,8 @@ def UserAddView(request):
 
 def GetId(request):
     id_list = []
-    for row in select("SELECT ID FROM USER"):
+    dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
+    for row in select(dbconn, "SELECT ID FROM USER"):
         tmp_dict = {"Id" : row[0]}
         id_list.append(tmp_dict)
     return JsonResponse(id_list, safe=False)

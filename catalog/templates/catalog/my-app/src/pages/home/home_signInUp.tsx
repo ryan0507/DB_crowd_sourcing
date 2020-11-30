@@ -152,6 +152,7 @@ function Home_signInUp() {
             Password: pw
         }).then((r)=> {
             let user: User = r.data;
+            console.log(user.MainID);
             if(user.MainID.includes('ad')){
                 alert('관리자');
                 window.location.replace('/admin/main');
