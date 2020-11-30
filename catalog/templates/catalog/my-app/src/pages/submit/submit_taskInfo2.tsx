@@ -3,7 +3,6 @@ import MaterialTable from 'material-table';
 import React, {useEffect, useState} from 'react';
 import axios from "axios";
 import { RouteComponentProps, BrowserRouter as Router, Route,Link } from 'react-router-dom';
-
 axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
 
@@ -226,12 +225,13 @@ export default function Submit_taskInfo2(props : RouteComponentProps<{task_id : 
                             </ul>
                         )})}
                     </div>
-                </div>
-                </div>
+
 
             <div className="submitTaskList">
-                <div className="Title">나의 제출 현황 [ Task : {task.name} ]</div>
-                <div className={"userTable"}>
+            {/*<div className={"taskStatistic"}>*/}
+                <div className="wrapper_title">나의 제출 현황 [ Task : {task.name} ]</div>
+                <div className={"lightgray_wrapper"}>
+                {/*<div className={"userTable"}>*/}
                     <MaterialTable
                title={""}
               columns={[
@@ -257,11 +257,13 @@ export default function Submit_taskInfo2(props : RouteComponentProps<{task_id : 
                 filtering: true,
                   filterRowStyle:{backgroundColor:'#F6F6F6'},
                   headerStyle:{textAlign:'center'},
-                  searchFieldStyle:{position:'relative', top:'-38px', backgroundColor:'white', borderRadius:'5px'}
+                  searchFieldStyle:{position:'relative', top:'0px', backgroundColor:'white', borderRadius:'5px'}
               }}
             />
+            {/*</div>*/}
+             </div>
             </div>
-
+        </div>
         </div>
         </div>
     );
