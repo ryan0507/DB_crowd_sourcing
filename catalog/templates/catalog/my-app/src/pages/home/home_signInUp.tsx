@@ -37,7 +37,7 @@ function Home_signInUp() {
     const [sex, setSex] = useState('');
     const [newAddress, setNewAddress] = useState('');
     const [type, setType]= useState('');
-    const [newBirth, setNewBirth] = useState('');
+    const [newBirth, setNewBirth] = useState(Date.parse('0001-01-01'));
 
     const [signIn, setSignIn] = useState(true);
     const initialUser = {
@@ -47,7 +47,7 @@ function Home_signInUp() {
         Name : "",
         Gender : "",
         Address : "",
-        DateOfBirth : "",
+        DateOfBirth : '0001-01-01',
         PhoneNumber : "",
     }
     const [newUser, setNewUser] = useState<NewUser>(initialUser);
@@ -106,7 +106,11 @@ function Home_signInUp() {
                 exist = true;
             }
         }
-        if(newUser.Password === newRePw && !exist){
+        var isnull = false;
+        if(newUser.ID === "" || newUser.Password === "" || newUser.Name === "" || sex === '' || newUser.Address === "" || newUser.DateOfBirth === '0001-01-01' || newUser.PhoneNumber === ""){
+            isnull = true;
+        }
+        if(newUser.Password === newRePw && !exist && !isnull){
             axios.post('http://127.0.0.1:8000/homeUI/signup/', {
             MainID : type+' '+(ids.length+1),
             ID : newUser.ID,
@@ -124,6 +128,9 @@ function Home_signInUp() {
             console.log(err.response.data);
             console.log(err.response.status);
             console.log(err.response.headers); } )
+        }
+        else if(isnull){
+            alert("정보를 모두 입력해주세요.");
         }
         else if(newUser.Password !== newRePw){
             console.log("password error");
