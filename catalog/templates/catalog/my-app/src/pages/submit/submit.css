@@ -111,8 +111,8 @@
     margin-left: 170px;
 }
 
-.taskStatistic{
-    margin-top: 20px;
+.submit_taskInfo2 .taskStatistic{
+    margin-top: 5px;
 }
 .taskStatistic .submitFiles,
 .taskStatistic .passFiles,
@@ -160,6 +160,7 @@
     font-weight: 700;
     color: #A7A7A7;
 }
+
 .adminAlterPassword .contentName{
     margin-left: 170px;
     color: #707070;
@@ -530,5 +531,20 @@
 }
 .Submit_changeInfo .wrapper .home-white .signup__select{
     margin: 15px 130px;
+}
 
+/*Submit task info2*/
+.submit_taskInfo2 .originDataType span{
+    float : left;
+    line-height: 58px;
+    margin-right: 10px;
+}
+.submit_taskInfo2 .TaskSchema .value_list{
+    margin-bottom: 110px;
+}
+.submit_taskInfo2 .originDataType{
+    margin-bottom: 80px;
+}
+.submit_taskInfo2 .lightgray_wrapper{
+    margin-bottom: 15px;
 }

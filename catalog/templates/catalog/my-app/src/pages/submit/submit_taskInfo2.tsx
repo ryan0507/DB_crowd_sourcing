@@ -3,6 +3,14 @@ import MaterialTable from 'material-table';
 import React, {useEffect, useState} from 'react';
 import axios from "axios";
 import { RouteComponentProps, BrowserRouter as Router, Route,Link } from 'react-router-dom';
+import Paper from "@material-ui/core/Paper";
+import TableContainer from "@material-ui/core/TableContainer";
+import Table from "@material-ui/core/Table";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import TableCell from "@material-ui/core/TableCell";
+import TableBody from "@material-ui/core/TableBody";
+import TablePagination from "@material-ui/core/TablePagination";
 axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
 
@@ -84,9 +92,11 @@ interface Data {
 function createData(pars : ParsingData): Data[] {
     let temp : Data[] = [];
     pars.data.map((item)=>{
+        let tempPass : string = item.passNonpass;
+        if(item.passNonpass === "W"){tempPass = '제출 전'}
         temp.push({originTypeID : item.originalTypeID, submitNum : item.submitNum,
             submitDate : item.submitDate.substring(0,10), submitFileName : item.submitFileName, quanScore : item.quanScore,
-            qualScore : item.qualScore, passNonpass : item.passNonpass})
+            qualScore : item.qualScore, passNonpass : tempPass})
     })
   return temp;
 }
@@ -143,6 +153,20 @@ export default function Submit_taskInfo2(props : RouteComponentProps<{task_id : 
         getApi3()
     },[])
 
+
+    const classes = useStyles();
+    const [page, setPage] = React.useState(0);
+    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const handleChangePage = (event: unknown, newPage: number) => {
+        setPage(newPage);
+    };
+    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setRowsPerPage(+event.target.value);
+        setPage(0);
+    };
+
+
+
     // const[score, setScore] = useState<Score>({score: "0"});
     // const getApi4 = async() =>{
     //     await axios.get(`http://127.0.0.1:8000/submitUI/taskinfo2_4/${props.match.params.task_id}/`).then((r)=>{
@@ -177,33 +201,30 @@ export default function Submit_taskInfo2(props : RouteComponentProps<{task_id : 
                         <div className={"wrapper_title"}>최소 업로드 주기</div>
                         <div className={"lightgray_wrapper"} >{task.period}일</div>
                     </div>
-                    <div className={"MinUpload"}>
-                        <div className={"wrapper_title"}>제출한 파일 수</div>
-                        <div className={"lightgray_wrapper"} >{stat.NSubmittedFile}개</div>
-                    </div>
-                    <div className={"MinUpload"}>
-                        <div className={"wrapper_title"}>Pass된 파일 수</div>
-                        <div className={"lightgray_wrapper"} >{stat.NpassedFile}개</div>
-                    </div>
+                    {/*<div className={"MinUpload"}>*/}
+                    {/*    <div className={"wrapper_title"}>제출한 파일 수</div>*/}
+                    {/*    <div className={"lightgray_wrapper"} >{stat.NSubmittedFile}개</div>*/}
+                    {/*</div>*/}
+                    {/*<div className={"MinUpload"}>*/}
+                    {/*    <div className={"wrapper_title"}>Pass된 파일 수</div>*/}
+                    {/*    <div className={"lightgray_wrapper"} >{stat.NpassedFile}개</div>*/}
+                    {/*</div>*/}
                      <div className={"MinUpload"}>
                         <div className={"wrapper_title"}>평균 점수</div>
                         <div className={"lightgray_wrapper"} >{stat.avgRate}점</div>
                     </div>
                     <div className={"TaskSchema"}>
                         <div className={"wrapper_title"}>태스크 데이터 테이블 스키마</div>
-                        <ul className={"datatype_list"}>
-                            <li>
-                                <ul className={"value_list"}>
-                                    {task.schema.map((item)=>{
-                                        return(
-                                            <li>
-                                                <div className={"name"}>{item.Big}</div>
-                                                <div className={"type"}>({item.small})</div>
-                                            </li>
-                                        )})}
-                                </ul>
-                            </li>
-                        </ul>
+
+                            <ul className={"value_list"}>
+                                {task.schema.map((item)=>{
+                                    return(
+                                        <li>
+                                            <div className={"name"}>{item.Big}</div>
+                                            <div className={"type"}>({item.small})</div>
+                                        </li>
+                                    )})}
+                            </ul>
 
                     </div>
 
@@ -211,7 +232,7 @@ export default function Submit_taskInfo2(props : RouteComponentProps<{task_id : 
                         <div className={"wrapper_title"}>원본 데이터 타입</div>
                         {task.original_schema.map((item)=>{return(
                             <ul className={"datatype_list"}>
-                                <span>[ {item.name} ]</span>
+                                <span>[ {item.name} ] :</span>
                                 <li>
                                     <ul className={"value_list"}>
                                         {item.schema.map((item2) => {return(
@@ -228,42 +249,101 @@ export default function Submit_taskInfo2(props : RouteComponentProps<{task_id : 
 
 
             <div className="submitTaskList">
-            {/*<div className={"taskStatistic"}>*/}
-                <div className="wrapper_title">나의 제출 현황 [ Task : {task.name} ]</div>
+                <div className="wrapper_title">나의 제출 현황 </div>
                 <div className={"lightgray_wrapper"}>
-                {/*<div className={"userTable"}>*/}
-                    <MaterialTable
-               title={""}
-              columns={[
-                { title: '원본 타입[ID]', field: 'originTypeID' , hideFilterIcon: true, headerStyle:{textAlign:'center'}, cellStyle: {textAlign:"center"}},
-                { title: '회차', field: 'submitNum', hideFilterIcon: true, cellStyle: {textAlign:"center"} },
-                { title: '제출일', field: 'submitDate', hideFilterIcon: true, cellStyle: {textAlign:"center"} },
-                {title: '파일이름', field: 'submitFileName', hideFilterIcon: true, cellStyle: {textAlign:"center"}},
-                {title: '정량평가   점수', field: 'quanScore', hideFilterIcon: true, cellStyle: {textAlign:"center"}},
-                {title: '정성평가 점수',field: 'qualScore', hideFilterIcon: true, cellStyle: {textAlign:"center"}},
-                { title: '패스 여부', field: 'passNonpass', lookup: { 'P': 'PASS', 'NP': 'NONPASS' , 'W' : 'WAIT'},
-                    hideFilterIcon: true, cellStyle: {textAlign:"center"}},
-              ]}
-               data={row}
-               // onRowClick={((event, rowData) => handleClick)}
-               onRowClick={(event, rowData) => {
-                  // Get your id from rowData and use with link.
-                   let tempID : string = ''
-                    toTable.map((item)=>{
-                    })
+            {/*        <MaterialTable*/}
+            {/*   title={""}*/}
+            {/*  columns={[*/}
+            {/*    { title: '원본 타입[ID]', field: 'originTypeID' , hideFilterIcon: true, headerStyle:{textAlign:'center'}, cellStyle: {textAlign:"center"}},*/}
+            {/*    { title: '회차', field: 'submitNum', hideFilterIcon: true, cellStyle: {textAlign:"center"} },*/}
+            {/*    { title: '제출일', field: 'submitDate', hideFilterIcon: true, cellStyle: {textAlign:"center"} },*/}
+            {/*    {title: '파일이름', field: 'submitFileName', hideFilterIcon: true, cellStyle: {textAlign:"center"}},*/}
+            {/*    {title: '정량평가   점수', field: 'quanScore', hideFilterIcon: true, cellStyle: {textAlign:"center"}},*/}
+            {/*    {title: '정성평가 점수',field: 'qualScore', hideFilterIcon: true, cellStyle: {textAlign:"center"}},*/}
+            {/*    { title: '패스 여부', field: 'passNonpass', lookup: { 'P': 'PASS', 'NP': 'NONPASS' , 'W' : 'WAIT'},*/}
+            {/*        hideFilterIcon: true, cellStyle: {textAlign:"center"}},*/}
+            {/*  ]}*/}
+            {/*   data={row}*/}
+            {/*   // onRowClick={((event, rowData) => handleClick)}*/}
+            {/*   onRowClick={(event, rowData) => {*/}
+            {/*      // Get your id from rowData and use with link.*/}
+            {/*       let tempID : string = ''*/}
+            {/*        toTable.map((item)=>{*/}
+            {/*        })*/}
 
-               }}
-              options={{
-                filtering: true,
-                  filterRowStyle:{backgroundColor:'#F6F6F6'},
-                  headerStyle:{textAlign:'center'},
-                  searchFieldStyle:{position:'relative', top:'0px', backgroundColor:'white', borderRadius:'5px'}
-              }}
-            />
+            {/*   }}*/}
+            {/*  options={{*/}
+            {/*    filtering: true,*/}
+            {/*      filterRowStyle:{backgroundColor:'#F6F6F6'},*/}
+            {/*      headerStyle:{textAlign:'center'},*/}
+            {/*      searchFieldStyle:{position:'relative', top:'0px', backgroundColor:'white', borderRadius:'5px'}*/}
+            {/*  }}*/}
+            {/*/>*/}
+            <div className={"taskStatistic"}>
+                       <div className={"submitFiles"}>제출된 파일 수 : {stat.NSubmittedFile}개</div>
+                       <div className={"passFiles"}>Pass된 파일 수 : {stat.NpassedFile}개</div>
+                       <div className={"passTuples"}>Pass된 튜플 수 : 000개</div>
+                       <Paper className={classes.root}>
+                          <TableContainer className={classes.container}>
+                            <Table stickyHeader aria-label="sticky table">
+                              <TableHead>
+                                <TableRow>
+                                  {columns.map((column) => (
+                                    <TableCell
+                                      key={column.id}
+                                      align={'center'}
+                                      style={{ minWidth: column.minWidth, backgroundColor: 'white', fontSize: '16px', fontWeight: 'bold' }}
+                                    >
+                                      {column.label}
+                                    </TableCell>
+                                  ))}
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {row.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                                  return (
+                                    <TableRow hover role="checkbox" tabIndex={-1} key={row.submitNum}>
+                                      {columns.map((column) => {
+                                        const value = row[column.id];
+                                        if (column.id == "submitFileName"){
+                                           return (
+                                              <TableCell key={column.id} align='center'
+                                                  style={{fontSize: '14px', fontWeight: 'normal', color:'black' }}>
+                                                    <Link to ="/admin/filedetail">
+                                                        {column.format && typeof value === 'number' ? column.format(value) : value}
+                                                    </Link>
+                                              </TableCell>
+                                            );
+                                        }else{
+                                            return (
+                                              <TableCell key={column.id} align='center'
+                                              style={{fontSize: '14px', fontWeight: 'normal' }}>
+                                                {column.format && typeof value === 'number' ? column.format(value) : value}
+                                              </TableCell>
+                                            );
+                                        }
+                                      })}
+                                    </TableRow>
+                                  );
+                                })}
+                              </TableBody>
+                            </Table>
+                          </TableContainer>
+                          <TablePagination
+                            rowsPerPageOptions={[10, 20, 30]}
+                            component="div"
+                            count={row.length}
+                            rowsPerPage={rowsPerPage}
+                            page={page}
+                            onChangePage={handleChangePage}
+                            onChangeRowsPerPage={handleChangeRowsPerPage}
+                          />
+                        </Paper>
+                   </div>
+               </div>
             {/*</div>*/}
              </div>
             </div>
-        </div>
         </div>
         </div>
     );
