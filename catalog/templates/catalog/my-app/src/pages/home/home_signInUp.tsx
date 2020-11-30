@@ -127,7 +127,9 @@ function Home_signInUp() {
         }).catch((err) => {
             console.log(err.response.data);
             console.log(err.response.status);
-            console.log(err.response.headers); } )
+            console.log(err.response.headers); } );
+
+            window.location.href="/"
         }
         else if(isnull){
             alert("정보를 모두 입력해주세요.");

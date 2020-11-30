@@ -66,7 +66,8 @@ function createData(user : User[]): Data[] {
         let tempJoined : string[] = [];
         if(item.Task != []){
         item.Task?.map((joined)=>{
-            tempJoined.push(joined+", ");
+            if(joined != null) {tempJoined.push(joined+", ")}
+            else {tempJoined.push('-')}
         })}
         temp.push({ID : item.ID, name: item.Name, birth: item.DateOfBirth, ages: item.age+"대", sex: item.Gender, role:item.role, joined: tempJoined, phoneNum: item.PhoneNumber,})
     })
@@ -93,16 +94,6 @@ export default function Admin_userList() {
     },[]);
 
     const row = createData(_user);
-    const handleClick = (event :React.MouseEvent<Element, MouseEvent>, data : Data) =>{
-
-        console.log(data)
-        let tempID : string = ''
-        _user.map((item)=>{
-            if(item.ID === data.ID){tempID = item.MainID.substring(3,)}
-        })
-        console.log(tempID)
-        window.location.replace("/admin/estimatorDetail/");
-    }
 
   return (
       <div className={"userList"}>

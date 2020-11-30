@@ -126,7 +126,8 @@ input::placeholder {
     background: #F6F6F6 0% 0% no-repeat padding-box;
     border-radius: 15px;
     text-align: center;
-    font: normal normal 800 25px Apple SD Gothic Neo;
+    font: normal normal 800 20px Apple SD Gothic Neo;
+    line-height: 33px;
     letter-spacing: 0px;
     color: #A7A7A7;
     margin-bottom: 7px;
@@ -139,7 +140,8 @@ input::placeholder {
     background: #F6F6F6 0% 0% no-repeat padding-box;
     border-radius: 15px;
     text-align: center;
-    font: normal normal 800 25px Apple SD Gothic Neo;
+    font: normal normal 800 20px Apple SD Gothic Neo;
+    line-height: 33px;
     letter-spacing: 0px;
     color: #A7A7A7;
     margin-left : 24px;
@@ -204,7 +206,8 @@ input::placeholder {
     text-align: center;
     border-radius: 15px;
     border : none;
-    font: normal normal 800 25px Apple SD Gothic Neo;
+    font: normal normal 800 20px Apple SD Gothic Neo;
+    line-height: 33px;
     color: #A7A7A7;
     padding : 10px 15px;
     width: 120px;
@@ -221,7 +224,8 @@ input::placeholder {
     text-align: center;
     border-radius: 15px;
     border : none;
-    font: normal normal 800 25px Apple SD Gothic Neo;
+    font: normal normal 800 20px Apple SD Gothic Neo;
+    line-height: 33px;
     color: #A7A7A7;
     padding : 10px 15px;
     width: 120px;

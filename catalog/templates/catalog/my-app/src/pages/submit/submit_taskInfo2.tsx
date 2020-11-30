@@ -22,7 +22,7 @@ interface Task {
     tablename: string;
     description: string;
     pass_s: string;
-    period: string;
+    period: number;
     schema: EachSchema[];
     original_schema: OriginalSchema[];
     participate: string;
@@ -92,11 +92,11 @@ function createData(pars : ParsingData): Data[] {
 }
 
 interface TaskForStat{
-    TaskID: string;
+    TaskID: number;
     Name : string;
     Description: string;
-    NSubmittedFile : string;
-    NpassedFile : string;
+    NSubmittedFile : number[];
+    NpassedFile : number;
     avgRate : string;
 }
 // interface Score {
@@ -105,7 +105,7 @@ interface TaskForStat{
 
 export default function Submit_taskInfo2(props : RouteComponentProps<{task_id : string}>,){
     const[task, setTask] = useState<Task>({name : "Error", tablename : "Error", description: "Error", original_schema : [],
-        participate : "P", period: "Error", pass_s: "Error", schema: []});
+        participate : "P", period: 0, pass_s: "Error", schema: []});
     const getApi = async() =>{
         await axios.get(`http://127.0.0.1:8000/submitUI/taskinfo2/${props.match.params.task_id}/`).then((r)=>{
             let temp: Task = r.data;
@@ -131,8 +131,8 @@ export default function Submit_taskInfo2(props : RouteComponentProps<{task_id : 
 
     const row = createData(parsing);
 
-    const[stat, setStat] = useState<TaskForStat>({TaskID: "Error", Name: "Error", Description: "Error", NSubmittedFile: "Error",
-                        NpassedFile: "Error", avgRate: "Error"});
+    const[stat, setStat] = useState<TaskForStat>({TaskID: 0, Name: "Error", Description: "Error", NSubmittedFile: [],
+                        NpassedFile: 0, avgRate: "Error"});
     const getApi3 = async() =>{
         await axios.get(`http://127.0.0.1:8000/submitUI/taskinfo2_3/${props.match.params.task_id}/`).then((r)=>{
             let temp: TaskForStat = r.data;
