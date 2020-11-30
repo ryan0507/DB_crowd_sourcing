@@ -97,7 +97,7 @@ function Home_signInUp() {
     const signUpBirth = (e:any) => {
         setNewBirth(e.target.value);
     }
-    const handleSignUp = (event : React.FormEvent<HTMLFormElement>) => {
+    const handleSignUp = (event : React.FormEvent<HTMLButtonElement>) => {
         event.preventDefault();
         console.log("signup");
         var exist = false;
@@ -193,7 +193,6 @@ function Home_signInUp() {
 
                     </div>
                     <div className={signIn ? "signup-inputs hidden" : "signup-inputs"}>
-                        <form onSubmit={(event) => handleSignUp(event)}>
                         <div className="signup-input__title">
                             ID
                         </div>
@@ -237,10 +236,9 @@ function Home_signInUp() {
                         </div>
                         <div className="submit__button">
                             <Link to ="/">
-                                <input type="submit" value="제출" className="signup-submit"/>
+                                <button type="submit" className="signup-submit" onClick={(event) => handleSignUp(event)}>제출</button>
                             </Link>
                         </div>
-                        </form>
                     </div>
                 </div>
             </div>
