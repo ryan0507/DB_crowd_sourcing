@@ -1,8 +1,6 @@
 from django.urls import path
 from .submit_views import *
 
-
-
 urlpatterns = [
     # Rater [MAIN]
     path('main1task/', SubmitMainView),
@@ -11,5 +9,9 @@ urlpatterns = [
     path('changeinfo/',SubmitChangeInfo),
     path('taskinfo1/<int:infoID>/',SubmitTaskInfo1),
     path('gettask/',GetTask),
-    path('jointask/',JoinTask)
+    path('jointask/',JoinTask),
+    path('taskinfo2/<int:infoID>/', SubmitTaskInfo2),
+    path('taskinfo2_2/<int:infoID>/', SubmitTaskInfo2_2),
+    path('taskinfo2_3/<int:infoID>/', SubmitTaskInfo2_3),
+    path('taskinfo2_4/<int:infoID>/', SubmitTaskInfo2_4)
 ]
