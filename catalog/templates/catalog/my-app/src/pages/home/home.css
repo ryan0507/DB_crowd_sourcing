@@ -81,7 +81,7 @@
 }
 input::placeholder {
     text-align: center;
-    font: normal normal 800 24px Apple SD Gothic Neo;
+    font: normal normal 800 20px Apple SD Gothic Neo;
     letter-spacing: 0px;
     color: #A7A7A7;
 }
@@ -102,6 +102,7 @@ input::placeholder {
     margin-right: auto;
     display: table;
 }
+
 
 .signup-input__title{
     text-align: left;
@@ -229,9 +230,14 @@ input::placeholder {
 .home a{
     all : unset;
 }
-.signup-submit{
+
+.submit__button .a{
+    width: 100%;
+}
+.home .signup-submit{
     text-align: center;
-    font: normal normal 600 25px Apple SD Gothic Neo;
+    font: normal normal 600 20px Apple SD Gothic Neo;
+    line-height: 20px;
     letter-spacing: 0px;
     color: #FFFAFA;
     border : none;
@@ -240,7 +246,7 @@ input::placeholder {
     border-radius: 5px;
     width: 50%;
     height: 50px;
-    margin-top: 20px;
+    margin-top: 40px;
     margin-left : auto;
     margin-right: auto;
     display: table;

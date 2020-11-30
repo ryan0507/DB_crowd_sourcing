@@ -60,8 +60,15 @@ interface Data {
 
 function createData(user : User[]): Data[] {
     let temp : Data[] = [];
+
     user.map((item)=>{
-        temp.push({ID : item.ID, name: item.Name, birth: item.DateOfBirth, ages: item.age, sex: item.Gender, role:item.role, joined: item.Task, phoneNum: item.PhoneNumber,})
+
+        let tempJoined : string[] = [];
+        if(item.Task != []){
+        item.Task?.map((joined)=>{
+            tempJoined.push(joined+", ");
+        })}
+        temp.push({ID : item.ID, name: item.Name, birth: item.DateOfBirth, ages: item.age+"대", sex: item.Gender, role:item.role, joined: tempJoined, phoneNum: item.PhoneNumber,})
     })
   return temp;
 }
@@ -126,8 +133,6 @@ export default function Admin_userList() {
                 {title: 'phoneNum', field: 'phoneNum', type:"numeric", hideFilterIcon: true, cellStyle: {textAlign:"center"}},
               ]}
                data={row}
-               // onRow
-               // onRowClick={((event, rowData) => handleClick)}
                onRowClick={(event, rowData) => {
                   // Get your id from rowData and use with link.
                   // window.open(`mysite.com/product/${rowData.}`, "_blank")

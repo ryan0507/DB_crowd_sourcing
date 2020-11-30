@@ -15,6 +15,7 @@ interface assesor {
     ID : string,
     Files : file[],
     Total : number,
+    Check : number,
     Pass : number,
 }
 
@@ -83,7 +84,7 @@ function createData(files : file[]): Data[] {
 }
 
 export default function Admin_presenterDetail(props : RouteComponentProps<{as_ID : string}>,){
-    const [assesor, setAssesor] = useState<assesor>({ID : "", Files : [], Total: 0, Pass: 0,});
+    const [assesor, setAssesor] = useState<assesor>({ID : "", Files : [], Total: 0, Check: 0, Pass: 0,});
     const getApi = async() =>{
         await axios.get(`http://127.0.0.1:8000/adminUI/user/assessor/${props.match.params.as_ID}`).then((r)=>{
             let temp: assesor = r.data;
@@ -114,7 +115,7 @@ export default function Admin_presenterDetail(props : RouteComponentProps<{as_ID
            <Link to = "/admin/main" className="right_side_small">뒤로가기</Link>
            <div className="formContent">
                <div className={"taskStatistic"}>
-                       <div className={"submitFiles"}>할당된 파일 수 : {assesor.Total}개</div>
+                       <div className={"submitFiles"}>할당된 파일 수 : {assesor.Total}개   , 평가한 파일 수 : {assesor.Check}개</div>
                        <div className={"passFiles"}>Pass한 파일 수 : {assesor.Pass}개</div>
                        <Paper className={classes.root} style={{display: 'inline-block'}}>
                           <TableContainer className={classes.container}>
@@ -147,7 +148,7 @@ export default function Admin_presenterDetail(props : RouteComponentProps<{as_ID
                                                     </Link>
                                               </TableCell>
                                             );
-                                        }else if (column.id == "pNp" && value =="W") {
+                                        }else if (column.id === "pNp" && value =="W") {
                                             return(
                                                 <TableCell key={column.id} align='center'
                                                            style={{fontSize: '14px', fontWeight: 'normal' }}>

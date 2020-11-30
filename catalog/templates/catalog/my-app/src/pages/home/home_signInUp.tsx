@@ -236,7 +236,7 @@ function Home_signInUp() {
                         </div>
                         <div className="submit__button">
                             <Link to ="/">
-                                <button type="submit" className="signup-submit" onClick={(event) => handleSignUp(event)}>제출</button>
+                                <button type="submit" className="signup-submit" onClick={(event) => handleSignUp(event)}>회원가입</button>
                             </Link>
                         </div>
                     </div>
