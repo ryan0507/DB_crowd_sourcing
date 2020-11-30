@@ -64,7 +64,7 @@ def SubmitMain2View(request):
             tmp_dict["NSubmittedFile"] = list(select(dbconn,"""
             SELECT COUNT(*) FROM PARSING_DATA P, ORIGINAL_DATA_TYPE O, TASK T 
             WHERE O.OriginalTypeID =  P.OriginalTypeID and O.TaskID = T.TaskID
-             and P.SubmitterID = '{}'and T.TaskID = {}""".format(request.session['MainID'], i[0])))[0]
+             and P.SubmitterID = '{}'and T.TaskID = {}""".format(request.session['MainID'], i[0])))[0][0]
 
             tmp =  list(select(dbconn,"""SELECT COUNT(*) FROM PARSING_DATA P, ORIGINAL_DATA_TYPE O, TASK T 
             WHERE O.OriginalTypeID =  P.OriginalTypeID and O.TaskID = T.TaskID
@@ -270,7 +270,7 @@ def SubmitTaskInfo2_3(request, infoID):
             tmp_dict["NSubmittedFile"] = list(select(dbconn,"""
             SELECT COUNT(*) FROM PARSING_DATA P, ORIGINAL_DATA_TYPE O, TASK T 
             WHERE O.OriginalTypeID =  P.OriginalTypeID and O.TaskID = T.TaskID
-             and P.SubmitterID = '{}'and T.TaskID = {}""".format(request.session['MainID'], i[0])))[0]
+             and P.SubmitterID = '{}'and T.TaskID = {}""".format(request.session['MainID'], i[0])))[0][0]
 
             tmp =  list(select(dbconn,"""SELECT COUNT(*) FROM PARSING_DATA P, ORIGINAL_DATA_TYPE O, TASK T 
             WHERE O.OriginalTypeID =  P.OriginalTypeID and O.TaskID = T.TaskID
