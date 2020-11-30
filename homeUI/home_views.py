@@ -77,6 +77,14 @@ def GetId(request):
         id_list.append(tmp_dict)
     return JsonResponse(id_list, safe=False)
 
+def GetMainId(request):
+    id_list = []
+    dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
+    for row in select(dbconn, "SELECT MainID FROM USER"):
+        tmp_dict = {"MainId" : row[0]}
+        id_list.append(tmp_dict)
+    return JsonResponse(id_list, safe=False)
+
 
 def logout(request):
     del request.session['MainID'], request.session['ID'], request.session['Name']
