@@ -63,6 +63,14 @@ ul{
   float: right;
 }
 
+#textButton{
+  background-color: white;
+  border: none;
+  font-size: 17px;
+  font-family: "Poppins", sans-serif;
+  font-weight : 530;
+}
+
 .wrapper {
   display: flex;
   align-items: center;

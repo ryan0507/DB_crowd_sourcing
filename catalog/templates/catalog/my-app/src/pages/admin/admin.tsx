@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import { BrowserRouter as Router, Route, Link, Switch, NavLink, } from 'react-router-dom';
+import axios from "axios";
 import admin_main from "./admin_main";
 import admin_taskAdd from "./admin_taskAdd";
 import admin_taskInfo from "./admin_taskInfo";
@@ -15,6 +16,11 @@ import "./admin.css";
 
 
 function admin() {
+    function logoutSuccess() {
+        axios.get('http://127.0.0.1:8000/homeUI/logout/').then((r)=> {
+            window.location.replace("/");
+        })
+    }
   return (
       <Router>
         <div className="admin">
@@ -24,7 +30,7 @@ function admin() {
                         <nav>
                             <a className="n" href="/admin/main">태스크 관리</a>
                             <a className="n" href="/admin/userlist">회원 관리</a>
-                            <a className="nr" href="/">Log out</a>
+                            <button id={'textButton'} className="nr" onClick={logoutSuccess}>Log out</button>
                             <a className="nr" href="/admin/alterpw">비밀번호 변경</a>
                         </nav>
                     </div>
