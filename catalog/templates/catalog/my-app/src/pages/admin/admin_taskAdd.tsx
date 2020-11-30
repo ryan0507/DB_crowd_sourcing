@@ -293,6 +293,7 @@ function Admin_taskAdd(){
                           className={"howToTask"}
                         placeholder="태스크의 파일 제출 통과 기준을 작성해주세요."
                         inputProps={{ 'aria-label': '통과 기준 설명' }}
+                          onChange={e=> handleInputChange('TaskThreshold', e.target.value)}
                           />
                </div>
 

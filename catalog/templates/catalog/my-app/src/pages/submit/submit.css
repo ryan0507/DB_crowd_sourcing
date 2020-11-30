@@ -500,3 +500,23 @@
     padding: 0px 10px;
     margin: 0px 25px;
 }
+
+
+.submitTaskList input[type="text"]{
+    all: unset;
+    padding: 10px 10px;
+}
+.submitTaskList .dropdown{
+    transform: translate(-50%,28%);
+    border-radius: 20px;
+}
+.submitTaskList a{
+    color: #56baed;
+    font-weight: 500;
+}
+
+.submitTaskList .userTable{
+    position: relative;
+    top:140px;
+    width: 1000px;
+}
