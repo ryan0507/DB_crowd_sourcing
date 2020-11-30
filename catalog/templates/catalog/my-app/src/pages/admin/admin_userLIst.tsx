@@ -21,11 +21,13 @@ interface User{
     PhoneNumber: string,
     age : string,
     role : string,
+    Task? : string[],
 }
 
 interface Column {
   id: 'ID' | 'name' | 'birth' | 'ages' | 'sex' | 'role' | 'joined' | 'phoneNum' ;
   label: string;
+  maxHeight?: number;
   minWidth?: number;
   align?: 'center';
   alignment?: 'center';
@@ -52,14 +54,14 @@ interface Data {
     ages: string;
     sex: string;
     role: string;
-    joined: string;
+    joined?: string[];
     phoneNum: string;
 }
 
 function createData(user : User[]): Data[] {
     let temp : Data[] = [];
     user.map((item)=>{
-        temp.push({ID : item.ID, name: item.Name, birth: item.DateOfBirth, ages: item.DateOfBirth, sex: item.Gender, role:item.role, joined: '', phoneNum: item.PhoneNumber})
+        temp.push({ID : item.ID, name: item.Name, birth: item.DateOfBirth, ages: item.age, sex: item.Gender, role:item.role, joined: item.Task, phoneNum: item.PhoneNumber,})
     })
   return temp;
 }
@@ -113,17 +115,18 @@ export default function Admin_userList() {
                 {
                   title: 'sex',
                   field: 'sex',
-                  lookup: { 'M': '남', 'F': '여' }, hideFilterIcon: true, cellStyle: {textAlign:"center"}
+                  lookup: { 'M': '남', 'F': '여' }, hideFilterIcon: true, cellStyle: {textAlign:"center",}
                 },
                 {
                   title: 'role',
                   field: 'role',
                   lookup: { 'submitter': '제출자', 'assessor': '평가자' }, hideFilterIcon: true, cellStyle: {textAlign:"center"}
                 },
-                { title: 'joined', field: 'joined', hideFilterIcon: true, cellStyle: {textAlign:"center"}},
+                { title: 'joined', field: 'joined', hideFilterIcon: true, cellStyle: {textAlign:"center", maxHeight:"45px",textOverflow: 'clip', whiteSpace: 'nowrap', overflow: 'scroll', maxWidth:"160px"},},
                 {title: 'phoneNum', field: 'phoneNum', type:"numeric", hideFilterIcon: true, cellStyle: {textAlign:"center"}},
               ]}
                data={row}
+               // onRow
                // onRowClick={((event, rowData) => handleClick)}
                onRowClick={(event, rowData) => {
                   // Get your id from rowData and use with link.

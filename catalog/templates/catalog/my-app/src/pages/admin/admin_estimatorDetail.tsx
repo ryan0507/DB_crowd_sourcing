@@ -12,14 +12,24 @@ import TablePagination from "@material-ui/core/TablePagination";
 import Paper from "@material-ui/core/Paper";
 
 interface assesor {
-    SubmissionID: number,
-    SubmissionDate: string,
-    P_NP: string,
+    ID : string,
+    Files : file[],
+    Total : number,
+    Pass : number,
+}
+
+interface file {
+    TaskName : string,
+    SubmitterName : string,
+    Filename: string,
+    QualAssessment: string,
+    P_NP : string,
 }
 
 
+
 interface Column {
-  id:  'taskname'| 'estimatedate' | 'estimatetime' | 'presenter' | 'fileName' | 'presenterScore' | 'pNp';
+  id:  'taskname'| 'presenter' | 'fileName' | 'presenterScore' | 'pNp';
   label: string;
   minWidth?: number;
   align?: 'center';
@@ -29,11 +39,7 @@ interface Column {
 
 const columns: Column[] = [
     {id: 'taskname', label: '태스크\u00a0이름'},
-  { id: 'estimatedate', label: '제출일', minWidth: 80 },
-  {
-    id: 'estimatetime',
-    label: '제출시간',
-  },
+
     {id: 'presenter', label: '제출자'},
   {
     id: 'fileName',
@@ -58,25 +64,26 @@ const useStyles = makeStyles({
 
 interface Data {
     taskname: string,
-  estimatedate: string;
-  estimatetime: string;
   presenter: string,
   fileName: string;
   presenterScore: string,
   pNp: string;
 }
 
-function createData( taskname: string, estimatedate: string, estimatetime: string, presenter: string, fileName: string, presenterScore:string, pNp: string): Data {
-  return { taskname, estimatedate, estimatetime, presenter, fileName, presenterScore, pNp };
+// function createData( taskname: string, estimatedate: string, estimatetime: string, presenter: string, fileName: string, presenterScore:string, pNp: string): Data {
+//   return { taskname, estimatedate, estimatetime, presenter, fileName, presenterScore, pNp };
+// }
+
+function createData(files : file[]): Data[] {
+    let temp : Data[] = [];
+    files.map((item)=>{
+        temp.push({taskname : item.TaskName, presenter: item.SubmitterName, fileName: item.Filename, presenterScore: item.QualAssessment, pNp: item.P_NP,})
+    })
+  return temp;
 }
 
-const rows = [
-  createData('음식점','20.11.02', '23 : 15 : 20','박선종', '음악은_즐거워.csv', '4점', 'Non-pass'),
-  createData('음식점','20.11.02', '23 : 15 : 20','박선종', '음악은_즐거워.csv', '4점', 'Non-pass'),
-];
-
 export default function Admin_presenterDetail(props : RouteComponentProps<{as_ID : string}>,){
-    const [assesor, setAssesor] = useState<assesor>({SubmissionID: 0, SubmissionDate: "", P_NP: "",});
+    const [assesor, setAssesor] = useState<assesor>({ID : "", Files : [], Total: 0, Pass: 0,});
     const getApi = async() =>{
         await axios.get(`http://127.0.0.1:8000/adminUI/user/assessor/${props.match.params.as_ID}`).then((r)=>{
             let temp: assesor = r.data;
@@ -87,6 +94,8 @@ export default function Admin_presenterDetail(props : RouteComponentProps<{as_ID
     useEffect(()=>{
         getApi()
     },[])
+
+    const rows = createData(assesor.Files);
 
     const classes = useStyles();
     const [page, setPage] = React.useState(0);
@@ -101,12 +110,12 @@ export default function Admin_presenterDetail(props : RouteComponentProps<{as_ID
    return(
        <div className={"estimatorDetail"}>
        <div className="wrapper">
-           <div className="Title">{assesor.SubmissionID}</div>
+           <div className="Title">{assesor.ID}</div>
            <Link to = "/admin/main" className="right_side_small">뒤로가기</Link>
            <div className="formContent">
                <div className={"taskStatistic"}>
-                       <div className={"submitFiles"}>제출한 파일 수 : {rows.length}개</div>
-                       <div className={"passFiles"}>Pass된 파일 수 : 0개</div>
+                       <div className={"submitFiles"}>할당된 파일 수 : {assesor.Total}개</div>
+                       <div className={"passFiles"}>Pass한 파일 수 : {assesor.Pass}개</div>
                        <Paper className={classes.root} style={{display: 'inline-block'}}>
                           <TableContainer className={classes.container}>
                             <Table stickyHeader aria-label="sticky table">
@@ -126,7 +135,7 @@ export default function Admin_presenterDetail(props : RouteComponentProps<{as_ID
                               <TableBody>
                                 {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                                   return (
-                                    <TableRow hover role="checkbox" tabIndex={-1} key={row.estimatetime}>
+                                    <TableRow hover role="checkbox" tabIndex={-1} >
                                       {columns.map((column) => {
                                         const value = row[column.id];
                                         if (column.id == "fileName"){
@@ -138,12 +147,20 @@ export default function Admin_presenterDetail(props : RouteComponentProps<{as_ID
                                                     </Link>
                                               </TableCell>
                                             );
-                                        }else{
+                                        }else if (column.id == "pNp" && value =="W") {
+                                            return(
+                                                <TableCell key={column.id} align='center'
+                                                           style={{fontSize: '14px', fontWeight: 'normal' }}>
+                                                    평가 전
+                                                </TableCell>
+                                            );
+                                        }
+                                        else{
                                             return (
-                                              <TableCell key={column.id} align='center'
-                                              style={{fontSize: '14px', fontWeight: 'normal' }}>
-                                                {column.format && typeof value === 'number' ? column.format(value) : value}
-                                              </TableCell>
+                                                <TableCell key={column.id} align='center'
+                                                           style={{fontSize: '14px', fontWeight: 'normal' }}>
+                                                    {column.format && typeof value === 'number' ? column.format(value) : value}
+                                                </TableCell>
                                             );
                                         }
                                       })}
