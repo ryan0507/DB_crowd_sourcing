@@ -16,6 +16,7 @@ import Admin_tableSchema_add from "./admin_tableSchema_add";
 
 axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
+
 interface taskInfo{
     TaskID : string,
     Name : string,
@@ -23,7 +24,7 @@ interface taskInfo{
 }
 
 interface Column {
-  id: 'name' | 'date' | 'time' | 'fileName' | 'pNp';
+  id: 'dataType'| 'dataNum' | 'name' | 'fileName' | 'pNp';
   label: string;
   minWidth?: number;
   align?: 'center';
@@ -32,13 +33,13 @@ interface Column {
 }
 
 const columns: Column[] = [
-  { id: 'name', label: '제출자', minWidth: 80 },
-  { id: 'date', label: '제출일', minWidth: 80 },
+  { id: 'dataType', label: '원본데이터타입', minWidth: 80 },
   {
-    id: 'time',
-    label: '제출시간',
+    id: 'dataNum',
+    label: '회차',
     minWidth: 90,
   },
+  { id: 'name', label: '제출자', minWidth: 80 },
   {
     id: 'fileName',
     label: '제출\u00a0파일명',
@@ -62,20 +63,20 @@ const useStyles = makeStyles({
 
 
 interface Data {
-  name: string;
-  date: string;
-  time: string;
-  fileName: string;
-  pNp: string;
+    dataType : string,
+    dataNum : string,
+    name: string;
+    fileName: string;
+    pNp: string;
 }
 
-function createData( name: string, date: string, time: string,fileName: string, pNp: string): Data {
-  return { name, date, time, fileName, pNp };
+function createData( dataType : string, dataNum: string, name: string, fileName: string, pNp: string): Data {
+  return { dataType, dataNum, name,  fileName, pNp };
 }
 
 const rows = [
-  createData('박선종', '20.11.01', '23 : 15 : 20', '음악은_즐거워.csv', 'Non-pass'),
-  createData('조민주', '20.11.02', '23 : 15 : 30', '새마을식당_10월.csv', 'Pass'),
+  createData("", "",  '박선종',  '음악은_즐거워.csv', 'Non-pass'),
+  createData( "", "",'조민주', '새마을식당_10월.csv', 'Pass'),
 ];
 
 
@@ -103,7 +104,7 @@ interface Type {
     decidedName: string;
 }
 interface TypeList {
-    id : number;
+    name : string;
     types : Type[];
 }
 const defaultValue: Type = {
@@ -156,7 +157,7 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
         setToggleData(!toggleData);
     }
     const [dataTypeList, setDataTypeList] = useState<TypeList[]>([
-        {id:1, types:[{id:0, originName:'음식점 이름',decidedName:'음식점 이름'},
+        {name : "기본 음식점", types:[{id:0, originName:'음식점 이름',decidedName:'음식점 이름'},
                 {id:0, originName:'월 매출',decidedName:'월 매출'},
                 {id:0, originName:'월 고객 수',decidedName:'월 고객 수'},
                 {id:0, originName:'월 순이익',decidedName:'월 순이익'}]},
@@ -164,6 +165,7 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
     const [valueList, setValueList] = useState<dataTable[]>( [{id : 0, valueName : "음식점 이름", valueType: "string"}, {id : 1, valueName : "월 매출", valueType: "integer"}]);
     const [valueCount, setValueCount] = useState<number>(valueList.length + 1);
     const [_list, setList] = useState<Type[]>( []);
+    const [_name, setName] = useState<string>("");
     const [typeCount, setTypeCount] = useState<number>(dataTypeList.length+1);
     const [count, setCount] = useState<number>(1);
       const [_Value, setValue] = useState(defaultValue);
@@ -174,6 +176,9 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
       {
           setTempValue({..._tempValue, [prop]: value});
       }
+      const onTypeNameChange = (value : string) =>{
+          setName(value);
+    }
       const handleSubmit = (e:any) =>{
           let content : Type ={
               id: count,
@@ -206,18 +211,18 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
           });
           setList(l);
       }
-      const handleTypeRemove = (id: number) => {
-      let l : TypeList[] = [];
-      dataTypeList.map((content) => {
-          if(content.id !== id){
-              l.push(content);
-          }
-      });
-      setDataTypeList(l);
-    }
+      const handleTypeRemove = (name: string) => {
+          let l : TypeList[] = [];
+          dataTypeList.map((content) => {
+              if(content.name !== name){
+                  l.push(content);
+              }
+          });
+          setDataTypeList(l);
+        }
     const handleTypeSubmit = (e:any) =>{
           let content : TypeList ={
-              id: typeCount,
+              name: _name,
               types: _list,
           };
           setTypeCount(typeCount + 1);
@@ -274,7 +279,7 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
                            {dataTypeList.map((item) =>{
                                return(
                                    <li className={"dataVertical"}>
-                                       <div className={"datatypeID"}>ID : {item.id}</div>
+                                       <div className={"datatypeID"}> [{item.name}] :</div>
                                         <ul className={"value_list"}>
                                        {item.types.map((type) =>{
                                            return(
@@ -294,7 +299,7 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
                                {dataTypeList.map((item) =>{
                                    return(
                                        <li className={"dataVertical"}>
-                                           <div className={"datatypeID"}>ID : {item.id}</div>
+                                           <div className={"datatypeID"}>[{item.name}] : </div>
                                             <ul className={"value_list"}>
                                            {item.types.map((type) =>{
                                                return(
@@ -304,12 +309,23 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
                                                    </li>);
                                            })}
                                             </ul>
-                                           <div><button className={"deleteButton"} onClick={e => handleTypeRemove(item.id)}>[삭제하기]</button></div>
+                                           <div><button className={"deleteButton"} onClick={e => handleTypeRemove(item.name)}>[삭제하기]</button></div>
                                        </li>
                                    );
                                })}
                             </ul>
-
+                           <div className={"datatypeName"}>
+                               <div className={"typeNameWord"}>원본 데이터 타입 이름 :</div>
+                               <InputBase
+                                  className={"datatypeNameInput"}
+                                  placeholder="해당 원본 데이터 타입의 이름을 작성해주세요"
+                                  inputProps={{ 'aria-label': '원본 데이터 타입' }}
+                                  value={_name}
+                                  onChange={e=> {
+                                      onTypeNameChange(e.target.value)
+                                  }}
+                                />
+                           </div>
                            <div className={"valueList"}>
                                {valueList.map((item)=>{
                                    return(<button className="valueName" onClick={e => pushButton('type', item.valueName)}>{item.valueName}</button>);
@@ -317,9 +333,10 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
                           </div>
                           <div className={"datatypeInput"}>
                                 <div className={"small_lightgray_wrapper"}>{_tempValue.type}</div>
+
                                 <InputBase
-                                  className={"datatypeName"}
-                                  placeholder="해당 원본 데이터 타입의 이름을 작성해주세요"
+                                  className={"datatypeValueName"}
+                                  placeholder="해당 원본 데이터 타입 속성 이름을 작성해주세요"
                                   inputProps={{ 'aria-label': '원본 데이터 타입' }}
                                   value={_tempValue.name}
                                   onChange={e=> {
@@ -438,7 +455,7 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
                               <TableBody>
                                 {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                                   return (
-                                    <TableRow hover role="checkbox" tabIndex={-1} key={row.time}>
+                                    <TableRow hover role="checkbox" tabIndex={-1} >
                                       {columns.map((column) => {
                                         const value = row[column.id];
                                         if (column.id == "fileName"){

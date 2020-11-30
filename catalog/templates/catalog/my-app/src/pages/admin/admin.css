@@ -38,6 +38,7 @@
 }
 .datatype_list{
     clear: both;
+    margin-top: 10px;
     padding-top: 10px;
 }
 .dataVertical{
@@ -260,7 +261,7 @@
 .taskAdd .dataTableSchema_list,
 .taskInfo .dataTableSchema_list{
     clear: both;
-    padding: 10px 0px 0px 20px;
+    padding: 0px 0px 10px 20px;
 }
 .taskAdd .dataTableSchema_list .valueType,
 .taskInfo .dataTableSchema_list .valueType {
@@ -277,8 +278,11 @@
     padding: 10px 20px;
     background-color: #F6F6F6;
 }
-.originDataType_add{
-    padding-top: 50px;
+.formContent .dataTableSchema{
+    margin-top: 25px;
+}
+.formContent .originDataType_add{
+    margin-top: 25px;
 }
 .originDataType_add .wrapper_title{
     float: left;
@@ -299,6 +303,8 @@
     padding : 10px 20px;
     font-weight: 650;
     margin-top: 26px;
+    font-size: 16px;
+    box-shadow: 0 3px 15px 0 rgba(95,186,233,0.2);
 }
 .taskAdd input[type="submit"]{
     clear:both;
@@ -366,7 +372,7 @@
 .admin_datatype_add .valueList{
     clear: both;
     margin: 10px;
-    padding-top: 30px;
+    padding-top: 5px;
 }
 .admin_datatype_add .valueList button{
     background-color: white;
@@ -377,6 +383,23 @@
     float: left;
     padding: 10px 20px;
 }
+.admin_datatype_add .datatypeValueName{
+    margin-top: 14px;
+    width : 380px;
+    float: left;
+}
+.taskAdd .datatypeName .typeNameWord,
+.taskInfo .datatypeName .typeNameWord{
+    float: left;
+    transform: translate(0px, 20px);
+}
+.taskAdd .datatypeName input[type="text"],
+.taskInfo .datatypeName input[type="text"]{
+    margin-top: 0px;
+    width : 380px;
+    float: right;
+    transform: translate(170px, -14px);
+}
 .admin_datatype_add .datatypeInput{
     clear: both;
 }
@@ -385,19 +408,16 @@
     float: left;
     height: 51px;
 }
-.admin_datatype_add .datatypeName{
-    margin-top: 14px;
-    width : 380px;
-    float: left;
-}
+.taskInfo .admin_datatype_add .short,
 .taskAdd .admin_datatype_add .short{
     width : 100px;
     padding : 10px 20px;
     font-weight: 650;
     margin-top: 26px;
-    background-color: #A7A7A7;
-    box-shadow: 0 10px 40px 0 #cccccc;
+    background-color: #56baed;
+    box-shadow: 0 3px 15px 0 rgba(95,186,233,0.2);
 }
+.taskInfo .admin_datatype_add .long,
 .taskAdd .admin_datatype_add .long{
     width : 200px;
     height: 50px;
@@ -466,11 +486,13 @@
     float: left;
     height: 51px;
 }
+
 .admin_tableSchema_add .datatypeName{
     margin-top: 14px;
     width : 380px;
     float: left;
 }
+
 .taskAdd button[type="submit"]{
     width : 100px;
     padding : 10px 20px;

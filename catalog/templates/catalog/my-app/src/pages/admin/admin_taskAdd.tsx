@@ -63,7 +63,7 @@ interface Type {
     decidedName: string;
 }
 interface TypeList {
-    id : number;
+    name : string;
     types : Type[];
 }
 const defaultValue: Type = {
@@ -160,12 +160,13 @@ function Admin_taskAdd(){
 
     //datatype add
     const [dataTypeList, setDataTypeList] = useState<TypeList[]>([
-        {id:1, types:[{id:0, originName:'음식점 이름',decidedName:'음식점 이름'},
+        {name : "기본 음식", types:[{id:0, originName:'음식점 이름',decidedName:'음식점 이름'},
                 {id:0, originName:'월 매출',decidedName:'월 매출'},
                 {id:0, originName:'월 고객 수',decidedName:'월 고객 수'},
                 {id:0, originName:'월 순이익',decidedName:'월 순이익'}]},
         ]);
     const [_list, setList] = useState<Type[]>( []);
+    const [_name, setName] = useState<string>("");
     const [typeCount, setTypeCount] = useState<number>(dataTypeList.length+1);
     const [count, setCount] = useState<number>(1);
       const [_Value, setValue] = useState(defaultValue);
@@ -175,6 +176,9 @@ function Admin_taskAdd(){
       const onValueChange =<P extends keyof tempValue> (prop: P, value: tempValue[P]) =>
       {
           setTempValue({..._tempValue, [prop]: value});
+      }
+      const onTypeNameChange = (value : string) =>{
+          setName(value);
       }
       const handleSubmit = (e:any) =>{
           let content : Type ={
@@ -208,18 +212,18 @@ function Admin_taskAdd(){
           });
           setList(l);
       }
-      const handleTypeRemove = (id: number) => {
-      let l : TypeList[] = [];
-      dataTypeList.map((content) => {
-          if(content.id !== id){
-              l.push(content);
-          }
-      });
-      setDataTypeList(l);
-    }
+      const handleTypeRemove = (name: string) => {
+          let l : TypeList[] = [];
+          dataTypeList.map((content) => {
+              if(content.name !== name){
+                  l.push(content);
+              }
+          });
+          setDataTypeList(l);
+        }
     const handleTypeSubmit = (e:any) =>{
           let content : TypeList ={
-              id: typeCount,
+              name: _name,
               types: _list,
           };
           setTypeCount(typeCount + 1);
@@ -230,7 +234,6 @@ function Admin_taskAdd(){
           setList([]);
           setCount(1);
       }
-
 
     const handleSubmitDD = ( event : React.FormEvent<HTMLFormElement> ) =>{
         event.preventDefault();
@@ -373,7 +376,7 @@ function Admin_taskAdd(){
                            {dataTypeList.map((item) =>{
                                return(
                                    <li className={"dataVertical"}>
-                                       <div className={"datatypeID"}>ID : {item.id}</div>
+                                       <div className={"datatypeID"}>[{item.name}] :</div>
                                         <ul className={"value_list"}>
                                        {item.types.map((type) =>{
                                            return(
@@ -393,7 +396,7 @@ function Admin_taskAdd(){
                                {dataTypeList.map((item) =>{
                                    return(
                                        <li className={"dataVertical"}>
-                                           <div className={"datatypeID"}>ID : {item.id}</div>
+                                           <div className={"datatypeID"}>[{item.name}] : </div>
                                             <ul className={"value_list"}>
                                            {item.types.map((type) =>{
                                                return(
@@ -403,11 +406,23 @@ function Admin_taskAdd(){
                                                    </li>);
                                            })}
                                             </ul>
-                                           <div><button className={"deleteButton"} onClick={e => handleTypeRemove(item.id)}>[삭제하기]</button></div>
+                                           <div><button className={"deleteButton"} onClick={e => handleTypeRemove(item.name)}>[삭제하기]</button></div>
                                        </li>
                                    );
                                })}
                             </ul>
+                           <div className={"datatypeName"}>
+                               <div className={"typeNameWord"}>원본 데이터 타입 이름 :</div>
+                               <InputBase
+                                  className={"datatypeNameInput"}
+                                  placeholder="해당 원본 데이터 타입의 이름을 작성해주세요"
+                                  inputProps={{ 'aria-label': '원본 데이터 타입' }}
+                                  value={_name}
+                                  onChange={e=> {
+                                      onTypeNameChange(e.target.value)
+                                  }}
+                                />
+                           </div>
 
                            <div className={"valueList"}>
                                {valueList.map((item)=>{
@@ -417,7 +432,7 @@ function Admin_taskAdd(){
                           <div className={"datatypeInput"}>
                                 <div className={"small_lightgray_wrapper"}>{_tempValue.type}</div>
                                 <InputBase
-                                  className={"datatypeName"}
+                                  className={"datatypeValueName"}
                                   placeholder="해당 원본 데이터 타입의 이름을 작성해주세요"
                                   inputProps={{ 'aria-label': '원본 데이터 타입' }}
                                   value={_tempValue.name}
