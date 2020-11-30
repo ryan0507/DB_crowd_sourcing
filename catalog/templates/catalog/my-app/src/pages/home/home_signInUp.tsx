@@ -108,7 +108,7 @@ function Home_signInUp() {
         }
         if(newUser.Password === newRePw && !exist){
             axios.post('http://127.0.0.1:8000/homeUI/signup/', {
-            MainID : type+''+ids.length,
+            MainID : type+' '+(ids.length+1),
             ID : newUser.ID,
             Password : newUser.Password,
             Name : newUser.Name,
