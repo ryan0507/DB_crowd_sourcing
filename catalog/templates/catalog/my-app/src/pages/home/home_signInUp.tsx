@@ -11,6 +11,9 @@ axios.defaults.withCredentials = true
 interface Ids{
     Id : string;
 }
+interface MainIds{
+    MainId : string;
+}
 interface User{
     MainID: string;
     ID: string;
@@ -101,9 +104,15 @@ function Home_signInUp() {
         event.preventDefault();
         console.log("signup");
         var exist = false;
+        var max = -1;
         for(var i = 0; i<ids.length ; i++){
             if(ids[i].Id === newUser.ID){
                 exist = true;
+            }
+        }
+        for(var j = 0 ; j <mainIds.length ; j++){
+            if(Number(mainIds[j].MainId.split(' ')[1]) > max){
+                max = Number(mainIds[j].MainId.split(' ')[1]);
             }
         }
         var isnull = false;
@@ -112,7 +121,7 @@ function Home_signInUp() {
         }
         if(newUser.Password === newRePw && !exist && !isnull){
             axios.post('http://127.0.0.1:8000/homeUI/signup/', {
-            MainID : type+' '+(ids.length+1),
+            MainID : type+' '+(max+1),
             ID : newUser.ID,
             Password : newUser.Password,
             Name : newUser.Name,
@@ -144,6 +153,7 @@ function Home_signInUp() {
         }
     };
     const[ids, setIds] = useState<Ids[]>([]);
+    const[mainIds, setMainIds] = useState<MainIds[]>([]);
     const getId = async() =>{
         await axios.get('http://127.0.0.1:8000/homeUI/id/').then((r)=>{
             let temp: Ids[] = r.data;
@@ -153,6 +163,17 @@ function Home_signInUp() {
 
     useEffect(()=>{
         getId()
+    },[])
+
+    const getMainId = async() =>{
+        await axios.get('http://127.0.0.1:8000/homeUI/mainid/').then((r)=>{
+            let temp: MainIds[] = r.data;
+            setMainIds(temp);
+        })
+    }
+
+    useEffect(()=>{
+        getMainId()
     },[])
 
     function loginSuccess() {
