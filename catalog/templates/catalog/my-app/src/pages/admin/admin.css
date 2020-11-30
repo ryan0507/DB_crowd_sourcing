@@ -292,6 +292,13 @@
     padding: 0px;
     font-family: "Poppins", sans-serif;
     font-size: 16px;
+    width : auto;
+}
+.admin_datatype_add button[type="submit"]{
+    width : auto;
+    padding : 10px 20px;
+    font-weight: 650;
+    margin-top: 26px;
 }
 .taskAdd input[type="submit"]{
     clear:both;

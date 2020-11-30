@@ -29,6 +29,24 @@ interface reponse {
 
 
 export default function Submit_taskCheck(){
+    const [notification, setNotification]:any = useState<boolean>(false)
+    const checkHandler:any = (e:Event)=>{
+        setNotification((e.target as any).checked)
+
+    }
+    // const onSubmit :any = (e:Event) =>{
+    //     e.preventDefault();
+    // }
+    const renderSubmit = () =>{
+        if(notification){
+            return(
+                <button type="submit" onClick={JoinSuccess}>참여 신청하기</button>
+            )
+        }
+        return(
+            <button type="submit" disabled>참여 신청하기</button>
+        )
+    }
     const[task, setTask] = useState<Task>({Name : "Error"})
     const getApi = async() =>{
         await axios.get('http://127.0.0.1:8000/submitUI/gettask/').then((r)=>{
@@ -72,14 +90,21 @@ export default function Submit_taskCheck(){
                         </div>
                     </div>
 
-                    <div className={"TaskParticipate"}>
-                        <div className={"wrapper_title"}>
-                            <button className="task-participate" onClick={JoinSuccess}>
-                                본인은 개인정보 수집 및 이용에 대하여 동의합니다.
-                            </button>
-                        </div>
+                    {/*<div className={"TaskParticipate"}>*/}
+                    {/*    <div className={"wrapper_title"}>*/}
+                    {/*        <button className="task-participate" onClick={JoinSuccess}>*/}
+                    {/*            본인은 개인정보 수집 및 이용에 대하여 동의합니다.*/}
+                    {/*        </button>*/}
+                    {/*    </div>*/}
 
-                    </div>
+                    {/*</div>*/}
+                    <form className = "noticeConsent">
+                        <label htmlFor=""></label>
+                        <input type="checkbox" name="agreement" checked= {notification} onChange={checkHandler}/>
+                        <span>본 개인정보 이용 동의서를 모두 읽었으며 동의합니다.</span>
+                    </form>
+
+                    <div className="next">{renderSubmit()}</div>
                 </div>
 
 

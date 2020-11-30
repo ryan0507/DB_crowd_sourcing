@@ -353,12 +353,7 @@
     width : 380px;
     float: left;
 }
-.admin_datatype_add button[type="submit"]{
-    width : 120px;
-    padding : 10px 20px;
-    font-weight: 650;
-    margin-top: 26px;
-}
+
 .admin_datatype_add .datatypeList .decimalList{
     list-style: decimal;
     transform: translate(10px, -40px);
@@ -534,17 +529,47 @@
 }
 
 /*Submit task info2*/
+.submit_taskInfo .originDataType span,
 .submit_taskInfo2 .originDataType span{
     float : left;
     line-height: 58px;
     margin-right: 10px;
 }
+.submit_taskInfo .TaskSchema .value_list,
 .submit_taskInfo2 .TaskSchema .value_list{
-    margin-bottom: 110px;
+    margin-bottom: 100px;
 }
 .submit_taskInfo2 .originDataType{
     margin-bottom: 80px;
 }
+.submit_taskInfo .lightgray_wrapper,
 .submit_taskInfo2 .lightgray_wrapper{
     margin-bottom: 15px;
+}
+.TaskParticipate{
+    clear: both;
+    padding-top: 40px;
+}
+.TaskParticipate button{
+    width : 200px;
+    display: block;
+    margin: 0px auto;
+    font: normal normal 600 20px Apple SD Gothic Neo;
+}
+.next{
+    width : 100%;
+}
+.next button[type="submit"]{
+    margin : 25px 0px 0px 315px;
+    display: block;
+    clear: both;
+    font-size : 20px;
+}
+.next button[type="submit"]:disabled{
+    margin : 25px 0px 0px 315px;
+    display: block;
+    clear: both;
+    font-size : 20px;
+    background-color: #A7A7A7;
+    box-shadow: none;
 }

@@ -98,26 +98,22 @@ export default function Submit_taskInfo(props : RouteComponentProps<{task_id : s
                     </div>
                     <div className={"TaskSchema"}>
                         <div className={"wrapper_title"}>태스크 데이터 테이블 스키마</div>
-                        <ul className={"datatype_list"}>
-                            <li>
-                                <ul className={"value_list"}>
-                                    {task.schema.map((item)=>{
-                                        return(
-                                            <li>
-                                                <div className={"name"}>{item.Big}</div>
-                                                <div className={"type"}>({item.small})</div>
-                                            </li>
-                                        )})}
-                                </ul>
-                            </li>
-                        </ul>
-
+                            <ul className={"value_list"}>
+                                {task.schema.map((item)=>{
+                                    return(
+                                        <li>
+                                            <div className={"name"}>{item.Big}</div>
+                                            <div className={"type"}>({item.small})</div>
+                                        </li>
+                                    )})}
+                            </ul>
                     </div>
 
                     <div className={"originDataType"}>
                         <div className={"wrapper_title"}>원본 데이터 타입</div>
                         {task.original_schema.map((item)=>{return(
                             <ul className={"datatype_list"}>
+                                <span>[ {item.name} ] :</span>
                                 <li>
                                     <ul className={"value_list"}>
                                         {item.schema.map((item2) => {return(
@@ -132,12 +128,9 @@ export default function Submit_taskInfo(props : RouteComponentProps<{task_id : s
                         )})}
                     </div>
                     <div className={"TaskParticipate"}>
-                        <div className={"wrapper_title"}>
                             <button className="task-participate" onClick={join}>
                                 {task.participate === "P" ? "참여 중인 태스크": task.participate === "W" ? "참여 신청한 태스크":"참여 신청하기"}
                             </button>
-                        </div>
-
                     </div>
                 </div>
 
