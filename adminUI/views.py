@@ -46,10 +46,10 @@ def TaskAddView(request):
     if len(request.body) != 0:
         body_unicode = request.body.decode('utf-8')
         data = json.loads(body_unicode)
-        print("data: ", data)
+#        print("data: ", data)
         val_tuple = (data["Name"], data["Description"], data["TaskThreshold"],
                      data["SubmissionPeriod"], data["TableName"], data["TaskSchema"])
-        print(val_tuple)
+#        print(val_tuple)
         value_lst.append(val_tuple)
 
         merge("""INSERT INTO TASK(Name, Description, TaskThreshold, SubmissionPeriod, TableName, TaskSchema) 
@@ -130,72 +130,85 @@ def UserListView(request):
 
     result_lst = []
     today = date.today()
-    sql = "SELECT * FROM USER"
+    sql = """SELECT U.MainID, U.ID, U.Name, U.Gender, U.Address, U.DateOfBirth, U.PhoneNumber, T.Name
+          FROM USER U
+          LEFT OUTER JOIN PARTICIPATE_TASK P ON U.MainID = P.SubmitterID
+          LEFT OUTER JOIN TASK T ON T.TaskID = P.TaskID"""
     for row in select(sql):
-        tmp_dict = {"MainID": row[0], "ID": row[1], "Password": row[2], "Name": row[3],
-                    "Gender": row[4], "Address": row[5], "DateOfBirth": row[6], "PhoneNumber": row[7]}
+        tmp_dict = {"MainID": row[0], "ID": row[1], "Name": row[2], "Gender": row[3],
+                    "Address": row[4], "DateOfBirth": row[5], "PhoneNumber": row[6], "TaskName": row[7]}
         age = today - tmp_dict["DateOfBirth"]
         age = int(int(age.days) / 365)
         tmp_dict["age"] = age
-        if tmp_dict["MainID"][:2] == "su":
+        if tmp_dict["MainID"][:2] == "ad":
+            continue
+        elif tmp_dict["MainID"][:2] == "su":
             tmp_dict["role"] = "submitter"
             tmp_dict["MainID"] = tmp_dict["MainID"][3:]
-            result_lst.append(tmp_dict)
-        elif tmp_dict["MainID"][:2] == "as":
+            in_list = False
+            for i in range(len(result_lst)):
+                if tmp_dict["ID"] == result_lst[i]["ID"]:
+                    result_lst[i]["Task"].append(tmp_dict["TaskName"])
+                    del(tmp_dict["TaskName"])
+                    in_list = True
+                    break
+            if in_list == False:
+                    tmp_dict["Task"] = []
+                    tmp_dict["Task"].append(tmp_dict["TaskName"])
+                    del(tmp_dict["TaskName"])
+                    result_lst.append(tmp_dict)
+        else:
             tmp_dict["role"] = "assessor"
             tmp_dict["MainID"] = tmp_dict["MainID"][3:]
+            del(tmp_dict["TaskName"])
             result_lst.append(tmp_dict)
 
     return JsonResponse(result_lst, safe=False)
 
 def PresenterDetailView(request, su_ID):
 
-    pre_lst = []
+    task_lst = []
+    file_lst = []
 
-    sql = """SELECT SubmissionID, SubmissionDate, FileName, QuanAssessment, P_NP 
-                    FROM PARSING_DATA
-                    WHERE SubmitterID = %s"""
+    sql = """SELECT A.ID, T.Name, P.SubmissionID, P.SubmissionDate, P.FileName, P.QuanAssessment, P.P_NP 
+                    FROM PARSING_DATA P, Task T, Original_Data_Type O, USER A
+                    WHERE O.OriginalTypeID = P.OriginalTypeID AND T.TaskID = O.TaskID 
+                    AND A.MainID = P.SubmitterID AND P.SubmitterID = %s"""
 
     su_ID = "su " + str(su_ID)
     list_arg = []
     list_arg.append(su_ID)
-    pre_lst.append({"ID": su_ID})
 
-    files_num = 0
-    pass_num = 0
     for row in selectDetail(sql, list_arg):
-        files_num += 1
+        pre_dict = {"ID" : row[0]}
         pre_dict = {"SubmissionID": row[0], "SubmissionDate": row[1], "FileName": row[2],
                     "QuanAssessment" : row[3], "P_NP": row[4]}
-        pre_lst.append(pre_dict)
-        if pre_dict["P_NP"] == "P": pass_num += 1
-    pre_lst.append({"Total": files_num})
-    pre_lst.append({"Pass": pass_num})
-    return JsonResponse(pre_lst, safe=False)
+        file_lst.append(pre_dict)
+    return JsonResponse(pre_dict, safe=False)
 
 def EstimatorDetailView(request, as_ID):
 
-    est_lst = []
-
-    sql = """SELECT T.Name, P.SubmissionID, P.FileName, P.QualAssessment, P.P_NP
-                        FROM PARSING_DATA P, TASK T, ORIGINAL_DATA_TYPE O
-                        WHERE O.OriginalTypeID = P.OriginalTypeID AND O.TaskID = T.TaskID AND P.AssessorID = %s"""
+    sql = """SELECT A.ID, T.Name, S.Name, P.FileName, P.QualAssessment, P.P_NP
+                        FROM PARSING_DATA P, TASK T, ORIGINAL_DATA_TYPE O, USER A, USER S
+                        WHERE O.OriginalTypeID = P.OriginalTypeID AND O.TaskID = T.TaskID 
+                        AND P.AssessorID = A.MainID AND P.SubmitterID = S.MainID AND P.AssessorID = %s"""
 
     as_ID = "as " + str(as_ID)
     list_arg = []
     list_arg.append(as_ID)
-    est_lst.append({"ID": as_ID})
 
-    files_num = 0
+    total_num = 0
     pass_num = 0
+    est_lst = []
     for row in selectDetail(sql, list_arg):
-        files_num += 1
-        est_dict = {"TaskName": row[0]}
-        file_dict = {"SubmissionID": row[1], "SubmissionDate": row[2],
-                    "QualAssessment": row[3], "P_NP": row[4]}
-        est_dict["Files"] = file_dict
-        est_lst.append(est_dict)
-        if est_dict["Files"]["P_NP"] == "P": pass_num += 1
-    est_lst.append({"Total": files_num})
-    est_lst.append({"Pass": pass_num})
-    return JsonResponse(est_lst, safe=False)
+        est_dict = {"ID": row[0]}
+        file_dict = {"TaskName": row[1], "SubmitterName": row[2], "Filename": row[3],
+                     "QualAssessment": row[4], "P_NP": row[5]}
+        est_lst.append(file_dict)
+        total_num += 1
+        if row[5] == 'P': pass_num += 1
+    est_dict["Files"] = est_lst
+    est_dict["Total"] = total_num
+    est_dict["Pass"] = pass_num
+
+    return JsonResponse(est_dict, safe=False)
