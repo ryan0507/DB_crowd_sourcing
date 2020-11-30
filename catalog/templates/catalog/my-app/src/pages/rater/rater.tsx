@@ -50,7 +50,7 @@ function Rater(){
                             <a className="n" href="/rater/main">할당된 파일 목록</a>
                             <a className="n" href="/rater/main2">평가 내역</a>
 
-                            <button className="nr" onClick={logoutSuccess}>Log out</button>
+                            <button id={'textButton'} className="nr" onClick={logoutSuccess}>Log out</button>
                             <a className="nr" href="/rater/changeInfo">개인정보 수정</a>
                             <span className="nr" >안녕하세요 {user.Name}({user.ID})님</span>
 

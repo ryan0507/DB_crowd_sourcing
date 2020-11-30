@@ -100,9 +100,9 @@ interface TaskForStat{
     NpassedFile : string;
     avgRate : string;
 }
-interface Score {
-    score : string;
-}
+// interface Score {
+//     score : string;
+// }
 
 export default function Submit_taskInfo2(props : RouteComponentProps<{task_id : string}>,){
     const[task, setTask] = useState<Task>({name : "Error", tablename : "Error", description: "Error", original_schema : [],
@@ -132,8 +132,8 @@ export default function Submit_taskInfo2(props : RouteComponentProps<{task_id : 
 
     const row = createData(parsing);
 
-    const[stat, setStat] = useState<TaskForStat>({"TaskID": "Error", "Name": "Error", "Description": "Error", "NSubmittedFile": "Error",
-                        "NpassedFile": "Error", "avgRate": "Error"});
+    const[stat, setStat] = useState<TaskForStat>({TaskID: "Error", Name: "Error", Description: "Error", NSubmittedFile: "Error",
+                        NpassedFile: "Error", avgRate: "Error"});
     const getApi3 = async() =>{
         await axios.get(`http://127.0.0.1:8000/submitUI/taskinfo2_3/${props.match.params.task_id}/`).then((r)=>{
             let temp: TaskForStat = r.data;
@@ -144,24 +144,23 @@ export default function Submit_taskInfo2(props : RouteComponentProps<{task_id : 
         getApi3()
     },[])
 
-    const[score, setScore] = useState<Score>({score: "0"});
-    const getApi4 = async() =>{
-        await axios.get(`http://127.0.0.1:8000/submitUI/taskinfo2_4/${props.match.params.task_id}/`).then((r)=>{
-            let temp: Score = r.data;
-            setScore(temp);
-        })
-    }
-
-    useEffect(()=>{
-        getApi4()
-    },[])
+    // const[score, setScore] = useState<Score>({score: "0"});
+    // const getApi4 = async() =>{
+    //     await axios.get(`http://127.0.0.1:8000/submitUI/taskinfo2_4/${props.match.params.task_id}/`).then((r)=>{
+    //         let temp: Score = r.data;
+    //         setScore(temp);
+    //     })
+    // }
+    //
+    // useEffect(()=>{
+    //     getApi4()
+    // },[])
 
     return(
-        <div className="submitTaskList">
-        <div className="submit_taskInfo">
+        <div className="submit_taskInfo2">
             <div className="wrapper">
                 <div className="Title">{task.name}</div>
-                <Link to = "/submit/main2" className="right_side_small">뒤로가기</Link>
+                <Link to = '/submit/main2' className="right_side_small">뒤로가기</Link>
                 <div className="formContent">
                     <div className={"TaskName"}>
                         <div className={"wrapper_title"}>태스크 데이터 테이블 이름</div>
@@ -189,7 +188,7 @@ export default function Submit_taskInfo2(props : RouteComponentProps<{task_id : 
                     </div>
                      <div className={"MinUpload"}>
                         <div className={"wrapper_title"}>평균 점수</div>
-                        <div className={"lightgray_wrapper"} >{score.score}</div>
+                        <div className={"lightgray_wrapper"} >{stat.avgRate}점</div>
                     </div>
                     <div className={"TaskSchema"}>
                         <div className={"wrapper_title"}>태스크 데이터 테이블 스키마</div>
@@ -228,10 +227,12 @@ export default function Submit_taskInfo2(props : RouteComponentProps<{task_id : 
                         )})}
                     </div>
                 </div>
+                </div>
 
-             <div className="Title">나의 제출 현황</div>
-          <div className={"userTable"}>
-           <MaterialTable
+            <div className="submitTaskList">
+                <div className="Title">나의 제출 현황 [ Task : {task.name} ]</div>
+                <div className={"userTable"}>
+                    <MaterialTable
                title={""}
               columns={[
                 { title: '원본 타입[ID]', field: 'originTypeID' , hideFilterIcon: true, headerStyle:{textAlign:'center'}, cellStyle: {textAlign:"center"}},
@@ -247,8 +248,6 @@ export default function Submit_taskInfo2(props : RouteComponentProps<{task_id : 
                // onRowClick={((event, rowData) => handleClick)}
                onRowClick={(event, rowData) => {
                   // Get your id from rowData and use with link.
-                  // window.open(`mysite.com/product/${rowData.}`, "_blank")
-                  // event.stopPropagation();
                    let tempID : string = ''
                     toTable.map((item)=>{
                     })
@@ -260,10 +259,9 @@ export default function Submit_taskInfo2(props : RouteComponentProps<{task_id : 
                   headerStyle:{textAlign:'center'},
                   searchFieldStyle:{position:'relative', top:'-38px', backgroundColor:'white', borderRadius:'5px'}
               }}
-
             />
-              </div>
             </div>
+
         </div>
         </div>
     );
