@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 import mysql.connector
 import json
-from datetime import date
+from datetime import date, datetime
 dbconn = mysql.connector.connect(host = "34.64.198.135", user = "root", passwd = "111111", database = "DB_test")
 
 def select(query, bufferd=True):
@@ -162,7 +162,7 @@ def UserListView(request):
 
 def PresenterDetailView(request, su_ID):
 
-    sql = """SELECT A.ID, T.Name, P.SubmissionDate, P.FileName, P.P_NP 
+    sql = """SELECT A.ID, T.Name, P.SubmissionDate, P.FileName, P.QuanAssessment, P.P_NP 
                     FROM PARSING_DATA P, TASK T, ORIGINAL_DATA_TYPE O, USER A
                     WHERE O.OriginalTypeID = P.OriginalTypeID AND T.TaskID = O.TaskID 
                     AND A.MainID = P.SubmitterID AND P.SubmitterID = %s"""
@@ -177,7 +177,9 @@ def PresenterDetailView(request, su_ID):
     for row in selectDetail(sql, list_arg):
         pre_dict["ID"] = row[0]
         taskName = row[1]
-        file_dict = {"SubmissionDate": row[2], "FileName": row[3], "P_NP": row[4]}
+        file_dict = {"SubmissionDate": row[2], "FileName": row[3], "QuanAssemssment": row[4], "P_NP": row[5]}
+        file_dict["SubmissionTime"] = file_dict["SubmissionDate"].strftime('%H:%M:%S')
+        file_dict["SubmissionDate"] = file_dict["SubmissionDate"].strftime('%Y-%m-%d')
         if taskName not in tasks_dict.keys():
             tasks_dict = {taskName: count}
             task_dict = {"TaskName": taskName}
@@ -187,7 +189,6 @@ def PresenterDetailView(request, su_ID):
             pre_dict["Tasks"].append(task_dict)
         else:
             pre_dict["Tasks"][tasks_dict[taskName]]["Total"] += 1
-            print("second ", file_dict)
             pre_dict["Tasks"][tasks_dict[taskName]]["Files"].append(file_dict)
         if file_dict["P_NP"] == "P": pre_dict["Tasks"][tasks_dict[taskName]]["Pass"] += 1
         count += 1
