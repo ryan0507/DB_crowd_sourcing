@@ -1,5 +1,4 @@
-from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 import mysql.connector
 import json
 from datetime import date
@@ -18,7 +17,6 @@ def selectDetail(query, thisID, buffered=True):
     cursor = dbconn.cursor(buffered=buffered);
     cursor.execute(query, thisID)
     result = cursor.fetchall()
-    #print("result : ", result)
     return result;
 
 def merge(query, values, buffered=True):
@@ -104,7 +102,7 @@ def DataTypeAddView(request, infoID):
         body_unicode = request.body.decode('utf-8')
         data = json.loads(body_unicode)
         val_tuple = (data["OriginSchema"],data["Mapping"])
-        merge("INSERT INTO Origianl_Data(OriginSchema, Mapping) VALUES (%s %s)", val_tuple)
+        merge("INSERT INTO Origianl_Data_Type(OriginSchema, Mapping) VALUES (%s %s)", val_tuple)
         value_lst.append(val_tuple)
         return JsonResponse(value_lst, safe=False)
     else:
@@ -173,21 +171,26 @@ def PresenterDetailView(request, su_ID):
     list_arg = []
     list_arg.append(su_ID)
 
-    pre_dict = {}
+    count = 0
+    pre_dict = {"Tasks": []}
+    tasks_dict = {}
     for row in selectDetail(sql, list_arg):
         pre_dict["ID"] = row[0]
-        file_dict = {"TaskName": row[1], "SubmissionDate": row[2], "FileName": row[3], "P_NP": row[4]}
-        taskName = file_dict["TaskName"]
-        del(file_dict["TaskName"])
-        if taskName not in pre_dict.keys():
-            pre_dict[taskName] = {}
-            pre_dict[taskName]["Files"] = []
-            pre_dict[taskName]["Total"] = 1
-            pre_dict[taskName]["Pass"] = 0
+        taskName = row[1]
+        file_dict = {"SubmissionDate": row[2], "FileName": row[3], "P_NP": row[4]}
+        if taskName not in tasks_dict.keys():
+            tasks_dict = {taskName: count}
+            task_dict = {"TaskName": taskName}
+            task_dict["Files"] = [file_dict]
+            task_dict["Total"] = 1
+            task_dict["Pass"] = 0
+            pre_dict["Tasks"].append(task_dict)
         else:
-            pre_dict[taskName]["Total"] += 1
-        if file_dict["P_NP"] == "P": pre_dict[taskName]["Pass"] += 1
-        pre_dict[taskName]["Files"].append(file_dict)
+            pre_dict["Tasks"][tasks_dict[taskName]]["Total"] += 1
+            print("second ", file_dict)
+            pre_dict["Tasks"][tasks_dict[taskName]]["Files"].append(file_dict)
+        if file_dict["P_NP"] == "P": pre_dict["Tasks"][tasks_dict[taskName]]["Pass"] += 1
+        count += 1
 
     return JsonResponse(pre_dict, safe=False)
 
