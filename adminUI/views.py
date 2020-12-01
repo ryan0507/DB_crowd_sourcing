@@ -206,6 +206,7 @@ def PresenterDetailView(request, su_ID):
         file_dict = {"SubmissionDate": row[2], "FileName": row[3], "QualAssessment": row[4], "P_NP": row[5]}
         file_dict["SubmissionTime"] = file_dict["SubmissionDate"].strftime('%H:%M:%S')
         file_dict["SubmissionDate"] = file_dict["SubmissionDate"].strftime('%Y-%m-%d')
+        file_dict["QualAssessment"] = int(file_dict["QualAssessment"])
         if taskName not in tasks_dict.keys():
             tasks_dict = {taskName: count}
             task_dict = {"TaskName": taskName}
