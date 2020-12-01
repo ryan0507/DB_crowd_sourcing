@@ -111,6 +111,9 @@
 .presenters .applicants li .sequenceNum,
 .applicantList .applicants li .sequenceNum{
     float:left;
+    text-align: right;
+    width : 10px;
+    display: inline-block;
     transform: translate(-30px, 100%);
 }
 .presenters .applicants li .personal_name,
@@ -118,13 +121,13 @@
     float: left;
     transform: translate(20%, 100%);
 }
-.presenters .applicants li .personal_score,
-.applicantList.applicants li .personal_score{
+.taskInfo .presenters .applicants li .personal_score,
+.taskInfo .applicantList .applicants li .personal_score{
     float: left;
-    transform: translate(390%, 100%);
+    transform: translate(70px, 19px);
 }
-.applicants #yes{
-    margin-left: 170px;
+.taskInfo .applicants #yes{
+    margin-left: 100px;
 }
 
 .taskStatistic{

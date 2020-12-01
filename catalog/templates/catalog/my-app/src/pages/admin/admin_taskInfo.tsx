@@ -21,10 +21,37 @@ interface taskInfo{
     TaskID : string,
     Name : string,
     Description: string,
+    Threshold : string,
+    Mapping : string,
+    Request : requestUser[],
+    Statistics : statistic,
+}
+interface userList {
+    UserName : string,
+    QualAssessment : string,
+}
+
+interface requestUser {
+    UserName : string,
+    QualAssessment : string,
+}
+
+interface statistic{
+    Files : file[],
+    Total : number,
+    Pass : number,
+}
+
+interface file{
+    UserName : string,
+    SubmissionDate : string,
+    FileName : string,
+    P_NP : string,
+    SubmissionTime : string,
 }
 
 interface Column {
-  id: 'dataType'| 'dataNum' | 'name' | 'fileName' | 'pNp';
+  id: 'SubmissionDate'| 'SubmissionTime' | 'UserName' | 'FileName' | 'P_NP';
   label: string;
   minWidth?: number;
   align?: 'center';
@@ -33,20 +60,20 @@ interface Column {
 }
 
 const columns: Column[] = [
-  { id: 'dataType', label: '원본데이터타입', minWidth: 80 },
+  { id: 'SubmissionDate', label: '원본데이터타입', minWidth: 80 },
   {
-    id: 'dataNum',
+    id: 'SubmissionTime',
     label: '회차',
     minWidth: 90,
   },
-  { id: 'name', label: '제출자', minWidth: 80 },
+  { id: 'UserName', label: '제출자', minWidth: 80 },
   {
-    id: 'fileName',
+    id: 'FileName',
     label: '제출\u00a0파일명',
     minWidth: 140,
   },
   {
-    id: 'pNp',
+    id: 'P_NP',
     label: 'Pass\u00a0여부',
     minWidth: 100,
   },
@@ -60,24 +87,6 @@ const useStyles = makeStyles({
     maxHeight: 440,
   }
 });
-
-
-interface Data {
-    dataType : string,
-    dataNum : string,
-    name: string;
-    fileName: string;
-    pNp: string;
-}
-
-function createData( dataType : string, dataNum: string, name: string, fileName: string, pNp: string): Data {
-  return { dataType, dataNum, name,  fileName, pNp };
-}
-
-const rows = [
-  createData("", "",  '박선종',  '음악은_즐거워.csv', 'Non-pass'),
-  createData( "", "",'조민주', '새마을식당_10월.csv', 'Pass'),
-];
 
 
 
@@ -126,7 +135,7 @@ const defaultTempValue: tempValue ={
 
 
 export default function Admin_taskInfo(props : RouteComponentProps<{task_id : string}>,){
-    const [info, setInfo] = useState<taskInfo>({TaskID : '', Name: '', Description: ''});
+    const [info, setInfo] = useState<taskInfo>({TaskID : '', Name: '', Description: '', Threshold: '', Mapping : '', Request: [], Statistics: {Files: [], Total : 0, Pass: 0,}});
     const getApi = async() =>{
         await axios.get(`http://127.0.0.1:8000/adminUI/${props.match.params.task_id}/`).then((r)=>{
             let temp: taskInfo = r.data;
@@ -234,6 +243,25 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
           setCount(1);
       }
 
+      // const [userNum, setUserNum] = useState<number>(0);
+      // const [requestUserNum, setRequestUserNum] = useState<number>(0);
+
+      let userNum : number = 0;
+      let requestUserNum : number = 0;
+
+      const handleClickYes = (e :React.MouseEvent<HTMLButtonElement, MouseEvent>, userName : string) =>{
+          e.preventDefault();
+          let tempUserList : userList[] = Object.assign([], []);
+          let tempRequestUser : requestUser[] = [];
+
+          info.Request.map((user)=>{
+              if(userName != user.UserName){tempRequestUser.push(user)}
+              else{tempUserList.push(user)}
+          })
+          setInfo({...info, ["Request"]: tempRequestUser})
+
+
+      }
 
    return(
        <div className={"taskInfo"}>
@@ -248,7 +276,7 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
 
                <div className={"task_howToPass"}>
                    <div className={"wrapper_title"}>태스크 PASS 기준</div>
-                   <div className={"lightgray_wrapper"}>이 태스크는 이렇게 해야 통과되는 태스크입니다.</div>
+                   <div className={"lightgray_wrapper"}>{info.Threshold}</div>
                </div>
 
                <div className={"Submission_Period"}>
@@ -355,23 +383,25 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
                        </div>
                    )}
                </div>
-
+               {info.Mapping}
                <div className={"presenters"}>
                    <div className={"wrapper_title"}>참여자 명단</div>
                    <div className={"lightgray_wrapper"}>
                        <div className={"name"}>이름</div>
                        <div className={"score"}>평가점수</div>
                        <ul className={"applicants"}>
-                           <li>
-                               <div className={"sequenceNum"}>1.</div>
-                               <div className={"personal_name"}>한채은</div>
-                               <div className={"personal_score"}>8점</div>
-                           </li>
-                           <li>
-                               <div className={"sequenceNum"}>2.</div>
-                               <div className={"personal_name"}>이수현</div>
-                               <div className={"personal_score"}>3점</div>
-                           </li>
+                           {
+                               info.Request.map((item)=>{
+                                   return(
+                                       <li>
+                                           <div className={"sequenceNum"}>{++userNum}.</div>
+                                           <div className={"personal_name"}>{item.UserName}</div>
+                                           <div className={"personal_score"}>{item.QualAssessment}점</div>
+                                       </li>
+                                   );
+
+                               }
+                           )}
                        </ul>
                    </div>
                </div>
@@ -382,20 +412,20 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
                        <div className={"name"}>이름</div>
                        <div className={"score"}>평가점수</div>
                        <ul className={"applicants"}>
-                           <li>
-                               <div className={"sequenceNum"}>1.</div>
-                               <div className={"personal_name"}>한채은</div>
-                               <div className={"personal_score"}>8점</div>
-                               <button className={"_button"} id={"yes"}>승인</button>
-                               <button className={"_button"} id={"no"}>거절</button>
-                           </li>
-                           <li>
-                               <div className={"sequenceNum"}>2.</div>
-                               <div className={"personal_name"}>이수현</div>
-                               <div className={"personal_score"}>3점</div>
-                               <button className={"_button"} id={"yes"}>승인</button>
-                               <button className={"_button"} id={"no"}>거절</button>
-                           </li>
+                           {
+                               info.Request.map((item)=>{
+                                   return(
+                                       <li>
+                                           <div className={"sequenceNum"}>{++requestUserNum}.</div>
+                                           <div className={"personal_name"}>{item.UserName}</div>
+                                           <div className={"personal_score"}>{item.QualAssessment}점</div>
+                                           <button className={"_button"} id={"yes"} onClick={(e)=> handleClickYes(e, item.UserName)}>승인</button>
+                                           <button className={"_button"} id={"no"}>거절</button>
+                                       </li>
+                                   );
+
+                               }
+                           )}
                        </ul>
                    </div>
                </div>
@@ -403,8 +433,8 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
                <div className={"taskStatistic"}>
                    <div className={"wrapper_title"}>태스크 통계</div>
                    <div className={"lightgray_wrapper"}>
-                       <div className={"submitFiles"}>제출된 파일 수 : {rows.length}개</div>
-                       <div className={"passFiles"}>Pass된 파일 수 : 0개</div>
+                       <div className={"submitFiles"}>제출된 파일 수 : {info.Statistics.Total}개</div>
+                       <div className={"passFiles"}>Pass된 파일 수 : {info.Statistics.Pass}개</div>
                        <div className={"passTuples"}>Pass된 튜플 수 : 000개</div>
                        <Paper className={classes.root}>
                           <TableContainer className={classes.container}>
@@ -423,12 +453,12 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
                                 </TableRow>
                               </TableHead>
                               <TableBody>
-                                {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                                {info.Statistics.Files.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                                   return (
                                     <TableRow hover role="checkbox" tabIndex={-1} >
                                       {columns.map((column) => {
                                         const value = row[column.id];
-                                        if (column.id == "fileName"){
+                                        if (column.id == "FileName"){
                                            return (
                                               <TableCell key={column.id} align='center'
                                                   style={{fontSize: '14px', fontWeight: 'normal', color:'black' }}>
@@ -437,7 +467,7 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
                                                     </Link>
                                               </TableCell>
                                             );
-                                        }else if(column.id =="name"){
+                                        }else if(column.id =="UserName"){
                                           return (
                                               <TableCell key={column.id} align='center'
                                                   style={{fontSize: '14px', fontWeight: 'normal', color:'black' }}>
@@ -445,7 +475,14 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
                                                         {column.format && typeof value === 'number' ? column.format(value) : value}
                                                     </Link>
                                               </TableCell>);
-                                        }else{
+                                        }else if(column.id == "P_NP" && value == "W"){
+                                            return(
+                                                <TableCell key={column.id} align='center'
+                                                  style={{fontSize: '14px', fontWeight: 'normal', color:'black' }}>
+                                                    평가 전
+                                              </TableCell>
+                                            );
+                                        } else{
                                             return (
                                               <TableCell key={column.id} align='center'
                                               style={{fontSize: '14px', fontWeight: 'normal' }}>
@@ -463,7 +500,7 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
                           <TablePagination
                             rowsPerPageOptions={[10, 20, 30]}
                             component="div"
-                            count={rows.length}
+                            count={info.Statistics.Files.length}
                             rowsPerPage={rowsPerPage}
                             page={page}
                             onChangePage={handleChangePage}

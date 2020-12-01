@@ -17,6 +17,7 @@ axios.defaults.xsrfHeaderName = "X-CSRFToken";
 interface submitter {
     Tasks : task[],
     ID : string,
+    score : string,
 }
 interface task{
     TaskName : string,
@@ -27,13 +28,13 @@ interface task{
 interface file{
     SubmissionDate : string,
     FileName : string,
-    QuanAssemssment : string,
+    QualAssessment : string,
     P_NP : string,
     SubmissionTime : string,
 }
 
 interface Column {
-  id:  'SubmissionDate'| 'SubmissionTime' | 'FileName' | 'QuanAssemssment' | 'P_NP';
+  id:  'SubmissionDate'| 'SubmissionTime' | 'FileName' | 'QualAssessment' | 'P_NP';
   label: string;
   minWidth?: number;
   align?: 'center';
@@ -49,7 +50,7 @@ const columns: Column[] = [
     label: '제출\u00a0파일명',
     minWidth: 140,
   },
-    {id : 'QuanAssemssment', label: '평가 점수'},
+    {id : 'QualAssessment', label: '평가 점수'},
   {
     id: 'P_NP',
     label: 'Pass\u00a0여부',
@@ -98,7 +99,7 @@ interface Data {
 // ];
 
 export default function Admin_presenterDetail(props : RouteComponentProps<{su_ID : string}>,){
-    const [submitter, setSubmitter] = useState<submitter>({Tasks: [], ID : ''});
+    const [submitter, setSubmitter] = useState<submitter>({Tasks: [], ID : '', score: '',});
     const getApi = async() =>{
         await axios.get(`http://127.0.0.1:8000/adminUI/user/submitter/${props.match.params.su_ID}`).then((r)=>{
             let temp: submitter = r.data;
@@ -128,7 +129,7 @@ export default function Admin_presenterDetail(props : RouteComponentProps<{su_ID
    return(
        <div className={"presenterDetail"}>
        <div className="wrapper">
-           <div className="Title">{submitter.ID}</div>
+           <div className="Title">{submitter.ID} ({submitter.score}점)</div>
            <Link to = "/admin/main" className="right_side_small">뒤로가기</Link>
            <div className="formContent">
                {submitter.Tasks.map((item)=>{
