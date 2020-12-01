@@ -27,11 +27,13 @@ interface task{
 interface file{
     SubmissionDate : string,
     FileName : string,
+    QuanAssemssment : string,
     P_NP : string,
+    SubmissionTime : string,
 }
 
 interface Column {
-  id:  'SubmissionDate' | 'FileName' | 'P_NP';
+  id:  'SubmissionDate'| 'SubmissionTime' | 'FileName' | 'QuanAssemssment' | 'P_NP';
   label: string;
   minWidth?: number;
   align?: 'center';
@@ -41,11 +43,13 @@ interface Column {
 
 const columns: Column[] = [
   { id: 'SubmissionDate', label: '제출일', minWidth: 80 },
+    {id: 'SubmissionTime', label : '제출 시간'},
   {
     id: 'FileName',
     label: '제출\u00a0파일명',
     minWidth: 140,
   },
+    {id : 'QuanAssemssment', label: '평가 점수'},
   {
     id: 'P_NP',
     label: 'Pass\u00a0여부',
@@ -166,6 +170,13 @@ export default function Admin_presenterDetail(props : RouteComponentProps<{su_ID
                                                         </Link>
                                                   </TableCell>
                                                 );
+                                            }else if(column.id == "P_NP" && value =="W"){
+                                                return(
+                                                    <TableCell key={column.id} align='center'
+                                                          style={{fontSize: '14px', fontWeight: 'normal', color:'black' }}>
+                                                            평가 전
+                                                      </TableCell>
+                                                )
                                             }else{
                                                 return (
                                                   <TableCell key={column.id} align='center'

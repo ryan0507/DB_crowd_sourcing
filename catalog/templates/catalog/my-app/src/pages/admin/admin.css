@@ -128,7 +128,10 @@
 }
 
 .taskStatistic{
-    margin-top: 20px;
+    padding-bottom: 20px;
+}
+.taskStatistic .wrapper_title{
+    margin-bottom: 10px;
 }
 .taskStatistic .submitFiles,
 .taskStatistic .passFiles,
