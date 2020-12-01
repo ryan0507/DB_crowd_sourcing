@@ -376,36 +376,6 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
                    </div>
                </div>
 
-               {/*<div className={"originDataTypeRequest"}>*/}
-               {/*    <div className={"wrapper_title"}>원본 데이터 타입 요청</div>*/}
-               {/*    <ul className={"datatype_list"}>*/}
-               {/*        <li>*/}
-               {/*            <div className={"datatypeID"}>ID : 001</div>*/}
-               {/*            <ul className={"value_list"}>*/}
-               {/*                <li>*/}
-               {/*                    <div className={"decidedName"}>음식점 이름</div>*/}
-               {/*                    <div className={"originName"}>음식점 이름</div>*/}
-               {/*                </li>*/}
-               {/*                <li>*/}
-               {/*                    <div className={"decidedName"}>월 매출</div>*/}
-               {/*                    <div className={"originName"}>월 매출</div>*/}
-               {/*                </li>*/}
-               {/*                <li>*/}
-               {/*                    <div className={"decidedName"}>월 고객 수</div>*/}
-               {/*                    <div className={"originName"}>월 고객 수</div>*/}
-               {/*                </li>*/}
-               {/*                <li>*/}
-               {/*                    <div className={"decidedName"}>월 순이익</div>*/}
-               {/*                    <div className={"originName"}>월 순이익</div>*/}
-               {/*                </li>*/}
-
-               {/*            </ul>*/}
-               {/*            <button className={"_button"} id={"yes"}>승인</button>*/}
-               {/*            <button className={"_button"} id={"no"}>거절</button>*/}
-               {/*        </li>*/}
-               {/*    </ul>*/}
-               {/*</div>*/}
-
                <div className={"applicantList"}>
                    <div className={"wrapper_title"}>참여 신청자 명단</div>
                    <div className={"lightgray_wrapper"}>
