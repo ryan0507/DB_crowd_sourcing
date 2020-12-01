@@ -86,8 +86,8 @@ def RaterTaskDetailView(request, submissionID):
             tmp_dict = {"SubmissionID": row[0], "TaskDescription": row[1], "TaskThreshold": row[2],
                         "StartDate": row[3],
                         "EndDate": row[4], "TableName": row[5], "TaskSchema": row[6], "OriginSchema": row[7],
-                        "QualAssessment": row[8], "P_NP": row[9], "TaskName": row[10], "SubmissionNumber": row[11],
-                        "OriginSchemaMapping": row[12], "OriginTypeID": row[13], "QuanAssessment": row[14]}
+                        "QualAssessment": round(row[8],2), "P_NP": row[9], "TaskName": row[10], "SubmissionNumber": row[11],
+                        "OriginSchemaMapping": row[12], "OriginTypeID": row[13], "QuanAssessment": round(row[14],2)}
             result_lst.append(tmp_dict)
         return JsonResponse(result_lst, safe=False)
 
@@ -111,7 +111,7 @@ def RaterFileDetailView(request, submissionID):
             tmp_dict = {"SubmissionID": row[0], "TaskDescription": row[1], "TaskThreshold": row[2],
                         "StartDate": row[3],
                         "EndDate": row[4], "TableName": row[5], "TaskSchema": row[6], "OriginSchema": row[7],
-                        "QuanAssessment": row[8], "TaskName": row[9], "SubmissionNumber": row[10],
+                        "QuanAssessment": round(row[8],2), "TaskName": row[9], "SubmissionNumber": row[10],
                         "OriginSchemaMapping": row[11], "OriginTypeID": row[12]}
             result_lst.append(tmp_dict)
         return JsonResponse(result_lst, safe=False)
