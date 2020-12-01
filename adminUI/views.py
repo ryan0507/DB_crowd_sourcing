@@ -59,20 +59,44 @@ def TaskInfoView(request, infoID):
 
     info_lst = []
 
-    sql = """SELECT T.TaskID, T.Name, T.TaskThreshold, O.Mapping, R.Name, 
-                P.P_NP, D.QualAssessment, O.OriginSchema, S.Name, D.FileName, D.P_NP
-             FROM TASK T, ORIGINAL_DATA_TYPE O, PARSING_DATA D, PARTICIPATE_TASK P, USER R, USER S
-             WHERE T.TaskID = %s AND T.TaskID = O.TaskID AND T.TaskID = P.TaskID AND O.OriginalTypeID = D.OriginalTypeID
-                AND R.MainID = P.SubmitterID AND S.MainID = D.SubmitterID"""
+    sql1 = """SELECT T.TaskID, T.Name, T.Description, T.TaskThreshold, O.Mapping
+            FROM TASK T, ORIGINAL_DATA_TYPE O
+            WHERE T.TaskID = %s AND T.TaskID = O.TaskID"""
+
+    sql2 = """SELECT U.Name, P.Pass, D.QualAssessment
+            FROM TASK T, ORIGINAL_DATA_TYPE O, PARSING_DATA D, PARTICIPATE_TASK P, USER U 
+            WHERE T.TaskID = %s AND T.TaskID = O.TaskID AND T.TaskID = P.TaskID 
+                AND O.OriginalTypeID = D.OriginalTypeID AND U.MainID = P.SubmitterID"""
+
+    sql3 = """SELECT U.Name, D.SubmissionDate, D.FileName, D.P_NP 
+            FROM TASK T, ORIGINAL_DATA_TYPE O, PARSING_DATA D, USER U 
+            WHERE T.TaskID = %s AND T.TaskID = O.TaskID 
+                AND O.OriginalTypeID = D.OriginalTypeID AND D.SubmitterID = U.MainID"""
 
     list_arg = []
     list_arg.append(infoID)
 
-    for info in selectDetail(sql, list_arg):
-        info_dict = {"TaskID": info[0], "Name": info[1], "Threshold": info[2], "Mapping": info[3],
-                     "RequestName": info[4], "Request": info[5], "QualAssessment": info[6], "OriginSchema": info[7],
-                     "SubmitterName": info[8], "FileName": info[9], "P_NP": info[10]}
-        info_lst.append(info_dict)
+    for info in selectDetail(sql1, list_arg):
+        info_dict = {"TaskID": info[0], "Name": info[1], "Description": info[2], "Threshold": info[3], "Mapping": info[4]}
+
+    info_dict["Request"] = []
+    for info in selectDetail(sql2, list_arg):
+        if info[1] == "W":
+            info_dict["Request"].append({"UserName": info[0], "QualAssessment": info[2]})
+
+    file_total = 0
+    file_pass = 0
+    info_dict["Statistics"] = {"Files": []}
+    for info in selectDetail(sql3, list_arg):
+        sub_dict = {"UserName": info[0], "SubmissionDate": info[1], "FileName": info[2], "P_NP": info[3]}
+        sub_dict["SubmissionTime"] = sub_dict["SubmissionDate"].strftime('%H:%M:%S')
+        sub_dict["SubmissionDate"] = sub_dict["SubmissionDate"].strftime('%Y-%m-%d')
+        info_dict["Statistics"]["Files"].append(sub_dict)
+        file_total += 1
+        if (sub_dict["P_NP"] == "P"): file_pass += 1
+    info_dict["Statistics"]["Total"] = file_total
+    info_dict["Statistics"]["Pass"] = file_pass
+    info_lst.append(info_dict)
 
     return JsonResponse(info_dict, safe=False)
 
@@ -162,7 +186,7 @@ def UserListView(request):
 
 def PresenterDetailView(request, su_ID):
 
-    sql = """SELECT A.ID, T.Name, P.SubmissionDate, P.FileName, P.QuanAssessment, P.P_NP 
+    sql = """SELECT A.ID, T.Name, P.SubmissionDate, P.FileName, P.QualAssessment, P.P_NP 
                     FROM PARSING_DATA P, TASK T, ORIGINAL_DATA_TYPE O, USER A
                     WHERE O.OriginalTypeID = P.OriginalTypeID AND T.TaskID = O.TaskID 
                     AND A.MainID = P.SubmitterID AND P.SubmitterID = %s"""
@@ -172,12 +196,14 @@ def PresenterDetailView(request, su_ID):
     list_arg.append(su_ID)
 
     count = 0
+    score = 0
     pre_dict = {"Tasks": []}
     tasks_dict = {}
     for row in selectDetail(sql, list_arg):
         pre_dict["ID"] = row[0]
         taskName = row[1]
-        file_dict = {"SubmissionDate": row[2], "FileName": row[3], "QuanAssemssment": row[4], "P_NP": row[5]}
+        score += row[4]
+        file_dict = {"SubmissionDate": row[2], "FileName": row[3], "QualAssessment": row[4], "P_NP": row[5]}
         file_dict["SubmissionTime"] = file_dict["SubmissionDate"].strftime('%H:%M:%S')
         file_dict["SubmissionDate"] = file_dict["SubmissionDate"].strftime('%Y-%m-%d')
         if taskName not in tasks_dict.keys():
@@ -192,6 +218,7 @@ def PresenterDetailView(request, su_ID):
             pre_dict["Tasks"][tasks_dict[taskName]]["Files"].append(file_dict)
         if file_dict["P_NP"] == "P": pre_dict["Tasks"][tasks_dict[taskName]]["Pass"] += 1
         count += 1
+    pre_dict["score"] = score / count
 
     return JsonResponse(pre_dict, safe=False)
 
