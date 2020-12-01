@@ -67,11 +67,11 @@ const Admin_tableSchema_add = ({onSchemaChange}:Props) => {
 
   return (
       <div className={"admin_tableSchema_add"}>
-          <div className={"wrapper_title"}>속성 이름<a>속성 타입</a></div>
+          <div className={"wrapper_title"}>속성 타입<a>속성 이름</a></div>
 
               <div className={"datatypeInput"}>
                     <InputBase
-                      className={"datatypeName"}
+                      className={"tableValueName"}
                       placeholder="새로운 속성의 이름을 작성해주세요."
                       inputProps={{ 'aria-label': '테이블 스키마 속성' }}
                       value={_tempValue.name}

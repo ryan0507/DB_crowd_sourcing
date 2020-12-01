@@ -37,7 +37,17 @@ interface Task{
     TaskThreshold : string;
     SubmissionPeriod : string;
     TableName : string;
-    TaskSchema : string;
+    TableSchema : schema[];
+    OriginData : originType[];
+}
+interface originType{
+    name : string,
+    schema : schema[];
+}
+interface schema{
+    id : number,
+    up: string,
+    down : string,
 }
 
 
@@ -83,18 +93,25 @@ const defaultTempValue: tempValue ={
 }
 
 function Admin_taskAdd(){
-    const [valueList, setValueList] = useState<dataTable[]>( [{id : 0, valueName : "음식점 이름", valueType: "string"}, {id : 1, valueName : "월 매출", valueType: "integer"}]);
+    const [valueList, setValueList] = useState<dataTable[]>( []);
     const [valueCount, setValueCount] = useState<number>(valueList.length + 1);
+
+
+    const initialOriginType = {name : "", schema : [],}
+    const [_originType, setOriginType] = useState<originType>(initialOriginType);
+    const initialSchema = { id : 0, up: "", down : "",}
+    const [_schema, setSchema] = useState<schema>(initialSchema);
 
     const [toggleSchema, setToggleSchema] = useState<boolean>(true);
     const [toggleData, setToggleData] = useState<boolean>(true);
     const initialTask = {
-        Name : "",
-        Description :"",
-        TaskThreshold : '',
+        Name :"",
+        Description : "",
+        TaskThreshold : "",
         SubmissionPeriod : "",
         TableName : "",
-        TaskSchema : "",
+        TableSchema : [],
+        OriginData : [],
     }
     const [task, setTask] = useState<Task>(initialTask);
     const classes = useStyles();
@@ -128,6 +145,13 @@ function Admin_taskAdd(){
       setValueCount(valueCount + 1);
       let l : dataTable[] = Object.assign([], valueList);
       l.push(content);
+
+      let temp : schema[] = Object.assign([], task.TableSchema);
+      temp.push({id : valueCount, up : _tempDataTable.name, down: _tempDataTable.type});
+
+      console.log(temp);
+      setTask({...task, ["TableSchema"] : temp})
+      console.log(task);
       setValueList(l);
     }
 
@@ -154,6 +178,13 @@ function Admin_taskAdd(){
               l.push(content);
           }
       });
+      let temp : schema[] = [];
+      task.TableSchema.map((item)=>{
+          if(item.id !== id){
+              temp.push(item);
+          }
+      })
+      setTask({...task, ["TableSchema"] : temp})
       setValueList(l);
     }
     const [_tempDataTable, setTempDataTable] = useState(defaultTempDataTable);
@@ -181,16 +212,23 @@ function Admin_taskAdd(){
           setName(value);
       }
       const handleSubmit = (e:any) =>{
-          let content : Type ={
-              id: count,
-              originName: _tempValue.type,
-              decidedName: _tempValue.name,
-          };
-          setCount(count + 1);
-          let l : Type[] = Object.assign([], _list);
-          l.push(content);
-          setList(l);
           e.preventDefault();
+          let exist : boolean = false;
+            _list.map((item)=>{
+                if(item.originName === _tempValue.type){exist = true;}
+            })
+
+          if(!exist) {
+              let content: Type = {
+                  id: count,
+                  originName: _tempValue.type,
+                  decidedName: _tempValue.name,
+              };
+              setCount(count + 1);
+              let l: Type[] = Object.assign([], _list);
+              l.push(content);
+              setList(l);
+          }else(alert("이미 선택한 태스크 데이터 테이블 속성입니다."))
       }
       const datatypeList = _list.map((item) => {
         return (
@@ -220,30 +258,70 @@ function Admin_taskAdd(){
               }
           });
           setDataTypeList(l);
+
+          let temp : originType[] = [];
+          task.OriginData.map((item)=>{
+              if(item.name !== name){
+                  temp.push(item);
+              }
+          })
+          setTask({...task, ["OriginData"] : temp})
+
+
         }
-    const handleTypeSubmit = (e:any) =>{
-          let content : TypeList ={
-              name: _name,
-              types: _list,
-          };
-          setTypeCount(typeCount + 1);
-          let l : TypeList[] = Object.assign([], dataTypeList);
-          l.push(content);
-          setDataTypeList(l);
+    const handleTypeSubmit = (e:any) => {
           e.preventDefault();
-          setList([]);
-          setCount(1);
-      }
+        let exist: boolean = false;
+        task.OriginData.map((item) => {
+            if (item.name === _name) {
+                exist = true;
+            }
+        })
+
+        if (!exist) {
+            let content: TypeList = {
+                name: _name,
+                types: _list,
+            };
+            setTypeCount(typeCount + 1);
+            let l: TypeList[] = Object.assign([], dataTypeList);
+            l.push(content);
+            setDataTypeList(l);
+
+
+            //
+            let temp: schema[] = [];
+            _list.map((item) => {
+                let k: schema = {id: 0, up: '', down: ''};
+                k.id = item.id;
+                k.up = item.decidedName;
+                k.down = item.originName;
+                temp.push(k);
+            })
+            // temp.push({id : valueCount, up : _tempDataTable.name, down: _tempDataTable.type});
+
+            let tempOrigin: originType[] = Object.assign([], task.OriginData);
+            tempOrigin.push({name: _name, schema: temp});
+
+            console.log(tempOrigin);
+            setTask({...task, ["OriginData"]: tempOrigin});
+            console.log(task);
+
+            setList([]);
+            setCount(1);
+        }else(alert("이미 존재하는 원본 데이터 타입 이름입니다."))
+    }
 
     const handleSubmitDD = ( event : React.FormEvent<HTMLFormElement> ) =>{
         event.preventDefault();
         axios.post('http://127.0.0.1:8000/adminUI/create/', {
             Name : task.Name,
             Description :task.Description,
-            TaskThreshold :'TaskThreshold',
+            TaskThreshold : task.TaskThreshold,
             SubmissionPeriod : task.SubmissionPeriod,
             TableName : task.TableName,
-            TaskSchema : 'task.TaskSchema',
+            TableSchema : task.TableSchema,
+            OriginData : task.OriginData,
         }).then((r) => {
         console.log(r);
         console.log(r.data);
@@ -293,10 +371,10 @@ function Admin_taskAdd(){
                <div className={"task_howToPass"}>
                    <div className={"wrapper_title"}>태스크 PASS 기준</div>
                    <InputBase
-                          className={"howToTask"}
-                        placeholder="태스크의 파일 제출 통과 기준을 작성해주세요."
-                        inputProps={{ 'aria-label': '통과 기준 설명' }}
-                          onChange={e=> handleInputChange('TaskThreshold', e.target.value)}
+                            className={"howToTask"}
+                            placeholder="태스크의 파일 제출 통과 기준을 작성해주세요."
+                            inputProps={{ 'aria-label': '통과 기준 설명' }}
+                            onChange={e=> handleInputChange('TaskThreshold', e.target.value)}
                           />
                </div>
 
@@ -373,16 +451,16 @@ function Admin_taskAdd(){
                    </button>
                    {toggleData ? (
                        <ul className={"datatype_list"}>
-                           {dataTypeList.map((item) =>{
+                           {task.OriginData.map((item) =>{
                                return(
                                    <li className={"dataVertical"}>
                                        <div className={"datatypeID"}>[{item.name}] :</div>
                                         <ul className={"value_list"}>
-                                       {item.types.map((type) =>{
+                                       {item.schema.map((type) =>{
                                            return(
                                                <li>
-                                                   <div className={"decidedName"}>{type.decidedName}</div>
-                                                   <div className={"originName"}>{type.originName}</div>
+                                                   <div className={"decidedName"}>{type.up}</div>
+                                                   <div className={"originName"}>{type.down}</div>
                                                </li>);
                                        })}
                                         </ul>
@@ -393,16 +471,16 @@ function Admin_taskAdd(){
                        <div className={"admin_datatype_add"}>
 
                            <ul className={"datatype_list"}>
-                               {dataTypeList.map((item) =>{
+                               {task.OriginData.map((item) =>{
                                    return(
                                        <li className={"dataVertical"}>
                                            <div className={"datatypeID"}>[{item.name}] : </div>
                                             <ul className={"value_list"}>
-                                           {item.types.map((type) =>{
+                                           {item.schema.map((type) =>{
                                                return(
                                                    <li>
-                                                       <div className={"decidedName"}>{type.decidedName}</div>
-                                                       <div className={"originName"}>{type.originName}</div>
+                                                       <div className={"decidedName"}>{type.up}</div>
+                                                       <div className={"originName"}>{type.down}</div>
                                                    </li>);
                                            })}
                                             </ul>

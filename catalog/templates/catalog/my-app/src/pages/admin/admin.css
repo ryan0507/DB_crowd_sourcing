@@ -393,6 +393,7 @@
     float: left;
     transform: translate(0px, 20px);
 }
+
 .taskAdd .datatypeName input[type="text"],
 .taskInfo .datatypeName input[type="text"]{
     margin-top: 0px;
@@ -474,13 +475,22 @@
 }
 
 /*table schema add*/
-.admin_tableSchema_add .dropdown{
-    float: left;
-    margin-left: 10px;margin-top: 20px;
-}
+
 .admin_tableSchema_add .datatypeInput{
     clear: both;
+    padding-top: 10px;
 }
+.taskAdd .tableValueName input[type="text"]{
+    margin-top: 10px;
+    margin-left : 25px;
+    width : 260px;
+    float : left;
+}
+.admin_tableSchema_add .dropdown{
+    float: left;
+    margin : 20px 30px 0px 40px;
+}
+
 .admin_tableSchema_add .small_lightgray_wrapper{
     margin-top: 20px;
     float: left;
@@ -498,6 +508,8 @@
     padding : 10px 20px;
     font-weight: 650;
     margin-top: 13px;
+    float: left;
+    transform: translate(580px, -80px);
 }
 .datatypeList .decimalList{
     list-style: decimal;
@@ -541,7 +553,7 @@
     color: #707070;
 }
 .admin_tableSchema_add .wrapper_title{
-    margin-left: 135px;
+    margin-left: 75px;
 }
 .admin_tableSchema_add .wrapper_title a{
     margin-left: 207px;

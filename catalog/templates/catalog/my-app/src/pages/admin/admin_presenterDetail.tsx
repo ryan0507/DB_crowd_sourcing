@@ -15,6 +15,7 @@ axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
 
 interface submitter {
+    // ID : string,
     SubmissionID: number,
     SubmissionDate: string,
     StartDate: string,
