@@ -63,7 +63,7 @@ def TaskInfoView(request, infoID):
             FROM TASK T, ORIGINAL_DATA_TYPE O
             WHERE T.TaskID = %s AND T.TaskID = O.TaskID"""
 
-    sql2 = """SELECT U.MainID, U.Name, P.Pass, D.QualAssessment
+    sql2 = """SELECT U.MainID, U.Name, D.SubmissionNumber, P.Pass, D.QualAssessment
             FROM TASK T, ORIGINAL_DATA_TYPE O, PARSING_DATA D, PARTICIPATE_TASK P, USER U 
             WHERE T.TaskID = %s AND T.TaskID = O.TaskID AND T.TaskID = P.TaskID 
                 AND O.OriginalTypeID = D.OriginalTypeID AND U.MainID = P.SubmitterID"""
@@ -83,7 +83,9 @@ def TaskInfoView(request, infoID):
     info_dict["Participant"] = []
     info_dict["Request"] = []
     for info in selectDetail(sql2, list_arg):
-        info_dict["Participant"].append({"UserID": info[0], "UserName": info[1], "QualAssessment": info[3]})
+
+        info_dict["Participant"].append({"UserID": info[0][3:], "UserName": info[1],
+                                         "SubmissionNumber": info[2], "QualAssessment": info[4]})
         if info[1] == "W":
             info_dict["Request"].append({"UserName": info[1], "QualAssessment": info[3]})
 
@@ -91,7 +93,7 @@ def TaskInfoView(request, infoID):
     file_pass = 0
     info_dict["Statistics"] = {"Files": []}
     for info in selectDetail(sql3, list_arg):
-        sub_dict = {"UserID": info[0], "UserName": info[1], "OriginSchema": info[2],"SubmissionDate": info[3],
+        sub_dict = {"UserID": info[0][3:], "UserName": info[1], "OriginSchema": info[2],"SubmissionDate": info[3],
                     "FileName": info[4], "P_NP": info[5]}
         sub_dict["SubmissionTime"] = sub_dict["SubmissionDate"].strftime('%H:%M:%S')
         sub_dict["SubmissionDate"] = sub_dict["SubmissionDate"].strftime('%Y-%m-%d')
