@@ -20,9 +20,11 @@ axios.defaults.xsrfHeaderName = "X-CSRFToken";
 interface taskInfo{
     TaskID : string,
     Name : string,
+    SubmissionPeriod : number,
     Description: string,
     Threshold : string,
     Mapping : string,
+    Participant : userList[],
     Request : requestUser[],
     Statistics : statistic,
 }
@@ -43,7 +45,9 @@ interface statistic{
 }
 
 interface file{
+    UserID : string,
     UserName : string,
+    OriginSchema : string,
     SubmissionDate : string,
     FileName : string,
     P_NP : string,
@@ -51,7 +55,7 @@ interface file{
 }
 
 interface Column {
-  id: 'SubmissionDate'| 'SubmissionTime' | 'UserName' | 'FileName' | 'P_NP';
+  id: 'SubmissionDate'| 'SubmissionTime' | 'OriginSchema' | 'UserName' | 'FileName' | 'P_NP';
   label: string;
   minWidth?: number;
   align?: 'center';
@@ -60,12 +64,13 @@ interface Column {
 }
 
 const columns: Column[] = [
-  { id: 'SubmissionDate', label: '원본데이터타입', minWidth: 80 },
+  { id: 'SubmissionDate', label: '제출 날짜', minWidth: 80 },
   {
     id: 'SubmissionTime',
     label: '회차',
     minWidth: 90,
   },
+    { id: 'OriginSchema', label: '원본데이터타입',},
   { id: 'UserName', label: '제출자', minWidth: 80 },
   {
     id: 'FileName',
@@ -135,7 +140,7 @@ const defaultTempValue: tempValue ={
 
 
 export default function Admin_taskInfo(props : RouteComponentProps<{task_id : string}>,){
-    const [info, setInfo] = useState<taskInfo>({TaskID : '', Name: '', Description: '', Threshold: '', Mapping : '', Request: [], Statistics: {Files: [], Total : 0, Pass: 0,}});
+    const [info, setInfo] = useState<taskInfo>({TaskID : '', Name: '', SubmissionPeriod: 0, Description: '', Threshold: '', Mapping : '', Participant: [], Request: [], Statistics: {Files: [],  Total : 0, Pass: 0,}});
     const getApi = async() =>{
         await axios.get(`http://127.0.0.1:8000/adminUI/${props.match.params.task_id}/`).then((r)=>{
             let temp: taskInfo = r.data;
@@ -281,7 +286,7 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
 
                <div className={"Submission_Period"}>
                    <div className={"wrapper_title"}>최소 업로드 주기</div>
-                   <div className={"lightgray_wrapper"}> -- 일</div>
+                   <div className={"lightgray_wrapper"}> {info.SubmissionPeriod} 일</div>
                </div>
 
 
@@ -391,7 +396,7 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
                        <div className={"score"}>평가점수</div>
                        <ul className={"applicants"}>
                            {
-                               info.Request.map((item)=>{
+                               info.Participant.map((item)=>{
                                    return(
                                        <li>
                                            <div className={"sequenceNum"}>{++userNum}.</div>
