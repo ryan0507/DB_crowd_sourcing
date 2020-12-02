@@ -10,7 +10,7 @@ interface MainData{
     SubmissionID: number;
     TaskName : string;
     FileName: string;
-    SubmissionDate : Date;
+    SubmissionDate : string;
 }
 
 const Rater_main = (props : RouteComponentProps<{}>,)=>{

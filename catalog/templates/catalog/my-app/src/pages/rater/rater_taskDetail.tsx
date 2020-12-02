@@ -23,6 +23,7 @@ interface taskDetail{
     OriginSchemaMapping : string,
     OriginTypeID : number
     QuanAssessment : number,
+    FileName: string
 }
 
 
@@ -40,6 +41,24 @@ export default function Rater_taskDetail(props : RouteComponentProps<{submission
         getApi()
     },[])
 
+    const downloadfile = (i:string, name:string) => {
+        axios({method: 'GET', url: `http://127.0.0.1:8000/submitUI/downloadcsvfile/${i}/`,
+            responseType: 'blob' }).then((r)=>{
+            if (r.status === 200) {
+                const url = window.URL.createObjectURL(new Blob([r.data], { type: r.headers['content-type'] }));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download',  name);
+                document.body.appendChild(link);
+                link.click();
+                alert('파일이 다운로드 됩니다.')
+            }else if (r.status === 201) {
+                alert('NonPass를 받은 파일은 삭제됩니다')
+            }else {
+                alert('오류가 발생했습니다.')
+            }
+        })
+    }
 
    return(
        <div className="rater_taskDetail">
@@ -106,7 +125,11 @@ export default function Rater_taskDetail(props : RouteComponentProps<{submission
                            </div>
                            <div className={"file_download"}>
                                <div className={"wrapper_title"}>파일 다운로드</div>
-                               <div className={"lightgray_wrapper_file"}>새마을식당.csv</div>
+                               <div className={"lightgray_wrapper_file"}>
+                                   <button onClick = {(i) => downloadfile(props.match.params.submission_id, item.FileName)}>
+                                       {item.FileName}
+                                   </button>
+                               </div>
                            </div>
                            <div className={"taskData_table_name"}>
                                <div className={"wrapper_title"}>태스크 데이터 테이블 이름</div>

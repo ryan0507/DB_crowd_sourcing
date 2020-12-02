@@ -45,7 +45,7 @@ def RaterMainView(request):
                           FROM TASK AS T, ORIGINAL_DATA_TYPE AS O, PARSING_DATA AS P
                           WHERE P.ORIGINALTYPEID = O.ORIGINALTYPEID AND O.TASKID = T.TASKID AND P.P_NP = 'W'
                           AND P.ASSESSORID = '{}'""".format(request.session['MainID'])):
-            tmp_dict = {"SubmissionID": row[0], "TaskName": row[1], "FileName": row[2], "SubmissionDate": row[3]}
+            tmp_dict = {"SubmissionID": row[0], "TaskName": row[1], "FileName": row[2], "SubmissionDate": str(row[3].date()) + " " + str(row[3].time())}
             result_lst.append(tmp_dict)
         return JsonResponse(result_lst, safe=False)
 
@@ -77,7 +77,7 @@ def RaterTaskDetailView(request, submissionID):
         list_arg = [submissionID]
         sql = """SELECT P.SUBMISSIONID, T.DESCRIPTION, T.TASKTHRESHOLD, P.STARTDATE,
                 P.ENDDATE, T.TABLENAME, T.TASKSCHEMA, O.ORIGINSCHEMA, P.QUALASSESSMENT, 
-                P.P_NP, T.NAME, P.SUBMISSIONNUMBER, O.MAPPING, O.ORIGINALTYPEID, P.QUANASSESSMENT
+                P.P_NP, T.NAME, P.SUBMISSIONNUMBER, O.MAPPING, O.ORIGINALTYPEID, P.QUANASSESSMENT, P.FileName
                 FROM TASK AS T, ORIGINAL_DATA_TYPE AS O, PARSING_DATA AS P
                 WHERE P.ORIGINALTYPEID = O.ORIGINALTYPEID AND O.TASKID = T.TASKID AND P.SUBMISSIONID = %s AND NOT P.P_NP = 'W'
                 AND P.ASSESSORID = '{}'""".format(request.session['MainID'])
@@ -87,7 +87,7 @@ def RaterTaskDetailView(request, submissionID):
                         "StartDate": row[3],
                         "EndDate": row[4], "TableName": row[5], "TaskSchema": row[6], "OriginSchema": row[7],
                         "QualAssessment": round(row[8],2), "P_NP": row[9], "TaskName": row[10], "SubmissionNumber": row[11],
-                        "OriginSchemaMapping": row[12], "OriginTypeID": row[13], "QuanAssessment": round(row[14],2)}
+                        "OriginSchemaMapping": row[12], "OriginTypeID": row[13], "QuanAssessment": round(row[14],2), "FileName" : row[15]}
             result_lst.append(tmp_dict)
         return JsonResponse(result_lst, safe=False)
 
@@ -102,7 +102,7 @@ def RaterFileDetailView(request, submissionID):
         list_arg = [submissionID]
         sql = """SELECT P.SUBMISSIONID, T.DESCRIPTION, T.TASKTHRESHOLD, P.STARTDATE,
                 P.ENDDATE, T.TABLENAME, T.TASKSCHEMA, O.ORIGINSCHEMA, P.QUANASSESSMENT, 
-                T.NAME, P.SUBMISSIONNUMBER, O.MAPPING, O.ORIGINALTYPEID, P.ASSESSORID
+                T.NAME, P.SUBMISSIONNUMBER, O.MAPPING, O.ORIGINALTYPEID, P.ASSESSORID, P.FileName
                 FROM TASK AS T, ORIGINAL_DATA_TYPE AS O, PARSING_DATA AS P
                 WHERE P.ORIGINALTYPEID = O.ORIGINALTYPEID AND O.TASKID = T.TASKID AND P.SUBMISSIONID = %s AND P_NP = 'W'
                 AND P.ASSESSORID = '{}'""".format(request.session['MainID'])
@@ -112,7 +112,7 @@ def RaterFileDetailView(request, submissionID):
                         "StartDate": row[3],
                         "EndDate": row[4], "TableName": row[5], "TaskSchema": row[6], "OriginSchema": row[7],
                         "QuanAssessment": round(row[8],2), "TaskName": row[9], "SubmissionNumber": row[10],
-                        "OriginSchemaMapping": row[11], "OriginTypeID": row[12]}
+                        "OriginSchemaMapping": row[11], "OriginTypeID": row[12], "FileName" : row[14]}
             result_lst.append(tmp_dict)
         return JsonResponse(result_lst, safe=False)
 

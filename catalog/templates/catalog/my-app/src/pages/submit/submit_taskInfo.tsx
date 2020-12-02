@@ -98,15 +98,15 @@ export default function Submit_taskInfo(props : RouteComponentProps<{task_id : s
                     </div>
                     <div className={"TaskSchema"}>
                         <div className={"wrapper_title"}>태스크 데이터 테이블 스키마</div>
-                            <ul className={"value_list"}>
-                                {task.schema.map((item)=>{
-                                    return(
-                                        <li>
-                                            <div className={"name"}>{item.Big}</div>
-                                            <div className={"type"}>({item.small})</div>
-                                        </li>
-                                    )})}
-                            </ul>
+                        <ul className={"value_list"}>
+                            {task.schema.map((item)=>{
+                                return(
+                                    <li>
+                                        <div className={"name"}>{item.Big}</div>
+                                        <div className={"type"}>({item.small})</div>
+                                    </li>
+                                )})}
+                        </ul>
                     </div>
 
                     <div className={"originDataType"}>
@@ -128,9 +128,9 @@ export default function Submit_taskInfo(props : RouteComponentProps<{task_id : s
                         )})}
                     </div>
                     <div className={"TaskParticipate"}>
-                            <button className="task-participate" onClick={join}>
-                                {task.participate === "P" ? "참여 중인 태스크": task.participate === "W" ? "참여 신청한 태스크":"참여 신청하기"}
-                            </button>
+                        <button className="task-participate" onClick={join}>
+                            {task.participate === "P" ? "참여 중인 태스크": task.participate === "W" ? "참여 신청한 태스크":"참여 신청하기"}
+                        </button>
                     </div>
                 </div>
 

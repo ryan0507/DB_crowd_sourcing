@@ -25,6 +25,7 @@ interface fileDetail{
     OriginSchemaMapping : string,
     OriginTypeID : number
     QuanAssessment : number,
+    FileName: string;
 }
 
 
@@ -38,19 +39,19 @@ export default function Rater_taskDetail(props : RouteComponentProps<{submission
         })
     }
     const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        root: {
-            width: '100px',
-        },
-        container: {
-            maxHeight: 440,
-        },
-        formControl: {
-            margin: theme.spacing(2),
-            minWidth: 120,
-        },
-    }),
-);
+        createStyles({
+            root: {
+                width: '100px',
+            },
+            container: {
+                maxHeight: 440,
+            },
+            formControl: {
+                margin: theme.spacing(2),
+                minWidth: 120,
+            },
+        }),
+    );
 
     const [open, setOpen] = React.useState(false);
     const [pass_open, pass_setOpen] = React.useState(false);
@@ -61,6 +62,25 @@ export default function Rater_taskDetail(props : RouteComponentProps<{submission
     useEffect(() => {
         getApi()
     }, [])
+
+    const downloadfile = (i:string, name:string) => {
+        axios({method: 'GET', url: `http://127.0.0.1:8000/submitUI/downloadcsvfile/${i}/`,
+            responseType: 'blob' }).then((r)=>{
+            if (r.status === 200) {
+                const url = window.URL.createObjectURL(new Blob([r.data], { type: r.headers['content-type'] }));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download',  name);
+                document.body.appendChild(link);
+                link.click();
+                alert('파일이 다운로드 됩니다.')
+            }else if (r.status === 201) {
+                alert('NonPass를 받은 파일은 삭제됩니다')
+            }else {
+                alert('오류가 발생했습니다.')
+            }
+        })
+    }
 
 
     return (
@@ -152,7 +172,12 @@ export default function Rater_taskDetail(props : RouteComponentProps<{submission
                                 </div>
                                 <div className={"file_download"}>
                                     <div className={"wrapper_title"}>파일 다운로드</div>
-                                    <div className={"lightgray_wrapper_file"}>새마을식당.csv</div>
+
+                                    <div className={"lightgray_wrapper_file"}>
+                                        <button onClick = {(i) => downloadfile(props.match.params.submission_id, item.FileName)}>
+                                            {item.FileName}
+                                        </button>
+                                    </div>
                                 </div>
                                 <div className={"taskData_table_name"}>
                                     <div className={"wrapper_title"}>태스크 데이터 테이블 이름</div>
@@ -184,69 +209,69 @@ export default function Rater_taskDetail(props : RouteComponentProps<{submission
                                 </div>
 
 
-                            <div className={"minUpload"}>
-                                <div className={"wrapper_title"}>점수</div>
-                                <div className={"dropdown"}>
-                                    <FormControl className={classes.formControl}>
-                                        <Select
-                                            labelId="demo-controlled-open-select-label"
-                                            id="demo-controlled-open-select"
-                                            open={open}
-                                            onClose={handleClose}
-                                            onOpen={handleOpen}
-                                            value={minUpload}
-                                            onChange={handleChange}
-                                            style={{textAlign: 'center'}}
-                                        >
-                                            <MenuItem value="">
-                                                <em>선택 안 함</em>
-                                            </MenuItem>
-                                            <MenuItem value={10}>1점</MenuItem>
-                                            <MenuItem value={20}>2점</MenuItem>
-                                            <MenuItem value={30}>3점</MenuItem>
-                                            <MenuItem value={40}>4점</MenuItem>
-                                            <MenuItem value={50}>5점</MenuItem>
-                                            <MenuItem value={60}>6점</MenuItem>
-                                            <MenuItem value={70}>7점</MenuItem>
-                                            <MenuItem value={80}>8점</MenuItem>
-                                            <MenuItem value={90}>9점</MenuItem>
-                                            <MenuItem value={100}>10점</MenuItem>
-                                        </Select>
-                                    </FormControl>
+                                <div className={"minUpload"}>
+                                    <div className={"wrapper_title"}>점수</div>
+                                    <div className={"dropdown"}>
+                                        <FormControl className={classes.formControl}>
+                                            <Select
+                                                labelId="demo-controlled-open-select-label"
+                                                id="demo-controlled-open-select"
+                                                open={open}
+                                                onClose={handleClose}
+                                                onOpen={handleOpen}
+                                                value={minUpload}
+                                                onChange={handleChange}
+                                                style={{textAlign: 'center'}}
+                                            >
+                                                <MenuItem value="">
+                                                    <em>선택 안 함</em>
+                                                </MenuItem>
+                                                <MenuItem value={10}>1점</MenuItem>
+                                                <MenuItem value={20}>2점</MenuItem>
+                                                <MenuItem value={30}>3점</MenuItem>
+                                                <MenuItem value={40}>4점</MenuItem>
+                                                <MenuItem value={50}>5점</MenuItem>
+                                                <MenuItem value={60}>6점</MenuItem>
+                                                <MenuItem value={70}>7점</MenuItem>
+                                                <MenuItem value={80}>8점</MenuItem>
+                                                <MenuItem value={90}>9점</MenuItem>
+                                                <MenuItem value={100}>10점</MenuItem>
+                                            </Select>
+                                        </FormControl>
+                                    </div>
                                 </div>
-                            </div>
 
 
-                            <div className={"passNonpass"}>
-                                <div className={"wrapper_title"}>P/NP</div>
-                                <div className={"dropdown"}>
-                                    <FormControl className={classes.formControl}>
-                                        <Select
-                                            labelId="demo-controlled-open-select-label"
-                                            id="demo-controlled-open-select"
-                                            open={pass_open}
-                                            onClose={pass_handleClose}
-                                            onOpen={pass_handleOpen}
-                                            value={passNonpass}
-                                            onChange={pass_handleChange}
-                                            style={{textAlign: 'center'}}
-                                        >
-                                            <MenuItem value="">
-                                                <em>선택 안 함</em>
-                                            </MenuItem>
-                                            <MenuItem value={10}>PASS</MenuItem>
-                                            <MenuItem value={20}>NON-PASS</MenuItem>
-                                        </Select>
-                                    </FormControl>
+                                <div className={"passNonpass"}>
+                                    <div className={"wrapper_title"}>P/NP</div>
+                                    <div className={"dropdown"}>
+                                        <FormControl className={classes.formControl}>
+                                            <Select
+                                                labelId="demo-controlled-open-select-label"
+                                                id="demo-controlled-open-select"
+                                                open={pass_open}
+                                                onClose={pass_handleClose}
+                                                onOpen={pass_handleOpen}
+                                                value={passNonpass}
+                                                onChange={pass_handleChange}
+                                                style={{textAlign: 'center'}}
+                                            >
+                                                <MenuItem value="">
+                                                    <em>선택 안 함</em>
+                                                </MenuItem>
+                                                <MenuItem value={10}>PASS</MenuItem>
+                                                <MenuItem value={20}>NON-PASS</MenuItem>
+                                            </Select>
+                                        </FormControl>
+                                    </div>
                                 </div>
-                            </div>
 
 
-                            <div>
-                                <Link to="/rater/main">
-                                    <button className="rater_fileDetailSubmit">제출</button>
-                                </Link>
-                            </div>
+                                <div>
+                                    <Link to="/rater/main">
+                                        <button className="rater_fileDetailSubmit">제출</button>
+                                    </Link>
+                                </div>
                             </div>
                         </React.Fragment>
                     )

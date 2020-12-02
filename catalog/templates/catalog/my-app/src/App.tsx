@@ -24,6 +24,7 @@ import submit_taskInfo2 from "./pages/submit/submit_taskInfo2";
 import submit_taskCheck from "./pages/submit/submit_taskCheck";
 import submit_fileDetail from "./pages/submit/submit_fileDetail";
 import submit_changeInfo from "./pages/submit/submit_changeInfo";
+import Submit_submitFile from './pages/submit/submit_submitFile'
 
 import Rater from './pages/rater/rater';
 import rater_main from "./pages/rater/rater_main";
@@ -52,14 +53,14 @@ function App() {
                     <Route exact path="/admin/presenterDetail/:su_ID" component={admin}/>
                     <Route exact path="/admin/alterpw" component={admin}/>
 
-                    <Route exact path="/submit/main" component={submit}/>
-                    <Route exact path="/submit/main2" component={submit}/>
-                    <Route exact path="/submit/taskinfo" component={submit}/>
-                    <Route exact path="/submit/taskinfo2" component={submit}/>
-                    <Route exact path="/submit/taskCheck" component={submit}/>
-                    <Route exact path="/submit/filedetail" component={submit}/>
-                    <Route exact path="/submit/submitfile" component={submit}/>
-                    <Route exact path="/submit/changeinfo" component={submit}/>
+                    <Route path="/submit/main" component={submit}/>
+                    <Route path="/submit/main2" component={submit}/>
+                    <Route path="/submit/taskinfo" component={submit}/>
+                    <Route path="/submit/taskinfo2" component={submit}/>
+                    <Route path="/submit/taskCheck" component={submit}/>
+                    <Route path="/submit/filedetail" component={submit}/>
+                    <Route path="/submit/submitfile" component={submit}/>
+                    <Route path="/submit/changeinfo" component={submit}/>
 
                     <Route exact path="/rater/main" component={Rater}/>
                     <Route exact path="/rater/main2" component={Rater}/>

@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 import json
 import csv
+from datetime import datetime, timedelta
 from django.utils.encoding import smart_str
 from django.http import JsonResponse, HttpResponse
 import mysql.connector
@@ -28,7 +29,6 @@ def selectDetail(dbconn, query, thisID, buffered=True):
     cursor = dbconn.cursor(buffered=buffered);
     cursor.execute(query, thisID)
     result = cursor.fetchall()
-    #print("result : ", result)
     return result;
 
 def SubmitMainView(request):
@@ -71,7 +71,6 @@ def SubmitMain2View(request):
              and P.SubmitterID = '{}' and P.P_NP = 'P'and O.TaskID = {}""".format(request.session['MainID'], i[0])))[0]
 
             tmp_dict["NpassedFile"] = tmp[0]
-            print(tmp_dict)
 
             tmp = list(select(dbconn, """SELECT AVG(QuanAssessment), AVG(QualAssessment) FROM PARSING_DATA P, ORIGINAL_DATA_TYPE O 
             WHERE O.OriginalTypeID =  P.OriginalTypeID and P.SubmitterID = '{}' 
@@ -146,17 +145,16 @@ def SubmitTaskInfo1(request, infoID):
             tmp = t[5].split("%")
             tmp_dict["schema"] = [ { "Big" : tmp[2*i],"small" : tmp[2*i+1]} for i in range(len(tmp)//2)]
 
-            r2 = select(dbconn,"""SELECT OriginSchema, Mapping FROM ORIGINAL_DATA_TYPE 
+            r2 = select(dbconn,"""SELECT OriginSchema, Mapping, OriginalTypeID FROM ORIGINAL_DATA_TYPE 
             WHERE TaskID = '{}'""".format(infoID))
             for t2 in r2:
                 tmp = t2[1].split("%")
-                tmp_dict2 = { "name" : t2[0], "schema" : [ { "Big" : tmp[2*i],"small" : tmp[2*i+1]} for i in range(len(tmp)//2)]}
+                tmp_dict2 = { "name" : "ID " +  str(t2[2]) + ": " + t2[0], "schema" : [ { "Big" : tmp[2*i],"small" : tmp[2*i+1]} for i in range(len(tmp)//2)]}
                 tmp_dict["original_schema"].append(tmp_dict2)
         request.session["TaskName"] = tmp_dict["name"]
         request.session["TaskID"] = infoID
         return JsonResponse(tmp_dict)
     except Exception as e:
-        print(e)
         tmp_dict = {"name": "Error", "tablename": "Error", "description": "Error",
                     "pass_s": "Error", "period": "Error", "schema": [], "original_schema": [], "participate": "P"}
         return JsonResponse(tmp_dict)
@@ -197,7 +195,6 @@ def SubmitTaskInfo2(request, infoID):
             other_r = select(dbconn, "SELECT Pass FROM PARTICIPATE_TASK  WHERE TaskID = {} and SubmitterID = '{}'".format( infoID, request.session["MainID"]))
             tmp_dict["participate"] = "N"
             for other_t in other_r:
-                print(other_t)
                 if other_t == "P":
                     tmp_dict["participate"] = "P"
                 elif other_t == "W":
@@ -210,14 +207,13 @@ def SubmitTaskInfo2(request, infoID):
             WHERE TaskID = '{}'""".format(infoID))
             for t2 in r2:
                 tmp = t2[1].split("%")
-                tmp_dict2 = { "name" : t2[0],
+                tmp_dict2 = { "name" : "ID " +  str(t2[2]) + ": " + t2[0],
                               "schema" : [ { "Big" : tmp[2*i],"small" : tmp[2*i+1]} for i in range(len(tmp)//2)]}
                 tmp_dict["original_schema"].append(tmp_dict2)
         request.session["TaskName"] = tmp_dict["name"]
         request.session["TaskID"] = infoID
         return JsonResponse(tmp_dict)
     except Exception as e:
-        print(e)
         tmp_dict = {"name": "Error", "tablename": "Error", "description": "Error",
                     "pass_s": "Error", "period": "Error", "schema": [], "original_schema": [], "participate": "P"}
         return JsonResponse(tmp_dict)
@@ -231,7 +227,7 @@ def SubmitTaskInfo2_2(request, infoID): # submit info
     try:
         dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
         sql = """ SELECT O.OriginSchema, P.SUBMISSIONNUMBER, P.SUBMISSIONDATE, P.FILENAME,
-                         P.NumberOfTUple, P.QUANASSESSMENT, P.QUALASSESSMENT, P.P_NP, P.SubmissionID 
+                         P.NumberOfTUple, P.QUANASSESSMENT, P.QUALASSESSMENT, P.P_NP, P.SubmissionID
                 FROM PARSING_DATA AS P, ORIGINAL_DATA_TYPE AS O
                 WHERE O.ORIGINALTYPEID = P.ORIGINALTYPEID 
                 AND P.SUBMITTERID = '{}' AND O.TASKID = {}""".format(request.session['MainID'], infoID)
@@ -246,14 +242,12 @@ def SubmitTaskInfo2_2(request, infoID): # submit info
             tmp_dict["quanScore"] = round(t[5],2)
             tmp_dict["qualScore"] = round(t[6],2)
             tmp_dict["passNonpass"] = t[7]
-            print(tmp_dict)
 
             result_dict["data"].append(tmp_dict)
 
         request.session["TaskID"] = infoID
         return JsonResponse(result_dict)
     except Exception as e:
-        print(e)
         tmp_dict = {"originalTypeID": "Error", "submitNum": "Error", "submitDate": "Error", "submitFileName": "Error",
                     "Ntuple": "Error", "quanScore": "Error", "qualScore": "Error", "passNonpass": "Error"}
         return JsonResponse(tmp_dict)
@@ -267,7 +261,7 @@ def SubmitTaskInfo2_3(request, infoID):
     try:
         dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
         result_lst = []
-        for i in select(dbconn,"""SELECT T.TaskID, T.Name, T.Description  FROM PARTICIPATE_TASK P, TASK T 
+        for i in select(dbconn,"""SELECT T.TaskID, T.Name, T.Description, SubmissionPeriod  FROM PARTICIPATE_TASK P, TASK T 
         WHERE P.TaskID = T.TaskID and P.Pass = 'P' and P.SubmitterID = '{}' and T.TaskID ={}""".format(request.session['MainID'], infoID)):
             tmp_dict = {"TaskID": "Error", "Name": "Error", "Description": "Error", "NSubmittedFile": "Error",
                         "NpassedFile": "Error", "avgRate": "Error"}
@@ -275,28 +269,35 @@ def SubmitTaskInfo2_3(request, infoID):
             tmp = list(select(dbconn,"""
             SELECT COUNT(*),SUM(NumberOfTuple)  FROM PARSING_DATA P, ORIGINAL_DATA_TYPE O 
             WHERE O.OriginalTypeID =  P.OriginalTypeID and P.SubmitterID = '{}'and O.TaskID = {}""".format(request.session['MainID'], i[0])))[0]
-            tmp_dict["NSubmittedFile"] = tmp[0]
-            tmp_dict["NSubmittedTuple"] = tmp[1]
-            tmp =  list(select(dbconn,"""SELECT COUNT(*),SUM(NumberOfTuple) FROM PARSING_DATA P, ORIGINAL_DATA_TYPE O 
+            tmp_dict["NSubmittedFile"] = tmp[0] if tmp[0] else 0
+            tmp_dict["NSubmittedTuple"] = tmp[1] if tmp[1] else 0
+            tmp =  list(select(dbconn,"""SELECT COUNT(*),SUM(NumberOfTuple), MAX(SubmissionDate) FROM PARSING_DATA P, ORIGINAL_DATA_TYPE O 
             WHERE O.OriginalTypeID =  P.OriginalTypeID and P.SubmitterID = '{}' and P.P_NP = 'P'and O.TaskID = {}""".format(request.session['MainID'], i[0])))[0]
 
-            tmp_dict["NpassedFile"] = tmp[0]
-            tmp_dict["NpassedTuple"] = tmp[1]
+            tmp_dict["NpassedFile"] = tmp[0] if tmp[0] else 0
+            tmp_dict["NpassedTuple"] = tmp[1] if tmp[1] else 0
+            P_time = tmp[2] if tmp[2] else datetime(1,1,1,0,0,0)
 
+            tmp = next(select(dbconn, """SELECT COUNT(*),SUM(NumberOfTuple), MAX(SubmissionDate) FROM PARSING_DATA P, ORIGINAL_DATA_TYPE O 
+                                    WHERE O.OriginalTypeID =  P.OriginalTypeID and P.SubmitterID = '{}' and P.P_NP = 'W'and O.TaskID = {}""".format(
+                request.session['MainID'], i[0])))
+
+            tmp_dict["NwaitFile"] = tmp[0] if tmp[0] else 0
+            tmp_dict["NwaitTuple"] = tmp[1] if tmp[1] else 0
+            W_time = tmp[2] if tmp[2] else datetime(1,1,1,0,0,0)
+
+            tmp_dict["Submissionthreshold"] = max([P_time,W_time]) + timedelta(days = int(i[3]))
+            tmp_dict["SubOK"] = tmp_dict["Submissionthreshold"] <= datetime.now()
+
+            tmp_dict["Submissionthreshold"] = str(tmp_dict["Submissionthreshold"].date()) + " " + str(tmp_dict["Submissionthreshold"].time())
 
             tmp = list(select(dbconn, """SELECT AVG(QuanAssessment), AVG(QualAssessment) FROM PARSING_DATA P, ORIGINAL_DATA_TYPE O 
             WHERE O.OriginalTypeID =  P.OriginalTypeID
             and P.SubmitterID = '{}' and O.TaskID = {} and P.P_NP != 'W'""".format(request.session['MainID'],i[0])))[0]
-
-
             try:
                 tmp_dict["avgRate"] = round((tmp[0] + tmp[1]) / 2, 2)
             except:
                 tmp_dict["avgRate"] = 0
-
-
-
-
             return JsonResponse(tmp_dict)
     except Exception as e:
         return JsonResponse({}, safe=False)
@@ -349,8 +350,19 @@ def download_csv_data(request, SubmissionID):
             writer.writerow(row[1:])
         return response
     except Exception as e:
-        print(e)
         return HttpResponse("오류가 발생했습니다.",status=202)
     finally:
         dbconn.close();
 
+def getSubTime(request, infoID):
+    try:
+        dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
+        rate = next(select(dbconn,"""SELECT MAX(SubmissionNumber) FROM PARSING_DATA P, ORIGINAL_DATA_TYPE O 
+        WHERE P.OriginalTypeID = O.OriginalTypeID and SubmitterID = '{}' and TaskID = {}""".format(
+            request.session["MainID"], infoID
+        )))
+        return JsonResponse({"subtime" : rate[0] + 1 if rate[0] else 1})
+    except Exception as e:
+        return JsonResponse([], safe=False)
+    finally:
+        dbconn.close();

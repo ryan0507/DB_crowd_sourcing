@@ -44,6 +44,8 @@ function Submit() {
         })
     }
 
+
+
   return (
       <Router>
             <body>
@@ -66,7 +68,7 @@ function Submit() {
                     <Route exact path="/submit/taskinfo2/:task_id" component={Submit_taskInfo2}/>
                     <Route exact path="/submit/taskcheck" component={Submit_taskCheck}/>
                     <Route exact path="/submit/filedetail" component={Submit_fileDetail}/>
-                    <Route exact path="/submit/submitfile" component={Submit_submitFile}/>
+                    <Route exact path="/submit/submitfile/:task_id" component={Submit_submitFile}/>
                     <Route exact path="/submit/changeinfo" component={Submit_changeInfo}/>
                 </Switch>
             </body>

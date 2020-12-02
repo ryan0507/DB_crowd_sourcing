@@ -108,11 +108,15 @@ interface TaskForStat{
     TaskID: number;
     Name : string;
     Description: string;
-    NSubmittedFile : number[];
+    NSubmittedFile : number;
     NpassedFile : number;
     avgRate : string;
-    NSubmittedTuple : number[];
+    NSubmittedTuple : number;
     NpassedTuple : number;
+    NwaitFile : number;
+    NwaitTuple : number;
+    Submissionthreshold : string;
+    SubOK : boolean;
 }
 // interface Score {
 //     score : string;
@@ -147,8 +151,9 @@ export default function Submit_taskInfo2(props : RouteComponentProps<{task_id : 
 
     const row = createData(parsing);
 
-    const[stat, setStat] = useState<TaskForStat>({TaskID: 0, Name: "Error", Description: "Error", NSubmittedFile: [],
-        NpassedFile: 0, avgRate: "Error", NSubmittedTuple: [], NpassedTuple: 0 });
+    const[stat, setStat] = useState<TaskForStat>({TaskID: 0, Name: "Error", Description: "Error", NSubmittedFile: 0,
+        NpassedFile: 0, avgRate: "Error", NSubmittedTuple: 0, NpassedTuple: 0, NwaitFile : 0, NwaitTuple:0,
+        Submissionthreshold: "0001-01-01", SubOK : false});
     const getApi3 = async() =>{
         await axios.get(`http://127.0.0.1:8000/submitUI/taskinfo2_3/${props.match.params.task_id}/`).then((r)=>{
             let temp: TaskForStat = r.data;
@@ -188,6 +193,15 @@ export default function Submit_taskInfo2(props : RouteComponentProps<{task_id : 
                 alert('오류가 발생했습니다.')
             }
         })
+    }
+    const CheckSubmit = () => {
+
+        if (!stat.SubOK) {
+            alert("최소 업로드 주기 " + task.period + "일 전에 제출해서 패스를 받았거나 평가 대기 중인 파일이 있습니다. "
+                + stat.Submissionthreshold + " 이후에 제출하세요.");
+        }else {
+            window.location.href = "/submit/submitfile/" + props.match.params.task_id + "/"
+        }
     }
 
 
@@ -305,9 +319,11 @@ export default function Submit_taskInfo2(props : RouteComponentProps<{task_id : 
                             {/*  }}*/}
                             {/*/>*/}
                             <div className={"taskStatistic"}>
-                                <div className={"submitFiles"}>제출된 파일 수 : {stat.NSubmittedFile}개  &nbsp; &nbsp; &nbsp;  제출된 튜플 수 : {stat.NSubmittedTuple}개</div>
-                                <div className={"passFiles"}>Pass된 파일 수 : {stat.NpassedFile}개</div>
-                                <div className={"passTuples"}>Pass된 튜플 수 : {stat.NpassedTuple}개</div>
+                                <div className={"submitFiles"}>제출된 파일 수 : {stat.NSubmittedFile}개  &nbsp; &nbsp; &nbsp;
+                                    Pass된 파일 수 : {stat.NpassedFile}개  &nbsp; &nbsp; &nbsp; 대기중인 파일 수: {stat.NwaitFile}개</div>
+                                <div className={"passFiles"}>제출된 튜플 수 : {stat.NSubmittedTuple}개 &nbsp; &nbsp; &nbsp;
+                                    Pass된 튜플 수 : {stat.NpassedTuple}개  &nbsp; &nbsp; &nbsp; 대기중인 튜플 수: {stat.NwaitTuple}개</div>
+                                <div className={"passTuples"}>&nbsp;</div>
                                 <Paper className={classes.root}>
                                     <TableContainer className={classes.container}>
                                         <Table stickyHeader aria-label="sticky table">
@@ -366,6 +382,11 @@ export default function Submit_taskInfo2(props : RouteComponentProps<{task_id : 
                                     />
                                 </Paper>
                             </div>
+                        </div>
+                        <div className={"TaskParticipate"}>
+                            <button className="task-participate" onClick={CheckSubmit}>
+                                파일 제출하기
+                            </button>
                         </div>
                         {/*</div>*/}
                     </div>
