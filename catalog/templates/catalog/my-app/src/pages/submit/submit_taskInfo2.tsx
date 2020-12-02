@@ -53,28 +53,30 @@ interface parseToTable{
     originalTypeID : string;
     submitNum : number;
     submitDate : string;
-    submitFileName : string;
+    submitFileName : string[];
+    Ntuple : number;
     quanScore : number;
     qualScore : number;
     passNonpass : string;
 }
 
 interface Column {
-  id: 'originTypeID'| 'submitNum' | 'submitDate' | 'submitFileName' | 'quanScore' | 'qualScore' | 'passNonpass' ;
-  label: string;
-  minWidth?: number;
-  align?: 'center';
-  alignment?: 'center';
-  format?: (value: number) => string;
+    id: 'originTypeID'| 'submitNum' | 'submitDate' | 'submitFileName' | 'Ntuple' | 'quanScore' | 'qualScore' | 'passNonpass' ;
+    label: string;
+    minWidth?: number;
+    align?: 'center';
+    alignment?: 'center';
+    format?: (value: number) => string;
 }
 
 const columns: Column[] = [
-  { id: 'originTypeID', label: '원본 데이터 타입 ID'},
-  { id: 'submitNum', label: '회차'},
-  { id: 'submitDate', label: '제출일' },
-  { id: 'submitFileName',label: '파일 이름'},
-  {id: 'quanScore',label: '정량평가 점수'},
-    {id: 'qualScore',label: '정성평가 점수'},
+    {id: 'originTypeID', label: '원본 타입'},
+    {id: 'submitNum', label: '회차'},
+    {id: 'submitDate', label: '제출일' },
+    {id: 'submitFileName',label: '파일'},
+    {id: 'Ntuple',label: '튜플수'},
+    {id: 'quanScore',label: '정량평가'},
+    {id: 'qualScore',label: '정성평가'},
     {id: 'passNonpass',label: '패스 여부'},
 ];
 
@@ -83,7 +85,8 @@ interface Data {
     originTypeID: string;
     submitNum: number;
     submitDate: string;
-    submitFileName: string;
+    submitFileName: string[];
+    Ntuple: number;
     quanScore: number;
     qualScore: number;
     passNonpass: string;
@@ -94,11 +97,11 @@ function createData(pars : ParsingData): Data[] {
     pars.data.map((item)=>{
         let tempPass : string = item.passNonpass;
         if(item.passNonpass === "W"){tempPass = '제출 전'}
-        temp.push({originTypeID : item.originalTypeID, submitNum : item.submitNum,
-            submitDate : item.submitDate.substring(0,10), submitFileName : item.submitFileName, quanScore : item.quanScore,
-            qualScore : item.qualScore, passNonpass : tempPass})
+        temp.push({originTypeID : item.originalTypeID, submitNum : item.submitNum, submitDate : item.submitDate.substring(0,10),
+            Ntuple: item.Ntuple, submitFileName : item.submitFileName, quanScore : item.quanScore, qualScore : item.qualScore,
+            passNonpass : tempPass})
     })
-  return temp;
+    return temp;
 }
 
 interface TaskForStat{
@@ -108,6 +111,8 @@ interface TaskForStat{
     NSubmittedFile : number[];
     NpassedFile : number;
     avgRate : string;
+    NSubmittedTuple : number[];
+    NpassedTuple : number;
 }
 // interface Score {
 //     score : string;
@@ -131,6 +136,7 @@ export default function Submit_taskInfo2(props : RouteComponentProps<{task_id : 
 
     const getApi2 = async() =>{
         await axios.get(`http://127.0.0.1:8000/submitUI/taskinfo2_2/${props.match.params.task_id}/`).then((r)=>{
+            console.log(r.data);
             let temp: ParsingData = r.data;
             setParsing(temp);
         })
@@ -142,7 +148,7 @@ export default function Submit_taskInfo2(props : RouteComponentProps<{task_id : 
     const row = createData(parsing);
 
     const[stat, setStat] = useState<TaskForStat>({TaskID: 0, Name: "Error", Description: "Error", NSubmittedFile: [],
-                        NpassedFile: 0, avgRate: "Error"});
+        NpassedFile: 0, avgRate: "Error", NSubmittedTuple: [], NpassedTuple: 0 });
     const getApi3 = async() =>{
         await axios.get(`http://127.0.0.1:8000/submitUI/taskinfo2_3/${props.match.params.task_id}/`).then((r)=>{
             let temp: TaskForStat = r.data;
@@ -164,6 +170,25 @@ export default function Submit_taskInfo2(props : RouteComponentProps<{task_id : 
         setRowsPerPage(+event.target.value);
         setPage(0);
     };
+
+    const downloadfile = (i:string, name:string) => {
+        axios({method: 'GET', url: `http://127.0.0.1:8000/submitUI/downloadcsvfile/${i}/`,
+        responseType: 'blob' }).then((r)=>{
+            if (r.status === 200) {
+                const url = window.URL.createObjectURL(new Blob([r.data], { type: r.headers['content-type'] }));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download',  name);
+                document.body.appendChild(link);
+                link.click();
+                alert('파일이 다운로드 됩니다.')
+            }else if (r.status === 201) {
+                alert('NonPass를 받은 파일은 삭제됩니다')
+            }else {
+                alert('오류가 발생했습니다.')
+            }
+        })
+    }
 
 
 
@@ -209,22 +234,22 @@ export default function Submit_taskInfo2(props : RouteComponentProps<{task_id : 
                     {/*    <div className={"wrapper_title"}>Pass된 파일 수</div>*/}
                     {/*    <div className={"lightgray_wrapper"} >{stat.NpassedFile}개</div>*/}
                     {/*</div>*/}
-                     <div className={"MinUpload"}>
+                    <div className={"MinUpload"}>
                         <div className={"wrapper_title"}>평균 점수</div>
                         <div className={"lightgray_wrapper"} >{stat.avgRate}점</div>
                     </div>
                     <div className={"TaskSchema"}>
                         <div className={"wrapper_title"}>태스크 데이터 테이블 스키마</div>
 
-                            <ul className={"value_list"}>
-                                {task.schema.map((item)=>{
-                                    return(
-                                        <li>
-                                            <div className={"name"}>{item.Big}</div>
-                                            <div className={"type"}>({item.small})</div>
-                                        </li>
-                                    )})}
-                            </ul>
+                        <ul className={"value_list"}>
+                            {task.schema.map((item)=>{
+                                return(
+                                    <li>
+                                        <div className={"name"}>{item.Big}</div>
+                                        <div className={"type"}>({item.small})</div>
+                                    </li>
+                                )})}
+                        </ul>
 
                     </div>
 
@@ -248,103 +273,104 @@ export default function Submit_taskInfo2(props : RouteComponentProps<{task_id : 
                     </div>
 
 
-            <div className="submitTaskList">
-                <div className="wrapper_title">나의 제출 현황 </div>
-                <div className={"lightgray_wrapper"}>
-            {/*        <MaterialTable*/}
-            {/*   title={""}*/}
-            {/*  columns={[*/}
-            {/*    { title: '원본 타입[ID]', field: 'originTypeID' , hideFilterIcon: true, headerStyle:{textAlign:'center'}, cellStyle: {textAlign:"center"}},*/}
-            {/*    { title: '회차', field: 'submitNum', hideFilterIcon: true, cellStyle: {textAlign:"center"} },*/}
-            {/*    { title: '제출일', field: 'submitDate', hideFilterIcon: true, cellStyle: {textAlign:"center"} },*/}
-            {/*    {title: '파일이름', field: 'submitFileName', hideFilterIcon: true, cellStyle: {textAlign:"center"}},*/}
-            {/*    {title: '정량평가   점수', field: 'quanScore', hideFilterIcon: true, cellStyle: {textAlign:"center"}},*/}
-            {/*    {title: '정성평가 점수',field: 'qualScore', hideFilterIcon: true, cellStyle: {textAlign:"center"}},*/}
-            {/*    { title: '패스 여부', field: 'passNonpass', lookup: { 'P': 'PASS', 'NP': 'NONPASS' , 'W' : 'WAIT'},*/}
-            {/*        hideFilterIcon: true, cellStyle: {textAlign:"center"}},*/}
-            {/*  ]}*/}
-            {/*   data={row}*/}
-            {/*   // onRowClick={((event, rowData) => handleClick)}*/}
-            {/*   onRowClick={(event, rowData) => {*/}
-            {/*      // Get your id from rowData and use with link.*/}
-            {/*       let tempID : string = ''*/}
-            {/*        toTable.map((item)=>{*/}
-            {/*        })*/}
+                    <div className="submitTaskList">
+                        <div className="wrapper_title">나의 제출 현황 </div>
+                        <div className={"lightgray_wrapper"}>
+                            {/*        <MaterialTable*/}
+                            {/*   title={""}*/}
+                            {/*  columns={[*/}
+                            {/*    { title: '원본 타입[ID]', field: 'originTypeID' , hideFilterIcon: true, headerStyle:{textAlign:'center'}, cellStyle: {textAlign:"center"}},*/}
+                            {/*    { title: '회차', field: 'submitNum', hideFilterIcon: true, cellStyle: {textAlign:"center"} },*/}
+                            {/*    { title: '제출일', field: 'submitDate', hideFilterIcon: true, cellStyle: {textAlign:"center"} },*/}
+                            {/*    {title: '파일이름', field: 'submitFileName', hideFilterIcon: true, cellStyle: {textAlign:"center"}},*/}
+                            {/*    {title: '정량평가   점수', field: 'quanScore', hideFilterIcon: true, cellStyle: {textAlign:"center"}},*/}
+                            {/*    {title: '정성평가 점수',field: 'qualScore', hideFilterIcon: true, cellStyle: {textAlign:"center"}},*/}
+                            {/*    { title: '패스 여부', field: 'passNonpass', lookup: { 'P': 'PASS', 'NP': 'NONPASS' , 'W' : 'WAIT'},*/}
+                            {/*        hideFilterIcon: true, cellStyle: {textAlign:"center"}},*/}
+                            {/*  ]}*/}
+                            {/*   data={row}*/}
+                            {/*   // onRowClick={((event, rowData) => handleClick)}*/}
+                            {/*   onRowClick={(event, rowData) => {*/}
+                            {/*      // Get your id from rowData and use with link.*/}
+                            {/*       let tempID : string = ''*/}
+                            {/*        toTable.map((item)=>{*/}
+                            {/*        })*/}
 
-            {/*   }}*/}
-            {/*  options={{*/}
-            {/*    filtering: true,*/}
-            {/*      filterRowStyle:{backgroundColor:'#F6F6F6'},*/}
-            {/*      headerStyle:{textAlign:'center'},*/}
-            {/*      searchFieldStyle:{position:'relative', top:'0px', backgroundColor:'white', borderRadius:'5px'}*/}
-            {/*  }}*/}
-            {/*/>*/}
-            <div className={"taskStatistic"}>
-                       <div className={"submitFiles"}>제출된 파일 수 : {stat.NSubmittedFile}개</div>
-                       <div className={"passFiles"}>Pass된 파일 수 : {stat.NpassedFile}개</div>
-                       <div className={"passTuples"}>Pass된 튜플 수 : 000개</div>
-                       <Paper className={classes.root}>
-                          <TableContainer className={classes.container}>
-                            <Table stickyHeader aria-label="sticky table">
-                              <TableHead>
-                                <TableRow>
-                                  {columns.map((column) => (
-                                    <TableCell
-                                      key={column.id}
-                                      align={'center'}
-                                      style={{ minWidth: column.minWidth, backgroundColor: 'white', fontSize: '16px', fontWeight: 'bold' }}
-                                    >
-                                      {column.label}
-                                    </TableCell>
-                                  ))}
-                                </TableRow>
-                              </TableHead>
-                              <TableBody>
-                                {row.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                                  return (
-                                    <TableRow hover role="checkbox" tabIndex={-1} key={row.submitNum}>
-                                      {columns.map((column) => {
-                                        const value = row[column.id];
-                                        if (column.id == "submitFileName"){
-                                           return (
-                                              <TableCell key={column.id} align='center'
-                                                  style={{fontSize: '14px', fontWeight: 'normal', color:'black' }}>
-                                                    <Link to ="/admin/filedetail">
-                                                        {column.format && typeof value === 'number' ? column.format(value) : value}
-                                                    </Link>
-                                              </TableCell>
-                                            );
-                                        }else{
-                                            return (
-                                              <TableCell key={column.id} align='center'
-                                              style={{fontSize: '14px', fontWeight: 'normal' }}>
-                                                {column.format && typeof value === 'number' ? column.format(value) : value}
-                                              </TableCell>
-                                            );
-                                        }
-                                      })}
-                                    </TableRow>
-                                  );
-                                })}
-                              </TableBody>
-                            </Table>
-                          </TableContainer>
-                          <TablePagination
-                            rowsPerPageOptions={[10, 20, 30]}
-                            component="div"
-                            count={row.length}
-                            rowsPerPage={rowsPerPage}
-                            page={page}
-                            onChangePage={handleChangePage}
-                            onChangeRowsPerPage={handleChangeRowsPerPage}
-                          />
-                        </Paper>
-                   </div>
-               </div>
-            {/*</div>*/}
-             </div>
+                            {/*   }}*/}
+                            {/*  options={{*/}
+                            {/*    filtering: true,*/}
+                            {/*      filterRowStyle:{backgroundColor:'#F6F6F6'},*/}
+                            {/*      headerStyle:{textAlign:'center'},*/}
+                            {/*      searchFieldStyle:{position:'relative', top:'0px', backgroundColor:'white', borderRadius:'5px'}*/}
+                            {/*  }}*/}
+                            {/*/>*/}
+                            <div className={"taskStatistic"}>
+                                <div className={"submitFiles"}>제출된 파일 수 : {stat.NSubmittedFile}개  &nbsp; &nbsp; &nbsp;  제출된 튜플 수 : {stat.NSubmittedTuple}개</div>
+                                <div className={"passFiles"}>Pass된 파일 수 : {stat.NpassedFile}개</div>
+                                <div className={"passTuples"}>Pass된 튜플 수 : {stat.NpassedTuple}개</div>
+                                <Paper className={classes.root}>
+                                    <TableContainer className={classes.container}>
+                                        <Table stickyHeader aria-label="sticky table">
+                                            <TableHead>
+                                                <TableRow>
+                                                    {columns.map((column) => (
+                                                        <TableCell
+                                                            key={column.id}
+                                                            align={'center'}
+                                                            style={{ minWidth: column.minWidth, backgroundColor: 'white', fontSize: '16px', fontWeight: 'bold' }}
+                                                        >
+                                                            {column.label}
+                                                        </TableCell>
+                                                    ))}
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                {row.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                                                    return (
+                                                        <TableRow hover role="checkbox" tabIndex={-1} key={row.submitNum}>
+                                                            {columns.map((column) => {
+                                                                const value = row[column.id];
+                                                                if (column.id == "submitFileName"){
+                                                                    const value = row["submitFileName"];
+                                                                    return (
+                                                                        <TableCell key={column.id} align='center'
+                                                                                   style={{fontSize: '14px', fontWeight: 'normal', color:'black' }}>
+                                                                            <button onClick = {(i) => downloadfile(value[1],value[0])}>
+                                                                                {column.format && typeof value[0] === 'number' ? column.format(value[0]) : value[0]}
+                                                                            </button>
+                                                                        </TableCell>
+                                                                    );
+                                                                }else{
+                                                                    return (
+                                                                        <TableCell key={column.id} align='center'
+                                                                                   style={{fontSize: '14px', fontWeight: 'normal' }}>
+                                                                            {column.format && typeof value === 'number' ? column.format(value) : value}
+                                                                        </TableCell>
+                                                                    );
+                                                                }
+                                                            })}
+                                                        </TableRow>
+                                                    );
+                                                })}
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                    <TablePagination
+                                        rowsPerPageOptions={[10, 20, 30]}
+                                        component="div"
+                                        count={row.length}
+                                        rowsPerPage={rowsPerPage}
+                                        page={page}
+                                        onChangePage={handleChangePage}
+                                        onChangeRowsPerPage={handleChangeRowsPerPage}
+                                    />
+                                </Paper>
+                            </div>
+                        </div>
+                        {/*</div>*/}
+                    </div>
+                </div>
             </div>
-        </div>
         </div>
     );
 }

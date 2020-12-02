@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 import json
-from django.http import JsonResponse
+import csv
+from django.utils.encoding import smart_str
+from django.http import JsonResponse, HttpResponse
 import mysql.connector
 dbconn = mysql.connector.connect(host = "34.64.198.135", user = "root", passwd = "111111", database = "DB_test")
 DB_HOST = "34.64.198.135"
@@ -62,20 +64,18 @@ def SubmitMain2View(request):
                         "NpassedFile": "Error", "avgRate": "Error"}
             tmp_dict["TaskID"], tmp_dict["Name"], tmp_dict["Description"] = i[0], i[1], i[2]
             tmp_dict["NSubmittedFile"] = list(select(dbconn,"""
-            SELECT COUNT(*) FROM PARSING_DATA P, ORIGINAL_DATA_TYPE O, TASK T 
-            WHERE O.OriginalTypeID =  P.OriginalTypeID and O.TaskID = T.TaskID
-             and P.SubmitterID = '{}'and T.TaskID = {}""".format(request.session['MainID'], i[0])))[0][0]
+            SELECT COUNT(*) FROM PARSING_DATA P, ORIGINAL_DATA_TYPE O WHERE O.OriginalTypeID =  P.OriginalTypeID
+             and P.SubmitterID = '{}'and O.TaskID = {}""".format(request.session['MainID'], i[0])))[0][0]
 
-            tmp =  list(select(dbconn,"""SELECT COUNT(*) FROM PARSING_DATA P, ORIGINAL_DATA_TYPE O, TASK T 
-            WHERE O.OriginalTypeID =  P.OriginalTypeID and O.TaskID = T.TaskID
-             and P.SubmitterID = '{}' and P.P_NP = 'P'and T.TaskID = {}""".format(request.session['MainID'], i[0])))[0]
+            tmp =  list(select(dbconn,"""SELECT COUNT(*) FROM PARSING_DATA P, ORIGINAL_DATA_TYPE O WHERE O.OriginalTypeID =  P.OriginalTypeID 
+             and P.SubmitterID = '{}' and P.P_NP = 'P'and O.TaskID = {}""".format(request.session['MainID'], i[0])))[0]
 
             tmp_dict["NpassedFile"] = tmp[0]
             print(tmp_dict)
 
-            tmp = list(select(dbconn, """SELECT AVG(QuanAssessment), AVG(QualAssessment) FROM PARSING_DATA P, ORIGINAL_DATA_TYPE O, TASK T 
-            WHERE O.OriginalTypeID =  P.OriginalTypeID and O.TaskID = T.TaskID
-            and P.SubmitterID = '{}' and T.TaskID = {} and P.P_NP != 'W'""".format(request.session['MainID'],i[0])))[0]
+            tmp = list(select(dbconn, """SELECT AVG(QuanAssessment), AVG(QualAssessment) FROM PARSING_DATA P, ORIGINAL_DATA_TYPE O 
+            WHERE O.OriginalTypeID =  P.OriginalTypeID and P.SubmitterID = '{}' 
+            and O.TaskID = {} and P.P_NP != 'W'""".format(request.session['MainID'],i[0])))[0]
 
 
             try:
@@ -230,8 +230,8 @@ def SubmitTaskInfo2_2(request, infoID): # submit info
     result_dict = {"data":[]}
     try:
         dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
-        sql = """ SELECT P.ORIGINALTYPEID, P.SUBMISSIONNUMBER, P.SUBMISSIONDATE, P.FILENAME,
-                P.QUANASSESSMENT, P.QUALASSESSMENT, P.P_NP 
+        sql = """ SELECT O.OriginSchema, P.SUBMISSIONNUMBER, P.SUBMISSIONDATE, P.FILENAME,
+                         P.NumberOfTUple, P.QUANASSESSMENT, P.QUALASSESSMENT, P.P_NP, P.SubmissionID 
                 FROM PARSING_DATA AS P, ORIGINAL_DATA_TYPE AS O
                 WHERE O.ORIGINALTYPEID = P.ORIGINALTYPEID 
                 AND P.SUBMITTERID = '{}' AND O.TASKID = {}""".format(request.session['MainID'], infoID)
@@ -241,10 +241,13 @@ def SubmitTaskInfo2_2(request, infoID): # submit info
             tmp_dict["originalTypeID"] = t[0]
             tmp_dict["submitNum"]= t[1]
             tmp_dict["submitDate"] = t[2]
-            tmp_dict["submitFileName"] = t[3]
-            tmp_dict["quanScore"] = t[4]
-            tmp_dict["qualScore"] = t[5]
-            tmp_dict["passNonpass"] = t[6]
+            tmp_dict["submitFileName"] = [t[3],str(t[8])]
+            tmp_dict["Ntuple"] = t[4]
+            tmp_dict["quanScore"] = round(t[5],2)
+            tmp_dict["qualScore"] = round(t[6],2)
+            tmp_dict["passNonpass"] = t[7]
+            print(tmp_dict)
+
             result_dict["data"].append(tmp_dict)
 
         request.session["TaskID"] = infoID
@@ -252,10 +255,13 @@ def SubmitTaskInfo2_2(request, infoID): # submit info
     except Exception as e:
         print(e)
         tmp_dict = {"originalTypeID": "Error", "submitNum": "Error", "submitDate": "Error", "submitFileName": "Error",
-                    "quanScore": "Error", "qualScore": "Error", "passNonpass": "Error"}
+                    "Ntuple": "Error", "quanScore": "Error", "qualScore": "Error", "passNonpass": "Error"}
         return JsonResponse(tmp_dict)
     finally:
         dbconn.close();
+
+
+
 
 def SubmitTaskInfo2_3(request, infoID):
     try:
@@ -266,27 +272,30 @@ def SubmitTaskInfo2_3(request, infoID):
             tmp_dict = {"TaskID": "Error", "Name": "Error", "Description": "Error", "NSubmittedFile": "Error",
                         "NpassedFile": "Error", "avgRate": "Error"}
             tmp_dict["TaskID"], tmp_dict["Name"], tmp_dict["Description"] = i[0], i[1], i[2]
-            tmp_dict["NSubmittedFile"] = list(select(dbconn,"""
-            SELECT COUNT(*) FROM PARSING_DATA P, ORIGINAL_DATA_TYPE O, TASK T 
-            WHERE O.OriginalTypeID =  P.OriginalTypeID and O.TaskID = T.TaskID
-             and P.SubmitterID = '{}'and T.TaskID = {}""".format(request.session['MainID'], i[0])))[0][0]
-
-            tmp =  list(select(dbconn,"""SELECT COUNT(*) FROM PARSING_DATA P, ORIGINAL_DATA_TYPE O, TASK T 
-            WHERE O.OriginalTypeID =  P.OriginalTypeID and O.TaskID = T.TaskID
-             and P.SubmitterID = '{}' and P.P_NP = 'P'and T.TaskID = {}""".format(request.session['MainID'], i[0])))[0]
+            tmp = list(select(dbconn,"""
+            SELECT COUNT(*),SUM(NumberOfTuple)  FROM PARSING_DATA P, ORIGINAL_DATA_TYPE O 
+            WHERE O.OriginalTypeID =  P.OriginalTypeID and P.SubmitterID = '{}'and O.TaskID = {}""".format(request.session['MainID'], i[0])))[0]
+            tmp_dict["NSubmittedFile"] = tmp[0]
+            tmp_dict["NSubmittedTuple"] = tmp[1]
+            tmp =  list(select(dbconn,"""SELECT COUNT(*),SUM(NumberOfTuple) FROM PARSING_DATA P, ORIGINAL_DATA_TYPE O 
+            WHERE O.OriginalTypeID =  P.OriginalTypeID and P.SubmitterID = '{}' and P.P_NP = 'P'and O.TaskID = {}""".format(request.session['MainID'], i[0])))[0]
 
             tmp_dict["NpassedFile"] = tmp[0]
-            print(tmp_dict)
+            tmp_dict["NpassedTuple"] = tmp[1]
 
-            tmp = list(select(dbconn, """SELECT AVG(QuanAssessment), AVG(QualAssessment) FROM PARSING_DATA P, ORIGINAL_DATA_TYPE O, TASK T 
-            WHERE O.OriginalTypeID =  P.OriginalTypeID and O.TaskID = T.TaskID
-            and P.SubmitterID = '{}' and T.TaskID = {} and P.P_NP != 'W'""".format(request.session['MainID'],i[0])))[0]
+
+            tmp = list(select(dbconn, """SELECT AVG(QuanAssessment), AVG(QualAssessment) FROM PARSING_DATA P, ORIGINAL_DATA_TYPE O 
+            WHERE O.OriginalTypeID =  P.OriginalTypeID
+            and P.SubmitterID = '{}' and O.TaskID = {} and P.P_NP != 'W'""".format(request.session['MainID'],i[0])))[0]
 
 
             try:
                 tmp_dict["avgRate"] = round((tmp[0] + tmp[1]) / 2, 2)
             except:
                 tmp_dict["avgRate"] = 0
+
+
+
 
             return JsonResponse(tmp_dict)
     except Exception as e:
@@ -310,4 +319,38 @@ def SubmitTaskInfo2_4(request, infoID):
 
 
 
+
+def download_csv_data(request, SubmissionID):
+    try:
+        dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
+
+        OriginalTypeID, P_NP = next(select(dbconn,"SELECT OriginalTypeID, P_NP FROM PARSING_DATA WHERE SubmissionID = {}".format(SubmissionID)))
+        TaskID = next(select(dbconn, "SELECT TaskID FROM ORIGINAL_DATA_TYPE WHERE OriginalTypeID = {}".format(OriginalTypeID)))[0]
+
+        TableName, TaskSchema = next(select(dbconn, "SELECT TableName, TaskSchema FROM TASK WHERE TaskID = {}".format(TaskID)))
+
+        if P_NP == "NP":
+            return HttpResponse("NonPass를 받은 파일은 삭제됩니다.", status=201)
+        if P_NP == "W":
+            TableName = TableName + "_W"
+
+        # response content type
+        response = HttpResponse(TableName,status=200,content_type='text/csv')
+        # decide the file name
+        response['Content-Disposition'] = 'attachment; filename="{}.csv"'.format(TableName)
+        writer = csv.writer(response, csv.excel)
+        response.write(u'\ufeff'.encode('utf8'))
+
+        # write the headers
+        writer.writerow([smart_str(i) for i in TaskSchema.split("%")[::2]])
+        data = select(dbconn, "SELECT * FROM {} WHERE SubmissionID = {}".format(TableName,SubmissionID))
+
+        for row in data:
+            writer.writerow(row[1:])
+        return response
+    except Exception as e:
+        print(e)
+        return HttpResponse("오류가 발생했습니다.",status=202)
+    finally:
+        dbconn.close();
 
