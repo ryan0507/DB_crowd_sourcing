@@ -10,19 +10,19 @@ DB_DATABASE = "DB_test"
 
 
 def select(dbconn, query, bufferd=True):
-  cursor = dbconn.cursor(buffered=bufferd);
-  cursor.execute(query);
-  return cursor;
+  cursor = dbconn.cursor(buffered=bufferd)
+  cursor.execute(query)
+  return cursor
 
 
 def merge(dbconn, query, values, buffered=True):
     try:
-        cursor = dbconn.cursor(buffered=buffered);
-        cursor.execute(query, values);
-        dbconn.commit();
+        cursor = dbconn.cursor(buffered=buffered)
+        cursor.execute(query, values)
+        dbconn.commit()
     except Exception as e:
-        dbconn.rollback();
-        raise e;
+        dbconn.rollback()
+        raise e
 
 
 def Login(request):
@@ -43,7 +43,7 @@ def Login(request):
     except Exception as e:
         return JsonResponse({"MainID": "-1", "ID": "-1", "Name": "-1"})
     finally:
-        dbconn.close();
+        dbconn.close()
 
 
 def GetUser(request):
@@ -53,38 +53,51 @@ def GetUser(request):
         return JsonResponse({"MainID": "-1", "ID": "-1", "Name": "-1"})
 
 def UserAddView(request):
-    value_lst = []
-    dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
+    try:
+        dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
+        value_lst = []
+        if len(request.body) != 0:
+            body_unicode = request.body.decode('utf-8')
+            data = json.loads(body_unicode)
+            val_tuple = (data["MainID"], data["ID"], data["Password"], data["Name"], data["Gender"], data["Address"], data["DateOfBirth"], data["PhoneNumber"])
+            value_lst.append(val_tuple)
 
-    if len(request.body) != 0:
-        body_unicode = request.body.decode('utf-8')
-        data = json.loads(body_unicode)
-        val_tuple = (data["MainID"], data["ID"], data["Password"], data["Name"], data["Gender"], data["Address"], data["DateOfBirth"], data["PhoneNumber"])
-        value_lst.append(val_tuple)
-
-        merge(dbconn, """INSERT INTO USER(MainID, ID, Password, Name, Gender, Address, DateOfBirth, PhoneNumber)
-              VALUES (%s, %s, %s, %s, %s, %s, %s, %s)""", val_tuple)
-        return JsonResponse(value_lst, safe=False)
-    else:
-        print("noData")
-        return JsonResponse({})
+            merge(dbconn, """INSERT INTO USER(MainID, ID, Password, Name, Gender, Address, DateOfBirth, PhoneNumber)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)""", val_tuple)
+            return JsonResponse(value_lst, safe=False)
+        else:
+            print("noData")
+            return JsonResponse({})
+    except Exception as e:
+        return JsonResponse([], safe=False)
+    finally:
+        dbconn.close()
 
 def GetId(request):
-    id_list = []
-    dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
-    for row in select(dbconn, "SELECT ID FROM USER"):
-        tmp_dict = {"Id" : row[0]}
-        id_list.append(tmp_dict)
-    return JsonResponse(id_list, safe=False)
+    try:
+        id_list = []
+        dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
+        for row in select(dbconn, "SELECT ID FROM USER"):
+            tmp_dict = {"Id" : row[0]}
+            id_list.append(tmp_dict)
+        return JsonResponse(id_list, safe=False)
+    except Exception as e:
+        return JsonResponse([], safe=False)
+    finally:
+        dbconn.close()
 
 def GetMainId(request):
-    id_list = []
-    dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
-    for row in select(dbconn, "SELECT MainID FROM USER"):
-        tmp_dict = {"MainId" : row[0]}
-        id_list.append(tmp_dict)
-    return JsonResponse(id_list, safe=False)
-
+    try:
+        id_list = []
+        dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
+        for row in select(dbconn, "SELECT MainID FROM USER"):
+            tmp_dict = {"MainId" : row[0]}
+            id_list.append(tmp_dict)
+        return JsonResponse(id_list, safe=False)
+    except Exception as e:
+        return JsonResponse([], safe=False)
+    finally:
+        dbconn.close()
 
 def logout(request):
     del request.session['MainID'], request.session['ID'], request.session['Name']
