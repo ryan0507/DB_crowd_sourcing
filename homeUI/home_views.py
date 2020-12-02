@@ -31,7 +31,6 @@ def Login(request):
         dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
         for i in select(dbconn, "SELECT MainID, ID, Name FROM USER WHERE ID = '{}' and Password = '{}'".format(data["ID"], data[
             "Password"])):
-            print(i)
             request.session['MainID'] = i[0]
             request.session['ID'] = i[1]
             request.session['Name'] = i[2]
@@ -100,5 +99,60 @@ def GetMainId(request):
         dbconn.close()
 
 def logout(request):
-    del request.session['MainID'], request.session['ID'], request.session['Name']
-    return JsonResponse({"state" : "You're logged out."})
+    try:
+        del request.session['MainID'], request.session['ID'], request.session['Name']
+        return JsonResponse({"state" : "You're logged out."})
+    except:
+        return JsonResponse({"state": "Error"})
+
+def withdrawal(request):
+    try:
+        data = json.loads(request.body)
+        dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
+        if data["pw"] != list(select(dbconn,"SELECT Password FROM USER WHERE MainID = '{}'".format(request.session["MainID"])))[0][0]:
+            return JsonResponse({"state": "f1", "message": "탈퇴를 위해서는 현재 비밀 번호를 입력해야합니다. 입력한 현재 비밀번호가 일치하지 않습니다."})
+        merge(dbconn, "DELETE FROM USER WHERE MainID = %s", (request.session["MainID"],))
+        del request.session['MainID'], request.session['ID'], request.session['Name']
+        return JsonResponse({"state": "s", "message" : "성공적으로 탈퇴 되었습니다."})
+    except Exception as e:
+        if "MainID" in request.session:
+            del request.session['MainID']
+        if "ID" in request.session:
+            del request.session['ID']
+        if "Name" in request.session:
+            del request.session['Name']
+
+        return JsonResponse({"state": "f2", "message": "오류가 발생했습니다. 로그아웃 되고 로그인 페이지로 돌아갑니다."})
+    finally:
+        dbconn.close()
+
+
+def infochange(request):
+    try:
+        data = json.loads(request.body)
+        dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
+        if data["BeforePW"] != list(select(dbconn, "SELECT Password FROM USER WHERE MainID = '{}'".format(request.session["MainID"])))[0][0]:
+            return JsonResponse({"state": "f1", "message": "탈퇴를 위해서는 현재 비밀 번호를 입력해야합니다. 입력한 현재 비밀번호가 일치하지 않습니다."})
+        for i in select(dbconn,"SELECT MainID FROM USER WHERE ID = '{}'".format(data["ID"])):
+            if (i[0] != request.session["MainID"]):
+                return JsonResponse({"state": "f2", "message": "이미 존재하는 아이디 입니다."})
+
+        val_tuple = (data["ID"], data["Password"], data["Name"], data["Gender"], data["Address"],
+                     data["DateOfBirth"], data["PhoneNumber"], request.session["MainID"])
+        merge(dbconn, """UPDATE USER SET ID = %s, Password = %s, Name = %s, Gender = %s, Address = %s,
+                         DateOfBirth = %s, PhoneNumber = %s WHERE MainID = %s""", val_tuple)
+        del request.session['MainID'], request.session['ID'], request.session['Name']
+        return JsonResponse({"state": "s", "message" : "개인정보가 성공적으로 수정 되었습니다. 수정한 ID와 Password로 다시 로그인 해주십시오."})
+    except Exception as e:
+
+        if "MainID" in request.session:
+            del request.session['MainID']
+        if "ID" in request.session:
+            del request.session['ID']
+        if "Name" in request.session:
+            del request.session['Name']
+        return JsonResponse({"state": "f3", "message": "오류가 발생했습니다. 로그아웃 되고 로그인 페이지로 돌아갑니다."})
+    finally:
+
+        dbconn.close()
+

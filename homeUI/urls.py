@@ -10,4 +10,6 @@ urlpatterns = [
     path('signup/', UserAddView),
     path('id/', GetId),
     path('mainid/', GetMainId),
+    path('withdrawal/',withdrawal),
+    path('chif/',infochange),
 ]

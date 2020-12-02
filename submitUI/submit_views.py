@@ -138,10 +138,9 @@ def SubmitTaskInfo1(request, infoID):
             other_r = select(dbconn, "SELECT Pass FROM PARTICIPATE_TASK  WHERE TaskID = {} and SubmitterID = '{}'".format( infoID, request.session["MainID"]))
             tmp_dict["participate"] = "N"
             for other_t in other_r:
-                print(other_t)
-                if other_t == "P":
+                if other_t[0] == "P":
                     tmp_dict["participate"] = "P"
-                elif other_t == "W":
+                elif other_t[0] == "W":
                     tmp_dict["participate"] = "W"
 
             tmp = t[5].split("%")
