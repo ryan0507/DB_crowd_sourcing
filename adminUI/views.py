@@ -75,10 +75,8 @@ def TaskInfoView(request, infoID):
 
         info_lst = []
 
-        sql1 = """SELECT T.TaskID, T.Name, T.SubmissionPeriod, T.Description, T.TaskThreshold, T.TaskSchema,
-                    O.OriginSchema, O.Mapping
-                FROM TASK T, ORIGINAL_DATA_TYPE O
-                WHERE T.TaskID = %s AND T.TaskID = O.TaskID"""
+        sql1 = """SELECT TaskID, Name, SubmissionPeriod, Description, TaskThreshold, TaskSchema
+                        FROM TASK WHERE TaskID = %s"""
 
         sql2 = """SELECT U.MainID, U.Name, P.Pass
                 FROM PARTICIPATE_TASK P, USER U
@@ -90,19 +88,20 @@ def TaskInfoView(request, infoID):
                 WHERE T.TaskID = %s AND T.TaskID = O.TaskID 
                     AND O.OriginalTypeID = D.OriginalTypeID AND D.SubmitterID = U.MainID"""
 
-        list_arg = []
-        list_arg.append(infoID)
+        list_arg = [infoID]
 
         for info in selectDetail(dbconn, sql1, list_arg):
             ta_tmp = info[5].split("%")
-            or_tmp = info[7].split("%")
-            info_dict = {"TaskID": info[0], "Name": info[1], "SubmissionPeriod": info[2],
-                         "Description": info[3], "Threshold": info[4],
-                         "Task_Schema": [{"Big": ta_tmp[2 * i], "small": ta_tmp[2 * i + 1]} for i in
-                                    range(len(ta_tmp) // 2)],
-                         "SchemaName": info[6],
-                         "Original_Schema": [{"Big": or_tmp[2 * i],"small": or_tmp[2 * i + 1]} for i
-                                    in range(len(or_tmp) // 2)]}
+            info_dict = {"TaskID": info[0], "Name": info[1], "SubmissionPeriod": info[2], "Description": info[3],
+                         "Threshold": info[4], "Task_Schema": [{"Big": ta_tmp[2 * i], "small": ta_tmp[2 * i + 1]}
+                                                               for i in range(len(ta_tmp) // 2)], "OriginalData": []}
+            sql = "SELECT O.OriginSchema, O.Mapping FROM ORIGINAL_DATA_TYPE O WHERE O.TaskID = %s"
+            for schema in selectDetail(dbconn, sql, list_arg):
+                or_tmp = schema[1].split("%")
+                schema_dict = {"Name": schema[0],
+                               "Schema": [{"Big": or_tmp[2 * i],"small": or_tmp[2 * i + 1]}
+                                                    for i in range(len(or_tmp) // 2)]}
+                info_dict["OriginalData"].append(schema_dict)
 
         info_dict["Participant"] = []
         info_dict["Request"] = []
@@ -133,7 +132,7 @@ def TaskInfoView(request, infoID):
             sub_dict["SubmissionDate"] = sub_dict["SubmissionDate"].strftime('%Y-%m-%d')
             info_dict["Statistics"]["Files"].append(sub_dict)
             file_total += 1
-            if (sub_dict["P_NP"] == "P"):
+            if sub_dict["P_NP"] == "P":
                 file_pass += 1
                 tuple_pass += info[6]
         info_dict["Statistics"]["Total"] = file_total
@@ -159,9 +158,7 @@ def FileDetailView(request, infoID, fileID):
                 FROM ORIGINAL_DATA_TYPE O, PARSING_DATA P 
                 WHERE O.OriginalTypeID = P.OriginalTypeID AND O.TaskID = %s AND O.OriginalTypeID = %s"""
 
-        list_arg = []
-        list_arg.append(infoID)
-        list_arg.append(fileID)
+        list_arg = [infoID, fileID]
 
         for file in selectDetail(dbconn, sql, list_arg):
             tmp = file[5].split("%")
@@ -247,7 +244,7 @@ def UserListView(request):
                         del (tmp_dict["TaskName"])
                         in_list = True
                         break
-                if in_list == False:
+                if not in_list:
                     tmp_dict["Task"] = []
                     tmp_dict["Task"].append(tmp_dict["TaskName"])
                     del (tmp_dict["TaskName"])
@@ -274,8 +271,7 @@ def PresenterDetailView(request, su_ID):
                         AND A.MainID = P.SubmitterID AND P.SubmitterID = %s"""
 
         su_ID = "su " + str(su_ID)
-        list_arg = []
-        list_arg.append(su_ID)
+        list_arg = [su_ID]
 
         count = 0
         score = 0
@@ -320,8 +316,7 @@ def EstimatorDetailView(request, as_ID):
                             AND P.AssessorID = A.MainID AND P.SubmitterID = S.MainID AND P.AssessorID = %s"""
 
         as_ID = "as " + str(as_ID)
-        list_arg = []
-        list_arg.append(as_ID)
+        list_arg = [as_ID]
 
         total_num = 0
         check_num = 0
@@ -361,6 +356,3 @@ def alterPassword(request):
         return JsonResponse([], safe=False)
     finally:
         dbconn.close()
-
-
-
