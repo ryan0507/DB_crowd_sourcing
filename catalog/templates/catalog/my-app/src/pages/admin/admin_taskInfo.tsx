@@ -23,6 +23,7 @@ interface taskInfo{
     SubmissionPeriod : number,
     Description: string,
     Threshold : string,
+    Task_Schema: schema[],
     Schema : schema[],
     Participant : userList[],
     Request : requestUser[],
@@ -143,7 +144,7 @@ const defaultTempValue: tempValue ={
 
 
 export default function Admin_taskInfo(props : RouteComponentProps<{task_id : string}>,){
-    const [info, setInfo] = useState<taskInfo>({TaskID : '', Name: '', SubmissionPeriod: 0, Description: '', Threshold: '', Schema : [], Participant: [], Request: [], Statistics: {Files: [],  Total : 0, Pass: 0,}});
+    const [info, setInfo] = useState<taskInfo>({TaskID : '', Name: '', SubmissionPeriod: 0, Description: '', Threshold: '', Task_Schema: [], Schema : [], Participant: [], Request: [], Statistics: {Files: [],  Total : 0, Pass: 0,}});
     const getApi = async() =>{
         await axios.get(`http://127.0.0.1:8000/adminUI/${props.match.params.task_id}/`).then((r)=>{
             let temp: taskInfo = r.data;
@@ -198,9 +199,9 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
               Big: _tempValue.name,
           };
           setCount(count + 1);
-          let l : schema[] = Object.assign([], _list);
+          let l : schema[] = Object.assign([], info.Schema);
           l.push(content);
-          setList(l);
+          setInfo({...info, ["Schema"]: l});
           e.preventDefault();
       }
       const datatypeList = info.Schema.map((item) => {
@@ -216,7 +217,7 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
       });
       const handleRemove = (id: number) => {
           let l : schema[] = [];
-          _list.map((content) => {
+          info.Schema.map((content) => {
               if(content.id !== id){
                   l.push(content);
               }
@@ -232,19 +233,19 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
           });
           setDataTypeList(l);
         }
-    const handleTypeSubmit = (e:any) =>{
-          let content : TypeList ={
-              name: _name,
-              types: _list,
-          };
-          setTypeCount(typeCount + 1);
-          let l : TypeList[] = Object.assign([], dataTypeList);
-          l.push(content);
-          setDataTypeList(l);
-          e.preventDefault();
-          setList([]);
-          setCount(1);
-      }
+    // const handleTypeSubmit = (e:any) =>{
+    //       let content : TypeList ={
+    //           name: _name,
+    //           types: info.Schema,
+    //       };
+    //       setTypeCount(typeCount + 1);
+    //       let l : schema[] = Object.assign([], dataTypeList);
+    //       l.push(content);
+    //       setInfo({...info, ["Schema"] : l});
+    //       e.preventDefault();
+    //       setList([]);
+    //       setCount(1);
+    //   }
 
       // const [userNum, setUserNum] = useState<number>(0);
       // const [requestUserNum, setRequestUserNum] = useState<number>(0);
@@ -309,16 +310,18 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
                </div>
 
 
-               {/*<div className={"dataTableSchema"}>*/}
-               {/*    <div className={"wrapper_title"}>태스크 데이터 테이블 스키마</div>*/}
-               {/*        <ul className={"dataTableSchema_list"}>*/}
-               {/*            {valueList.map((item) =>{*/}
-               {/*                return(<li>{item.valueName}*/}
-               {/*                    <div className={"valueType"}>{item.valueType}</div>*/}
-               {/*                </li>)*/}
-               {/*            })}*/}
-               {/*        </ul>*/}
-               {/*</div>*/}
+               <div className={"dataTableSchema"}>
+                   <div className={"wrapper_title"}>태스크 데이터 테이블 스키마</div>
+                       <ul className={"dataTableSchema_list"}>
+                           {info.Task_Schema.map((item) =>{
+                               return(
+                                   <li>
+                                       {item.Big}
+                                       <div className={"valueType"}>{item.small}</div>
+                               </li>);
+                           })}
+                       </ul>
+               </div>
 
 
                <div className={"originDataType_add"}>
@@ -392,9 +395,9 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
                               </form>
                           </div>
                       <div className={"datatypeList"}><ul className={"decimalList"}>{datatypeList}</ul></div>
-                       <form className="input" onClick={e => handleTypeSubmit(e)}>
+                       {/*<form className="input" onClick={e => handleTypeSubmit(e)}>*/}
                           <button className={"long"} type="submit">원본 데이터타입 추가</button>
-                      </form>
+                      {/*</form>*/}
 
                        </div>
                    )}
