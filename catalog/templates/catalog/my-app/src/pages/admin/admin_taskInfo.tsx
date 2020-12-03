@@ -29,11 +29,13 @@ interface taskInfo{
     Statistics : statistic,
 }
 interface userList {
+    UserID : string,
     UserName : string,
     QualAssessment : string,
 }
 
 interface requestUser {
+    UserID : string,
     UserName : string,
     QualAssessment : string,
 }
@@ -476,7 +478,7 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
                                           return (
                                               <TableCell key={column.id} align='center'
                                                   style={{fontSize: '14px', fontWeight: 'normal', color:'black' }}>
-                                                    <Link to ="/admin/presenterDetail">
+                                                    <Link to = {`/admin/presenterDetail/${row.UserID}`}>
                                                         {column.format && typeof value === 'number' ? column.format(value) : value}
                                                     </Link>
                                               </TableCell>);
