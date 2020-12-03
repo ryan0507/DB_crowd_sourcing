@@ -55,11 +55,29 @@ def TaskAddView(request):
             body_unicode = request.body.decode('utf-8')
             data = json.loads(body_unicode)
             val_tuple = (data["Name"], data["Description"], data["TaskThreshold"],
-                         data["SubmissionPeriod"], data["TableName"], data["TaskSchema"])
+                         data["SubmissionPeriod"], data["TableName"], data["TableSchema"])
             value_lst.append(val_tuple)
+
+            tmp = data["TaskSchema"].split("%")
+            sql = "CREATE TABLE %s(TableID	INT	AUTO_INCREMENT PRIMARY KEY"
+            for i in range(len(tmp) // 2):
+                if tmp[2 * i + 1] == "string":
+                    tmp[2 * i + 1] = "VARCHAR(40)"
+                elif tmp[2 * i + 1] == "float":
+                    tmp[2 * i + 1] = "FLOAT(6,4)"
+                elif tmp[2 * i + 1] == "integer":
+                    tmp[2 * i + 1] = "INT"
+                elif tmp[2 * i + 1] == "boolean":
+                    tmp[2 * i + 1] = "BOOLEAN"
+                sql = sql + "," + " %s %s"
+            sql += ");"
+            tmp_tuple = (data["TableName"]) + tuple(tmp)
 
             merge(dbconn, """INSERT INTO TASK(Name, Description, TaskThreshold, SubmissionPeriod, TableName, TaskSchema) 
                 VALUES (%s, %s, %s, %s, %s, %s)""", val_tuple)
+
+            merge(dbconn, sql, tmp_tuple)
+
             return JsonResponse(value_lst, safe=False)
         else:
             return JsonResponse({}, safe=False)
@@ -142,8 +160,8 @@ def TaskInfoView(request, infoID):
 
         return JsonResponse(info_dict, safe=False)
 
-    #except Exception as e:
-           #return JsonResponse([], safe=False)
+    except Exception as e:
+           return JsonResponse([], safe=False)
     finally:
         dbconn.close()
 
@@ -183,7 +201,14 @@ def DataTypeAddView(request, infoID):
         if len(request.body) != 0:
             body_unicode = request.body.decode('utf-8')
             data = json.loads(body_unicode)
-            val_tuple = (infoID, data["Up"], data["Down"])
+            SchemaName = data[len(data) - 1]["Name"]
+            mapping = ""
+            for data in len(data[len(data) - 1]["Schema"]):
+                if data != 0:
+                    mapping = mapping + "%" + data["Up"]
+                else: mapping += data["Up"]
+                mapping = mapping + "%" + data["Down"]
+            val_tuple = (infoID, SchemaName, mapping)
             merge(dbconn, "INSERT INTO Origianl_Data_Type(TaskID, OriginSchema, Mapping) VALUES (%d %s %s)", val_tuple)
             value_lst.append(val_tuple)
             return JsonResponse(value_lst, safe=False)
