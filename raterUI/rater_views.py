@@ -27,7 +27,7 @@ def merge(dbconn, query, values, buffered=True):
     try:
         cursor = dbconn.cursor(buffered=buffered);
         cursor.execute(query, values);
-        dbconn.commit();
+
     except Exception as e:
         dbconn.rollback();
         raise e;
@@ -161,11 +161,12 @@ def RaterFileDetailMergeView(request):
         merge(dbconn, """UPDATE PARSING_DATA SET QualAssessment = %s, P_NP = %s
                         WHERE SubmissionID = %s""", val_tuple)
 
+
         ## 테이블 수정 (P -> 튜플 옮기기, NP -> 튜플 삭제)
 
         # NP인 경우
         #if data["P_NP" == "NP":
-
+        dbconn.commit();
         return JsonResponse({"state" : "s", "message" : "평가가 반영되었습니다. 평가한 파일은 평가 내역에서 확인할 수 있습니다."})
 
     except Exception as e:

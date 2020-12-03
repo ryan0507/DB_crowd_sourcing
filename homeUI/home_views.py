@@ -19,7 +19,6 @@ def merge(dbconn, query, values, buffered=True):
     try:
         cursor = dbconn.cursor(buffered=buffered)
         cursor.execute(query, values)
-        dbconn.commit()
     except Exception as e:
         dbconn.rollback()
         raise e
@@ -63,6 +62,7 @@ def UserAddView(request):
 
             merge(dbconn, """INSERT INTO USER(MainID, ID, Password, Name, Gender, Address, DateOfBirth, PhoneNumber)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s)""", val_tuple)
+            dbconn.commit()
             return JsonResponse(value_lst, safe=False)
         else:
             print("noData")
@@ -114,8 +114,10 @@ def withdrawal(request):
             return JsonResponse({"state": "f1", "message": "탈퇴를 위해서는 현재 비밀 번호를 입력해야합니다. 입력한 현재 비밀번호가 일치하지 않습니다."})
         merge(dbconn, "DELETE FROM USER WHERE MainID = %s", (request.session["MainID"],))
         del request.session['MainID'], request.session['ID'], request.session['Name']
+        dbconn.commit()
         return JsonResponse({"state": "s", "message" : "성공적으로 탈퇴 되었습니다."})
     except Exception as e:
+        dbconn.rollback()
         if "MainID" in request.session:
             del request.session['MainID']
         if "ID" in request.session:
@@ -141,6 +143,7 @@ def infochange(request):
         merge(dbconn, """UPDATE USER SET ID = %s, Password = %s, Name = %s, Gender = %s, Address = %s,
                          DateOfBirth = %s, PhoneNumber = %s WHERE MainID = %s""", val_tuple)
         del request.session['MainID'], request.session['ID'], request.session['Name']
+        dbconn.commit()
         return JsonResponse({"state": "s", "message" : "개인정보가 성공적으로 수정 되었습니다. 수정한 ID와 Password로 다시 로그인 해주십시오."})
     except Exception as e:
         dbconn.rollback()
