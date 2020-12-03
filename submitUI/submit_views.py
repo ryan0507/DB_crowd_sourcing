@@ -1,11 +1,13 @@
 from django.shortcuts import render, get_object_or_404
+import pandas as pd
+import numpy as np
 import json
-import csv
+import csv, random
 from datetime import datetime, timedelta
 from django.utils.encoding import smart_str
 from django.http import JsonResponse, HttpResponse
 import mysql.connector
-dbconn = mysql.connector.connect(host = "34.64.198.135", user = "root", passwd = "111111", database = "DB_test")
+# dbconn = mysql.connector.connect(host = "34.64.198.135", user = "root", passwd = "111111", database = "DB_test")
 DB_HOST = "34.64.198.135"
 DB_ROOT = "root"
 DB_PASSWD = "111111"
@@ -19,10 +21,10 @@ def merge_bulk(dbconn, query, values, bufferd=True):
     try:
         cursor = dbconn.cursor(buffered=bufferd);
         cursor.executemany(query, values);
-        dbconn.commit();
     except Exception as e:
         dbconn.rollback();
         raise e;
+
 
 def selectDetail(dbconn, query, thisID, buffered=True):
 
@@ -169,14 +171,17 @@ def GetTask(request):
 
 def JoinTask(request):
     try:
+        dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
         TaskID = request.session["TaskID"]
         MainID = request.session["MainID"]
         Pass = "W"
         merge_bulk(dbconn, "INSERT INTO PARTICIPATE_TASK VALUES (%s, %s, %s)", [(TaskID, MainID, Pass)])
         del request.session["TaskID"]
         del request.session["TaskName"]
+        dbconn.commit()
         return JsonResponse({"result" : "success"})
     except:
+        dbconn.rollback()
         return JsonResponse({"result": "fail"})
 
 def SubmitTaskInfo2(request, infoID):
@@ -336,14 +341,15 @@ def download_csv_data(request, SubmissionID):
             TableName = TableName + "_W"
 
         # response content type
-        response = HttpResponse(TableName,status=200,content_type='text/csv')
+        response = HttpResponse(status=200,content_type='text/csv')
         # decide the file name
         response['Content-Disposition'] = 'attachment; filename="{}.csv"'.format(TableName)
         writer = csv.writer(response, csv.excel)
-        response.write(u'\ufeff'.encode('utf8'))
+        # response.write(u'\ufeff'.encode('utf8'))
 
         # write the headers
         writer.writerow([smart_str(i) for i in TaskSchema.split("%")[::2]])
+        print([smart_str(i) for i in TaskSchema.split("%")[::2]])
         data = select(dbconn, "SELECT * FROM {} WHERE SubmissionID = {}".format(TableName,SubmissionID))
 
         for row in data:
@@ -367,17 +373,99 @@ def getSubTime(request, infoID):
     finally:
         dbconn.close();
 
-import pandas as pd
-import numpy as np
+def postFile(request):
+    try:
+        post_data = {i: j[0] for i, j in dict(request.POST).items()}
+        post_data["OriginalID"] = post_data["OriginalID"].split(":")[0].replace("ID ", "")
+        fileName = str(request.FILES["file"])
 
+        if fileName[-3:] != "csv":
+            return JsonResponse({"state": 202, "message": "csv파일만을 제출해야합니다."})
+        data = [i.decode('utf-8').strip().split(",") for i in request.FILES['file']]
+        data = pd.DataFrame(data[1:],columns=data[0])
 
-data1 = pd.DataFrame([["새마을 식당",50.27,10,1],
-                     ["홍콩반점",20.00,20,0],
-                     ["돈부리",20.00,20,np.nan],
-                     ["홍콩반점",25.00,20,1],
-                     [np.nan,20.00,20,np.nan],
-                     [np.nan,np.nan,np.nan,np.nan]], columns=['Name', 'Rev', 'Pop', 'Pas'])
+        dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
+        schema = next(select(dbconn,"SELECT Mapping FROM ORIGINAL_DATA_TYPE WHERE OriginalTypeID = {}".format(post_data["OriginalID"])))
+        TableName, type = next(select(dbconn,"SELECT TableName, TaskSchema FROM TASK WHERE TaskID = {}".format(post_data["TaskID"])))
+        schema = schema[0].split("%")
+        type = type.split("%")
+        schema = dict(zip(schema[::2],schema[1::2]))
+        type = dict(zip(type[::2],type[1::2]))
+        col = data.columns
+        insert_type = ""
+        for i in schema.keys():
+            if i not in col:
+                return JsonResponse({"state": "202", "message": "제출한 파일이 원본 스키마와 맞지 않습니다."})
+            if type[schema[i]] == "float":
+                try:
+                    data[i] = data[i].astype(float)
+                    insert_type += "%s,"
+                except:
+                    return JsonResponse({"state": "202", "message": "제출한 파일이 스키마의 데이터 타입과 맞지 않습니다."})
+            elif type[schema[i]] == "integer":
+                try:
+                    data[i] = data[i].astype(int)
+                    insert_type += "%s,"
+                except:
+                    return JsonResponse({"state": "202", "message": "제출한 파일이 스키마의 데이터 타입과 맞지 않습니다."})
+            elif type[schema[i]] == "boolean":
+                try:
+                    data[i] = data[i].astype(bool)
+                    data[i] = data[i].astype(int)
+                    insert_type += "%s,"
+                except:
+                    return JsonResponse({"state": "202", "message": "제출한 파일이 스키마의 데이터 타입과 맞지 않습니다."})
+            elif type[schema[i]] == "string":
+                try:
+                    data[i] = data[i].astype(str)
+                    insert_type += "%s,"
+                except:
+                    return JsonResponse({"state": "202", "message": "제출한 파일이 스키마의 데이터 타입과 맞지 않습니다."})
+            else:
+                raise Exception
+        data = data.rename(columns=schema)
+        data = data[list(type.keys())]
+        score, data = CalCulateScore_ReturnRefinedDF(data, post_data["TaskID"], request.session["MainID"])
+        if score:
+            pass
+        else:
+            raise Exception
 
+        lst = list(select(dbconn, "SELECT MainID FROM USER WHERE MainID LIKE 'as %'"))
+        print(lst)
+        rater = random.sample(lst,1)[0][0]
+
+        merge_bulk(dbconn,"""INSERT INTO PARSING_DATA(OriginalTypeID, SubmitterID, AssessorID, SubmissionNumber,
+                          StartDate, EndDate, FileName, NumberOfTuple, QuanAssessment, P_NP, SubmissionDate, QualAssessment) VALUES 
+                          (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+                   [(int(post_data["OriginalID"]), request.session["MainID"], rater
+                     ,int(post_data["SubmissionNumber"]), post_data["startDate"], post_data["endDate"], fileName,
+                     score["RestRow"], float(score["Score"]), "W", str(datetime.now()),0)])
+        key = next(select(dbconn,"SELECT LAST_INSERT_ID()"))[0]
+        data["SubmissionID"] = key
+        print("INSERT INTO {} VALUES (%s, {})".format(TableName + "_W(" + ",".join(list(data.columns)) + ")", insert_type[:-1]))
+        print([list(i) for i in data.values])
+        merge_bulk(dbconn,"INSERT INTO {} VALUES (%s, {})".format(TableName + "_W(" + ",".join(list(data.columns)) + ")", insert_type[:-1])
+                   ,[tuple(i) for i in data.values])
+
+        info = {"TotalColumn" : str(score["TotalColumn"]), "NullRow" : str(score["NullRow"]),
+         "SelfDupRow" : str(score["SelfDupRow"]), "OtherDupRow" : str(score["OtherDupRow"]),
+         "NullPercent": str(score["NullPercent"]), "TotalRow":str(score["TotalRow"]),
+         "RestRow" : str(score["RestRow"]), "Score": str(round(score["Score"],3)),
+         }
+
+        id = random.randint(0,10000)
+        request.session[id] = info
+        print(request.session[id])
+        dbconn.commit()
+        return JsonResponse({"state": "200","message": str(id)})
+    except Exception as e:
+        print(e)
+        dbconn.rollback()
+        return JsonResponse({"state": "203", "message": "오류가 발생했습니다."})
+
+    finally:
+        dbconn.close()
 
 # 점수 계산 방법: 아래 점수의 평균(만약 남은 행의 개수가 2000개 미만이면 가중치를 (2000-행개수) 만큼 늘린다. )
 # 행개수 점수: max(10, 남은행개수 * 0.01)
@@ -407,13 +495,17 @@ def CalCulateScore_ReturnRefinedDF(data1, TaskID, MainID):
         Info["TotalRow"] = len(data1)
         data2 = data1[data1.notnull().mean(axis=1) > 0.5]
         Info["NullRow"] = len(data1) - len(data2)
+        tmp = data2.duplicated()
+        data2 = data2[~tmp]
+        Info["SelfDupRow"] += tmp.sum()
+
         t1 = select(dbconn, "SELECT SubmitterID,{} FROM {} A, PARSING_DATA B WHERE A.SubmissionID = B.SubmissionID".format(",".join(TaskSchema), TableName)) ; t1 = pd.DataFrame(t1, columns= ["SubmitterID"] + TaskSchema)
         tmp = t1.iloc[:,1:].append(data2)
         dup = tmp.duplicated()
         data2 = tmp[~dup][len(t1):]
         dup_data = t1[tmp.duplicated(keep=False)[:len(t1)]]
         dup_data = dup_data["SubmitterID"] == MainID
-        Info["SelfDupRow"] = dup_data.sum()
+        Info["SelfDupRow"] += dup_data.sum()
         Info["OtherDupRow"] = (~dup_data).sum()
 
 
@@ -447,7 +539,35 @@ def CalCulateScore_ReturnRefinedDF(data1, TaskID, MainID):
         Info = {"NullRow": -1, "SelfDupRow": -1, "OtherDupRow": -1, "NullPercent": -1, "TotalRow": -1, "RestRow": -1,
                 "TotalColumn": -1, "Score": -1}
         data2 = pd.DateFrame()
-        return (Info, data2)
+        return None
     finally:
         dbconn.close()
+
+def getResult(request,id):
+    # try:
+        print(type(id))
+        result = request.session[str(id)]
+        del request.session[str(id)]
+        return JsonResponse(result)
+    # except:
+    #
+    #     return JsonResponse({})
+
+
+def execute(dbconn, query, bufferd=True):
+    try:
+        # 커서를 취득한다.
+        cursor = dbconn.cursor(buffered=bufferd);
+        # 쿼리를 실행한다.
+        cursor.execute(query);
+        # 쿼리를 커밋한다.
+        dbconn.commit();
+    except Exception as e:
+        # 에러가 발생하면 쿼리를 롤백한다.
+        dbconn.rollback();
+        raise e;
+
+
+dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
+execute(dbconn,"DELETE FROM Rest_Rev_W WHERE SubmissionID IN ('29','28')")
 

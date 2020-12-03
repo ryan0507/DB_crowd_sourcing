@@ -68,6 +68,7 @@ def UserAddView(request):
             print("noData")
             return JsonResponse({})
     except Exception as e:
+        dbconn.rollback()
         return JsonResponse([], safe=False)
     finally:
         dbconn.close()
@@ -121,7 +122,6 @@ def withdrawal(request):
             del request.session['ID']
         if "Name" in request.session:
             del request.session['Name']
-
         return JsonResponse({"state": "f2", "message": "오류가 발생했습니다. 로그아웃 되고 로그인 페이지로 돌아갑니다."})
     finally:
         dbconn.close()
@@ -136,7 +136,6 @@ def infochange(request):
         for i in select(dbconn,"SELECT MainID FROM USER WHERE ID = '{}'".format(data["ID"])):
             if (i[0] != request.session["MainID"]):
                 return JsonResponse({"state": "f2", "message": "이미 존재하는 아이디 입니다."})
-
         val_tuple = (data["ID"], data["Password"], data["Name"], data["Gender"], data["Address"],
                      data["DateOfBirth"], data["PhoneNumber"], request.session["MainID"])
         merge(dbconn, """UPDATE USER SET ID = %s, Password = %s, Name = %s, Gender = %s, Address = %s,
@@ -144,7 +143,7 @@ def infochange(request):
         del request.session['MainID'], request.session['ID'], request.session['Name']
         return JsonResponse({"state": "s", "message" : "개인정보가 성공적으로 수정 되었습니다. 수정한 ID와 Password로 다시 로그인 해주십시오."})
     except Exception as e:
-
+        dbconn.rollback()
         if "MainID" in request.session:
             del request.session['MainID']
         if "ID" in request.session:
@@ -153,6 +152,4 @@ def infochange(request):
             del request.session['Name']
         return JsonResponse({"state": "f3", "message": "오류가 발생했습니다. 로그아웃 되고 로그인 페이지로 돌아갑니다."})
     finally:
-
         dbconn.close()
-

@@ -28,7 +28,6 @@ const Submit_main = ()=>{
         getApi()
     },[])
 
-
    return(
        <div className="wrapper">
            <div className="Title">태스크 목록</div>
