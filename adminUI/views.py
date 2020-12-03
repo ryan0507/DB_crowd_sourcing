@@ -260,3 +260,15 @@ def EstimatorDetailView(request, as_ID):
     est_dict["Pass"] = pass_num
 
     return JsonResponse(est_dict, safe=False)
+
+
+def alterPassword(request):
+    body_unicode = request.body.decode('utf-8')
+    data = json.loads(body_unicode)
+
+    val_tuple = (data["Password"],  data["MainID"])
+    merge("""UPDATE USER SET Password = %s WHERE MainID = %s""", val_tuple)
+
+    return JsonResponse({"state": "s", "message" : "개인정보가 성공적으로 수정 되었습니다."})
+
+
