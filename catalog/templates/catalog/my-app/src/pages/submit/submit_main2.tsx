@@ -47,7 +47,7 @@ const Submit_main2 = ()=>{
     return(
         <div className={"wrapper"}>
             <div className="Title">참여중인 태스크</div>
-            <Link to = "/submit/main" className="right_side_small">현재 나의 평가 점수: {score.score}점</Link>
+            <div className="right_side_small">현재 나의 평가 점수: {score.score}점</div>
             {task.map((item)=>{
                 return(
                     <ul className={"task_list"}>
