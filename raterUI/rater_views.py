@@ -14,11 +14,6 @@ def select(dbconn, query, bufferd=True):
   cursor.execute(query);
   return cursor;
 
-def select(dbconn, query, bufferd=True):
-  cursor = dbconn.cursor(buffered=bufferd);
-  cursor.execute(query);
-  return cursor;
-
 def selectDetail(dbconn, query, thisID, buffered=True):
 
     cursor = dbconn.cursor(buffered=buffered);
@@ -50,6 +45,7 @@ def RaterMainView(request):
         return JsonResponse(result_lst, safe=False)
 
     except Exception as e:
+        dbconn.rollback()
         return JsonResponse([], safe=False)
     finally:
         dbconn.close();
@@ -67,6 +63,7 @@ def RaterMain2View(request):
         return JsonResponse(result_lst, safe=False)
 
     except Exception as e:
+        dbconn.rollback()
         return JsonResponse([], safe=False)
     finally:
         dbconn.close();
@@ -92,6 +89,7 @@ def RaterTaskDetailView(request, submissionID):
         return JsonResponse(result_lst, safe=False)
 
     except Exception as e:
+        dbconn.rollback()
         return JsonResponse([], safe=False)
     finally:
         dbconn.close();
@@ -117,6 +115,7 @@ def RaterFileDetailView(request, submissionID):
         return JsonResponse(result_lst, safe=False)
 
     except Exception as e:
+        dbconn.rollback()
         return JsonResponse([], safe=False)
     finally:
         dbconn.close();
@@ -137,6 +136,41 @@ def RaterChangeInfoView(request):
             tmp_dict["PhoneNumber"] = t[7]
             return JsonResponse(tmp_dict)
     except Exception as e:
+        dbconn.rollback()
         return JsonResponse(tmp_dict)
     finally:
         dbconn.close();
+
+def RaterFileDetailMergeView(request):
+    try:
+        data = json.loads(request.body)
+        dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
+
+        ## 평가 반영 ##
+        noQual, noPNP = False, False
+        if ((data["QualAssessment"] == 0) | (data["QualAssessment"] == '')) : noQual = True
+        if ((data["P_NP"] == "") | (data["P_NP"] == '')) : noPNP = True
+        if (noQual & noPNP):
+            return JsonResponse({"state": "nothing", "message": "평가를 위해서는 점수와 패스 여부를 입력해야 합니다."})
+        elif noQual:
+            return JsonResponse({"state" : "noQual", "message" : "평가를 위해서는 점수를 입력해야 합니다."})
+        elif noPNP:
+            return JsonResponse({"state" : "noPNP", "message" : "평가를 위해서는 패스 여부를 입력해야 합니다."})
+        val_tuple = (data["QualAssessment"], data["P_NP"] , data["SubmissionID"])
+        print(val_tuple)
+        merge(dbconn, """UPDATE PARSING_DATA SET QualAssessment = %s, P_NP = %s
+                        WHERE SubmissionID = %s""", val_tuple)
+
+        ## 테이블 수정 (P -> 튜플 옮기기, NP -> 튜플 삭제)
+
+        # NP인 경우
+        #if data["P_NP" == "NP":
+
+        return JsonResponse({"state" : "s", "message" : "평가가 반영되었습니다. 평가한 파일은 평가 내역에서 확인할 수 있습니다."})
+
+    except Exception as e:
+        print(e)
+        dbconn.rollback()
+        return JsonResponse({}, safe=False)
+    finally:
+        dbconn.close()

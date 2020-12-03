@@ -16,4 +16,6 @@ urlpatterns = [
     path('fileDetail/<int:submissionID>/', RaterFileDetailView),
     # [ChangeInfo]
     path('changeInfo/', RaterChangeInfoView),
+    # [FileDetailMerge]
+    path('fileDetailMerge/', RaterFileDetailMergeView),
 ]

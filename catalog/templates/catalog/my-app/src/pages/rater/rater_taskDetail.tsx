@@ -155,11 +155,11 @@ export default function Rater_taskDetail(props : RouteComponentProps<{submission
                            </div>
                            <div className={"quanScore"}>
                                <div className={"wrapper_title"}>정량평가 점수</div>
-                               <div className={"lightgray_wrapper"}>{item.QuanAssessment}</div>
+                               <div className={"lightgray_wrapper"}>{item.QuanAssessment}점</div>
                            </div>
                            <div className={"score"}>
                                <div className={"wrapper_title"}>정성평가 점수</div>
-                               <div className={"lightgray_wrapper"}>{item.QualAssessment}</div>
+                               <div className={"lightgray_wrapper"}>{item.QualAssessment}점</div>
                            </div>
                            <div className={"passed"}>
                                <div className={"wrapper_title"}>P/NP</div>

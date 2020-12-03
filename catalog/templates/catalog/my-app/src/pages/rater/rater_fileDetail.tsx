@@ -1,11 +1,14 @@
 import { RouteComponentProps, BrowserRouter as Router, Route,Link } from 'react-router-dom';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import React, { Fragment, useEffect, useState} from 'react';
 import axios from "axios";
-import React, {useEffect, useState} from 'react';
-import {render} from "react-dom";
-import FormControl from "@material-ui/core/FormControl";
-import MenuItem from "@material-ui/core/MenuItem";
-import Select from "@material-ui/core/Select";
+import InputBase from "@material-ui/core/InputBase";
+import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import Button from '@material-ui/core/Button';
+import {FaceRounded} from "@material-ui/icons";
 
 
 axios.defaults.xsrfCookieName = "csrftoken";
@@ -28,6 +31,16 @@ interface fileDetail{
     FileName: string;
 }
 
+interface Score{
+    SubmissionID : string,
+    QualAssessment : number,
+    P_NP : string,
+}
+
+interface state {
+    "state": string;
+    "message": string;
+}
 
 export default function Rater_taskDetail(props : RouteComponentProps<{submission_id : string}>,) {
     const [task, setTask] = useState<fileDetail[]>([]);
@@ -55,9 +68,13 @@ export default function Rater_taskDetail(props : RouteComponentProps<{submission
 
     const [open, setOpen] = React.useState(false);
     const [pass_open, pass_setOpen] = React.useState(false);
-    const [minUpload, setMinUpload] = React.useState<string | number>('');
-    const [passNonpass, setPassNonpass] = React.useState<string | number>('');
     const classes = useStyles();
+    const initialScore = {
+        SubmissionID : props.match.params.submission_id,
+        QualAssessment : 0,
+        P_NP : '',
+    }
+    const [score, setScore] = useState<Score>(initialScore);
 
     useEffect(() => {
         getApi()
@@ -82,6 +99,28 @@ export default function Rater_taskDetail(props : RouteComponentProps<{submission
         })
     }
 
+    const handleSubmitScore = (event : React.FormEvent<HTMLButtonElement>) =>{
+        event.preventDefault();
+        axios.post(`http://127.0.0.1:8000/raterUI/fileDetailMerge/`, {
+            QualAssessment : score.QualAssessment,
+            P_NP : score.P_NP,
+            SubmissionID : score.SubmissionID,
+        }).then((r) => {
+            let user : state = r.data;
+            if (user.state === "s"){
+                alert(user.message);
+                window.location.replace("/rater/main");
+            }
+            else if(user.state === "noQual" || user.state === "noPNP" || user.state === "nothing"){
+                alert(user.message);
+            }
+            console.log(r);
+            console.log(r.data);
+          }).catch((err) => {
+             console.log(err.response.data);
+             console.log(err.response.status);
+             console.log(err.response.headers); } )
+    };
 
     return (
         <div className="rater_fileDetail">
@@ -125,9 +164,9 @@ export default function Rater_taskDetail(props : RouteComponentProps<{submission
 
 
 
-                    const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-                        setMinUpload(event.target.value as number);
-                    };
+                    const handleInputChange = <P extends keyof Score> (item : P, value: Score[P]) =>{
+                        setScore({...score, [item] : value});
+                    }
 
                     const handleClose = () => {
                         setOpen(false);
@@ -137,8 +176,8 @@ export default function Rater_taskDetail(props : RouteComponentProps<{submission
                         setOpen(true);
                     };
 
-                    const pass_handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-                        setPassNonpass(event.target.value as number);
+                    const pass_handleInputChange = <P extends keyof Score> (item : P, value: Score[P]) =>{
+                        setScore({...score, [item] : value});
                     };
 
                     const pass_handleClose = () => {
@@ -148,6 +187,7 @@ export default function Rater_taskDetail(props : RouteComponentProps<{submission
                     const pass_handleOpen = () => {
                         pass_setOpen(true);
                     };
+
 
                     return (
                         <React.Fragment>
@@ -205,7 +245,7 @@ export default function Rater_taskDetail(props : RouteComponentProps<{submission
                                 </div>
                                 <div className={"score"}>
                                     <div className={"wrapper_title"}>정량평가 점수</div>
-                                    <div className={"lightgray_wrapper"}>{item.QuanAssessment}</div>
+                                    <div className={"lightgray_wrapper"}>{item.QuanAssessment}점</div>
                                 </div>
 
 
@@ -219,23 +259,23 @@ export default function Rater_taskDetail(props : RouteComponentProps<{submission
                                                 open={open}
                                                 onClose={handleClose}
                                                 onOpen={handleOpen}
-                                                value={minUpload}
-                                                onChange={handleChange}
+                                                value={score.QualAssessment}
+                                                onChange={e=> handleInputChange('QualAssessment', (e.target.value as number))}
                                                 style={{textAlign: 'center'}}
                                             >
                                                 <MenuItem value="">
                                                     <em>선택 안 함</em>
                                                 </MenuItem>
-                                                <MenuItem value={10}>1점</MenuItem>
-                                                <MenuItem value={20}>2점</MenuItem>
-                                                <MenuItem value={30}>3점</MenuItem>
-                                                <MenuItem value={40}>4점</MenuItem>
-                                                <MenuItem value={50}>5점</MenuItem>
-                                                <MenuItem value={60}>6점</MenuItem>
-                                                <MenuItem value={70}>7점</MenuItem>
-                                                <MenuItem value={80}>8점</MenuItem>
-                                                <MenuItem value={90}>9점</MenuItem>
-                                                <MenuItem value={100}>10점</MenuItem>
+                                                <MenuItem value={1}>1점</MenuItem>
+                                                <MenuItem value={2}>2점</MenuItem>
+                                                <MenuItem value={3}>3점</MenuItem>
+                                                <MenuItem value={4}>4점</MenuItem>
+                                                <MenuItem value={5}>5점</MenuItem>
+                                                <MenuItem value={6}>6점</MenuItem>
+                                                <MenuItem value={7}>7점</MenuItem>
+                                                <MenuItem value={8}>8점</MenuItem>
+                                                <MenuItem value={9}>9점</MenuItem>
+                                                <MenuItem value={10}>10점</MenuItem>
                                             </Select>
                                         </FormControl>
                                     </div>
@@ -252,26 +292,26 @@ export default function Rater_taskDetail(props : RouteComponentProps<{submission
                                                 open={pass_open}
                                                 onClose={pass_handleClose}
                                                 onOpen={pass_handleOpen}
-                                                value={passNonpass}
-                                                onChange={pass_handleChange}
+                                                value={score.P_NP}
+                                                onChange={e=> pass_handleInputChange('P_NP', (e.target.value as string))}
                                                 style={{textAlign: 'center'}}
                                             >
                                                 <MenuItem value="">
                                                     <em>선택 안 함</em>
                                                 </MenuItem>
-                                                <MenuItem value={10}>PASS</MenuItem>
-                                                <MenuItem value={20}>NON-PASS</MenuItem>
+                                                <MenuItem value={"P"}>PASS</MenuItem>
+                                                <MenuItem value={"NP"}>NON-PASS</MenuItem>
                                             </Select>
                                         </FormControl>
                                     </div>
                                 </div>
 
-
                                 <div>
                                     <Link to="/rater/main">
-                                        <button className="rater_fileDetailSubmit">제출</button>
+                                        <button className="rater_fileDetailSubmit" onClick={(event) => handleSubmitScore(event)}>제출</button>
                                     </Link>
                                 </div>
+
                             </div>
                         </React.Fragment>
                     )
