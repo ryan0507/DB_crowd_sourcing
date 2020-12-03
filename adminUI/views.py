@@ -102,16 +102,15 @@ def TaskInfoView(request, infoID):
             file_num = 0
             sql = "SELECT QualAssessment FROM PARSING_DATA WHERE SubmitterID = %s"
             user_id = ["su " + str(info[0][3:])]
-            print(user_id)
             for user in selectDetail(dbconn, sql, user_id):
                 score += user[0]
                 file_num += 1
             average = score / file_num
 
-            info_dict["Participant"].append({"UserID": info[0][3:], "UserName": info[1],
-                                             "Pass": info[2], "Average": average})
             if info[2] == "W":
-                info_dict["Request"].append({"UserID": info[0][3:], "UserName": info[1]})
+                info_dict["Request"].append({"UserID": info[0][3:], "UserName": info[1], "Average": average})
+            else:
+                info_dict["Participant"].append({"UserID": info[0][3:], "UserName": info[1], "Average": average})
 
         file_total = 0
         file_pass = 0
