@@ -77,6 +77,10 @@
 #yes{color:#6EB9E8}
 #no{color:#E86E77}
 
+.YesNo{
+    float: right;
+}
+
 .applicantList{
     padding-top: 10px;
 }
@@ -84,8 +88,8 @@
     width: 305px;
     padding-bottom: 30px;
 }
-.applicantList .lightgray_wrapper{
-    width : 500px;
+.taskInfo .applicantList .lightgray_wrapper{
+    width : 450px;
 }
 .presenters .name,
 .applicantList .name{
@@ -98,6 +102,10 @@
     position: absolute;
     left: 250px;
     font-weight: 600;
+}
+
+.applicantList .applicants{
+    margin-bottom: 40px;
 }
 .presenters .applicants li{
     margin-top: 15px;

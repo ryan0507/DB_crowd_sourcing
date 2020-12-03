@@ -23,11 +23,18 @@ interface taskInfo{
     SubmissionPeriod : number,
     Description: string,
     Threshold : string,
-    Mapping : string,
+    Schema : schema[],
     Participant : userList[],
     Request : requestUser[],
     Statistics : statistic,
 }
+
+interface schema{
+    id : number,
+    Big : string,
+    small : string,
+}
+
 interface userList {
     UserID : string,
     UserName : string,
@@ -105,31 +112,22 @@ interface dataTable {
     valueName: string;
     valueType: string;
 }
-type tempDataTable = {
-    name: string;
-    type: string;
-}
-
-const defaultTempDataTable: tempDataTable ={
-    name: '',
-    type: '',
-}
 
 
 //datatype Add
-interface Type {
-    id: number;
-    originName: string;
-    decidedName: string;
-}
+// interface Type {
+//     id: number;
+//     originName: string;
+//     decidedName: string;
+// }
 interface TypeList {
     name : string;
-    types : Type[];
+    types : schema[];
 }
-const defaultValue: Type = {
+const defaultValue: schema = {
     id: 0,
-    originName: '',
-    decidedName: '',
+    small: '',
+    Big: '',
 }
 
 type tempValue = {
@@ -145,7 +143,7 @@ const defaultTempValue: tempValue ={
 
 
 export default function Admin_taskInfo(props : RouteComponentProps<{task_id : string}>,){
-    const [info, setInfo] = useState<taskInfo>({TaskID : '', Name: '', SubmissionPeriod: 0, Description: '', Threshold: '', Mapping : '', Participant: [], Request: [], Statistics: {Files: [],  Total : 0, Pass: 0,}});
+    const [info, setInfo] = useState<taskInfo>({TaskID : '', Name: '', SubmissionPeriod: 0, Description: '', Threshold: '', Schema : [], Participant: [], Request: [], Statistics: {Files: [],  Total : 0, Pass: 0,}});
     const getApi = async() =>{
         await axios.get(`http://127.0.0.1:8000/adminUI/${props.match.params.task_id}/`).then((r)=>{
             let temp: taskInfo = r.data;
@@ -175,15 +173,10 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
     const handleToggleData = () => {
         setToggleData(!toggleData);
     }
-    const [dataTypeList, setDataTypeList] = useState<TypeList[]>([
-        {name : "기본 음식점", types:[{id:0, originName:'음식점 이름',decidedName:'음식점 이름'},
-                {id:0, originName:'월 매출',decidedName:'월 매출'},
-                {id:0, originName:'월 고객 수',decidedName:'월 고객 수'},
-                {id:0, originName:'월 순이익',decidedName:'월 순이익'}]},
-        ]);
+    const [dataTypeList, setDataTypeList] = useState<TypeList[]>([{name : "", types:info.Schema},]);
     const [valueList, setValueList] = useState<dataTable[]>( [{id : 0, valueName : "음식점 이름", valueType: "string"}, {id : 1, valueName : "월 매출", valueType: "integer"}]);
     const [valueCount, setValueCount] = useState<number>(valueList.length + 1);
-    const [_list, setList] = useState<Type[]>( []);
+    const [_list, setList] = useState<schema[]>( []);
     const [_name, setName] = useState<string>("");
     const [typeCount, setTypeCount] = useState<number>(dataTypeList.length+1);
     const [count, setCount] = useState<number>(1);
@@ -199,30 +192,30 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
           setName(value);
     }
       const handleSubmit = (e:any) =>{
-          let content : Type ={
+          let content : schema ={
               id: count,
-              originName: _tempValue.type,
-              decidedName: _tempValue.name,
+              small: _tempValue.type,
+              Big: _tempValue.name,
           };
           setCount(count + 1);
-          let l : Type[] = Object.assign([], _list);
+          let l : schema[] = Object.assign([], _list);
           l.push(content);
           setList(l);
           e.preventDefault();
       }
-      const datatypeList = _list.map((item) => {
+      const datatypeList = info.Schema.map((item) => {
         return (
-          <div key={item.originName}>
+          <div key={item.small}>
               <li>
-                  <div className={"dataName"}>{item.decidedName}</div>
-                  <div className={"dataType"}>{item.originName}</div>
+                  <div className={"dataName"}>{item.Big}</div>
+                  <div className={"dataType"}>{item.small}</div>
                   <div><button className={"deleteButton"} onClick={e => handleRemove(item.id)}>[삭제하기]</button></div>
               </li>
           </div>
         );
       });
       const handleRemove = (id: number) => {
-          let l : Type[] = [];
+          let l : schema[] = [];
           _list.map((content) => {
               if(content.id !== id){
                   l.push(content);
@@ -279,7 +272,7 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
                 SubmissionPeriod : info.SubmissionPeriod,
                 Description: info.Description,
                 Threshold : info.Threshold,
-                Mapping : info.Mapping,
+                Schema : info.Schema,
                 Participant : tempUserList,
                 Request : tempRequestUser,
                 Statistics : info.Statistics,
@@ -316,16 +309,16 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
                </div>
 
 
-               <div className={"dataTableSchema"}>
-                   <div className={"wrapper_title"}>태스크 데이터 테이블 스키마</div>
-                       <ul className={"dataTableSchema_list"}>
-                           {valueList.map((item) =>{
-                               return(<li>{item.valueName}
-                                   <div className={"valueType"}>{item.valueType}</div>
-                               </li>)
-                           })}
-                       </ul>
-               </div>
+               {/*<div className={"dataTableSchema"}>*/}
+               {/*    <div className={"wrapper_title"}>태스크 데이터 테이블 스키마</div>*/}
+               {/*        <ul className={"dataTableSchema_list"}>*/}
+               {/*            {valueList.map((item) =>{*/}
+               {/*                return(<li>{item.valueName}*/}
+               {/*                    <div className={"valueType"}>{item.valueType}</div>*/}
+               {/*                </li>)*/}
+               {/*            })}*/}
+               {/*        </ul>*/}
+               {/*</div>*/}
 
 
                <div className={"originDataType_add"}>
@@ -335,43 +328,35 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
                    </button>
                    {toggleData ? (
                        <ul className={"datatype_list"}>
-                           {dataTypeList.map((item) =>{
+                           <li className={"dataVertical"}>
+                           {info.Schema.map((item) =>{
                                return(
-                                   <li className={"dataVertical"}>
-                                       <div className={"datatypeID"}> [{item.name}] :</div>
-                                        <ul className={"value_list"}>
-                                       {item.types.map((type) =>{
-                                           return(
-                                               <li>
-                                                   <div className={"decidedName"}>{type.decidedName}</div>
-                                                   <div className={"originName"}>{type.originName}</div>
-                                               </li>);
-                                       })}
-                                        </ul>
-                                   </li>);
+                                    <ul className={"value_list"}>
+                                           <li>
+                                               <div className={"decidedName"}>{item.Big}</div>
+                                               <div className={"originName"}>{item.small}</div>
+                                           </li>
+                                    </ul>
+                               );
                            })}
+                           </li>
                    </ul>
                    ) : (
                        <div className={"admin_datatype_add"}>
 
                            <ul className={"datatype_list"}>
-                               {dataTypeList.map((item) =>{
-                                   return(
-                                       <li className={"dataVertical"}>
-                                           <div className={"datatypeID"}>[{item.name}] : </div>
-                                            <ul className={"value_list"}>
-                                           {item.types.map((type) =>{
-                                               return(
-                                                   <li>
-                                                       <div className={"decidedName"}>{type.decidedName}</div>
-                                                       <div className={"originName"}>{type.originName}</div>
-                                                   </li>);
-                                           })}
-                                            </ul>
-                                           <div><button className={"deleteButton"} onClick={e => handleTypeRemove(item.name)}>[삭제하기]</button></div>
-                                       </li>
-                                   );
-                               })}
+                               <li className={"dataVertical"}>
+                           {info.Schema.map((item) =>{
+                               return(
+                                    <ul className={"value_list"}>
+                                           <li>
+                                               <div className={"decidedName"}>{item.Big}</div>
+                                               <div className={"originName"}>{item.small}</div>
+                                           </li>
+                                    </ul>
+                               );
+                           })}
+                           </li>
                             </ul>
                            <div className={"datatypeName"}>
                                <div className={"typeNameWord"}>원본 데이터 타입 이름 :</div>
@@ -414,7 +399,6 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
                        </div>
                    )}
                </div>
-               {info.Mapping}
                <div className={"presenters"}>
                    <div className={"wrapper_title"}>참여자 명단</div>
                    <div className={"lightgray_wrapper"}>
@@ -450,8 +434,10 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
                                            <div className={"sequenceNum"}>{++requestUserNum}.</div>
                                            <div className={"personal_name"}>{item.UserName}</div>
                                            <div className={"personal_score"}>{item.Average}점</div>
-                                           <button className={"_button"} id={"yes"} onClick={(e)=> handleClickYes(e, item.UserName)}>승인</button>
-                                           <button className={"_button"} id={"no"}>거절</button>
+                                           <div className={"YesNo"}>
+                                               <button className={"_button"} id={"yes"} onClick={(e)=> handleClickYes(e, item.UserName)}>승인</button>
+                                               <button className={"_button"} id={"no"}>거절</button>
+                                           </div>
                                        </li>
                                    );
 
