@@ -24,4 +24,6 @@ urlpatterns = [
     path('user/submitter/<int:su_ID>', PresenterDetailView),
     # admin_estimatorDetail
     path('user/assessor/<int:as_ID>', EstimatorDetailView),
+    # admin_alterPassword
+    path('alterpw/', alterPassword),
 ]

@@ -2,27 +2,28 @@ from django.http import JsonResponse
 import mysql.connector
 import json
 from datetime import date, datetime
-dbconn = mysql.connector.connect(host = "34.64.198.135", user = "root", passwd = "111111", database = "DB_test")
+
+dbconn = mysql.connector.connect(host="34.64.198.135", user="root", passwd="111111", database="DB_test")
 DB_HOST = "34.64.198.135"
 DB_ROOT = "root"
 DB_PASSWD = "111111"
 DB_DATABASE = "DB_test"
 
-def select(dbconn, query, bufferd=True):
 
+def select(dbconn, query, bufferd=True):
     cursor = dbconn.cursor(buffered=bufferd);
     cursor.execute(query);
     return cursor;
 
-def selectDetail(dbconn, query, thisID, buffered=True):
 
+def selectDetail(dbconn, query, thisID, buffered=True):
     cursor = dbconn.cursor(buffered=buffered);
     cursor.execute(query, thisID)
     result = cursor.fetchall()
     return result;
 
-def merge(dbconn, query, values, buffered=True):
 
+def merge(dbconn, query, values, buffered=True):
     try:
         cursor = dbconn.cursor(buffered=buffered);
         cursor.execute(query, values);
@@ -31,10 +32,10 @@ def merge(dbconn, query, values, buffered=True):
         dbconn.rollback();
         raise e;
 
-def AdminMainView(request):
 
+def AdminMainView(request):
     try:
-        dbconn= mysql.connector.connect(host=DB_HOST, user=DB_ROOT, password=DB_PASSWD, database = DB_DATABASE)
+        dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, password=DB_PASSWD, database=DB_DATABASE)
         result_lst = []
         for row in select(dbconn, "SELECT TaskID, Name, Description FROM TASK"):
             tmp_dict = {"TaskID": row[0], "Name": row[1], "Description": row[2]}
@@ -45,8 +46,8 @@ def AdminMainView(request):
     finally:
         dbconn.close();
 
-def TaskAddView(request):
 
+def TaskAddView(request):
     try:
         dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
         value_lst = []
@@ -54,7 +55,7 @@ def TaskAddView(request):
             body_unicode = request.body.decode('utf-8')
             data = json.loads(body_unicode)
             val_tuple = (data["Name"], data["Description"], data["TaskThreshold"],
-                        data["SubmissionPeriod"], data["TableName"], data["TaskSchema"])
+                         data["SubmissionPeriod"], data["TableName"], data["TaskSchema"])
             value_lst.append(val_tuple)
 
             merge(dbconn, """INSERT INTO TASK(Name, Description, TaskThreshold, SubmissionPeriod, TableName, TaskSchema) 
@@ -67,8 +68,8 @@ def TaskAddView(request):
     finally:
         dbconn.close()
 
-def TaskInfoView(request, infoID):
 
+def TaskInfoView(request, infoID):
     try:
         dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
 
@@ -92,8 +93,8 @@ def TaskInfoView(request, infoID):
 
         for info in selectDetail(dbconn, sql1, list_arg):
             info_dict = {"TaskID": info[0], "Name": info[1], "SubmissionPeriod": info[2],
-                        "Description": info[3], "Threshold": info[4], "Mapping": info[5]}
-    
+                         "Description": info[3], "Threshold": info[4], "Mapping": info[5]}
+
         info_dict["Participant"] = []
         info_dict["Request"] = []
         for info in selectDetail(dbconn, sql2, list_arg):
@@ -116,7 +117,7 @@ def TaskInfoView(request, infoID):
         file_pass = 0
         info_dict["Statistics"] = {"Files": []}
         for info in selectDetail(dbconn, sql3, list_arg):
-            sub_dict = {"UserID": info[0][3:], "UserName": info[1], "OriginSchema": info[2],"SubmissionDate": info[3],
+            sub_dict = {"UserID": info[0][3:], "UserName": info[1], "OriginSchema": info[2], "SubmissionDate": info[3],
                         "SubmissionNumber": info[4], "FileName": info[5], "P_NP": info[6]}
             sub_dict["SubmissionTime"] = sub_dict["SubmissionDate"].strftime('%H:%M:%S')
             sub_dict["SubmissionDate"] = sub_dict["SubmissionDate"].strftime('%Y-%m-%d')
@@ -129,14 +130,14 @@ def TaskInfoView(request, infoID):
 
         return JsonResponse(info_dict, safe=False)
 
-#    except Exception as e:
- #       print("why here")
- #       return JsonResponse([], safe=False)
+    #    except Exception as e:
+    #       print("why here")
+    #       return JsonResponse([], safe=False)
     finally:
         dbconn.close()
 
-def FileDetailView(request, infoID, fileID):
 
+def FileDetailView(request, infoID, fileID):
     try:
         dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
 
@@ -152,7 +153,7 @@ def FileDetailView(request, infoID, fileID):
 
         for file in selectDetail(dbconn, sql, list_arg):
             file_dict = {"OriginalTypeID": file[0], "TaskID": file[1], "OriginSchema": file[2],
-                        "Mapping": file[3], "Files": file[4]}
+                         "Mapping": file[3], "Files": file[4]}
             file_lst.append(file_dict)
 
         return JsonResponse(file_dict, safe=False)
@@ -162,8 +163,8 @@ def FileDetailView(request, infoID, fileID):
     finally:
         dbconn.close()
 
-def DataTypeAddView(request, infoID):
 
+def DataTypeAddView(request, infoID):
     try:
         dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
 
@@ -171,7 +172,7 @@ def DataTypeAddView(request, infoID):
         if len(request.body) != 0:
             body_unicode = request.body.decode('utf-8')
             data = json.loads(body_unicode)
-            val_tuple = (data["OriginSchema"],data["Mapping"])
+            val_tuple = (data["OriginSchema"], data["Mapping"])
             merge(dbconn, "INSERT INTO Origianl_Data_Type(OriginSchema, Mapping) VALUES (%s %s)", val_tuple)
             value_lst.append(val_tuple)
             return JsonResponse(value_lst, safe=False)
@@ -183,8 +184,8 @@ def DataTypeAddView(request, infoID):
     finally:
         dbconn.close()
 
-def TableSchemaAddView(request, infoID):
 
+def TableSchemaAddView(request, infoID):
     try:
         dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
 
@@ -204,8 +205,8 @@ def TableSchemaAddView(request, infoID):
     finally:
         dbconn.close()
 
-def UserListView(request):
 
+def UserListView(request):
     try:
         dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
         result_lst = []
@@ -229,18 +230,18 @@ def UserListView(request):
                 for i in range(len(result_lst)):
                     if tmp_dict["ID"] == result_lst[i]["ID"]:
                         result_lst[i]["Task"].append(tmp_dict["TaskName"])
-                        del(tmp_dict["TaskName"])
+                        del (tmp_dict["TaskName"])
                         in_list = True
                         break
                 if in_list == False:
                     tmp_dict["Task"] = []
                     tmp_dict["Task"].append(tmp_dict["TaskName"])
-                    del(tmp_dict["TaskName"])
+                    del (tmp_dict["TaskName"])
                     result_lst.append(tmp_dict)
             else:
                 tmp_dict["role"] = "assessor"
                 tmp_dict["MainID"] = tmp_dict["MainID"][3:]
-                del(tmp_dict["TaskName"])
+                del (tmp_dict["TaskName"])
                 result_lst.append(tmp_dict)
         return JsonResponse(result_lst, safe=False)
 
@@ -249,8 +250,8 @@ def UserListView(request):
     finally:
         dbconn.close()
 
-def PresenterDetailView(request, su_ID):
 
+def PresenterDetailView(request, su_ID):
     try:
         dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
         sql = """SELECT A.ID, T.Name, P.SubmissionDate, P.FileName, P.QualAssessment, P.P_NP 
@@ -294,8 +295,8 @@ def PresenterDetailView(request, su_ID):
     finally:
         dbconn.close()
 
-def EstimatorDetailView(request, as_ID):
 
+def EstimatorDetailView(request, as_ID):
     try:
         dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
 
@@ -330,5 +331,22 @@ def EstimatorDetailView(request, as_ID):
 
     except Exception as e:
         return JsonResponse([], safe=False)
+
+
+def alterPassword(request):
+    try:
+        dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
+
+        body_unicode = request.body.decode('utf-8')
+        data = json.loads(body_unicode)
+
+        val_tuple = (data["Password"],  data["MainID"])
+        merge(dbconn, """UPDATE USER SET Password = %s WHERE MainID = %s""", val_tuple)
+        return JsonResponse({"state": "s", "message": "개인정보가 성공적으로 수정 되었습니다."})
+    except Exception as e:
+        return JsonResponse([], safe=False)
     finally:
         dbconn.close()
+
+
+
