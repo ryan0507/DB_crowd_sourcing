@@ -354,13 +354,7 @@
     float: left;
 }
 
-.admin_datatype_add .datatypeList .decimalList{
-    list-style: decimal;
-    transform: translate(10px, -40px);
-    font-size: 20px;
-    font-weight: 600;
-    color:#707070;
-}
+
 .admin_datatype_add .datatypeList li{
     padding : 13px 10px;
 }

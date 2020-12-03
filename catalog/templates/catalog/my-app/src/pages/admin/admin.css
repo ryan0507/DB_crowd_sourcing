@@ -397,10 +397,14 @@
     float: left;
     padding: 10px 20px;
 }
-.admin_datatype_add .datatypeValueName{
+.taskInfo .admin_datatype_add .datatypeValueName{
     margin-top: 14px;
     width : 380px;
     float: left;
+}
+.taskAdd .admin_datatype_add .datatypeValueName{
+    margin-top: 14px;
+    width : 380px;
 }
 .taskAdd .datatypeName .typeNameWord,
 .taskInfo .datatypeName .typeNameWord{
@@ -423,13 +427,21 @@
     float: left;
     height: 51px;
 }
-.taskInfo .admin_datatype_add .short,
-.taskAdd .admin_datatype_add .short{
+.taskInfo .admin_datatype_add .short{
     width : 100px;
     padding : 10px 20px;
     font-weight: 650;
     margin-top: 26px;
     background-color: #56baed;
+    box-shadow: 0 3px 15px 0 rgba(95,186,233,0.2);
+}
+.taskAdd .admin_datatype_add .short{
+    width : 100px;
+    padding : 10px 20px;
+    font-weight: 650;
+    margin-top: 30px;
+    background-color: #56baed;
+    transform: translate(555px, -80px);
     box-shadow: 0 3px 15px 0 rgba(95,186,233,0.2);
 }
 .taskInfo .admin_datatype_add .long,
@@ -443,14 +455,11 @@
 }
 .taskAdd .admin_datatype_add .long{
     width : 200px;
+    margin-top: 40px;
+    position: relative;
+    /*transform: translate(0px, -80px);*/
 }
-.admin_datatype_add .datatypeList .decimalList{
-    list-style: decimal;
-    transform: translate(10px, -40px);
-    font-size: 20px;
-    font-weight: 600;
-    color:#707070;
-}
+
 .admin_datatype_add .datatypeList li{
     padding : 13px 10px;
 }
@@ -532,6 +541,10 @@
     font-weight: 600;
     /*color:#707070;*/
 }
+.taskAdd form.input1{
+    height: 76px;
+}
+
 .datatypeList li{
     padding : 10px;
 }

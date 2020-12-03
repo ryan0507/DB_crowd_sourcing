@@ -475,15 +475,15 @@ function Admin_taskAdd(){
                                    return(
                                        <li className={"dataVertical"}>
                                            <div className={"datatypeID"}>[{item.name}] : </div>
-                                            <ul className={"value_list"}>
                                            {item.schema.map((type) =>{
                                                return(
+                                                <ul className={"value_list"}>
                                                    <li>
                                                        <div className={"decidedName"}>{type.up}</div>
                                                        <div className={"originName"}>{type.down}</div>
-                                                   </li>);
+                                                   </li>
+                                                </ul>);
                                            })}
-                                            </ul>
                                            <div><button className={"deleteButton"} onClick={e => handleTypeRemove(item.name)}>[삭제하기]</button></div>
                                        </li>
                                    );
@@ -523,7 +523,7 @@ function Admin_taskAdd(){
                               </form>
                           </div>
                       <div className={"datatypeList"}><ul className={"decimalList"}>{datatypeList}</ul></div>
-                       <form className="input" onClick={e => handleTypeSubmit(e)}>
+                       <form className="input1" onClick={e => handleTypeSubmit(e)}>
                           <button className={"long"} type="submit">원본 데이터타입 추가</button>
                       </form>
 
