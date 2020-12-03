@@ -366,3 +366,88 @@ def getSubTime(request, infoID):
         return JsonResponse([], safe=False)
     finally:
         dbconn.close();
+
+import pandas as pd
+import numpy as np
+
+
+data1 = pd.DataFrame([["새마을 식당",50.27,10,1],
+                     ["홍콩반점",20.00,20,0],
+                     ["돈부리",20.00,20,np.nan],
+                     ["홍콩반점",25.00,20,1],
+                     [np.nan,20.00,20,np.nan],
+                     [np.nan,np.nan,np.nan,np.nan]], columns=['Name', 'Rev', 'Pop', 'Pas'])
+
+
+# 점수 계산 방법: 아래 점수의 평균(만약 남은 행의 개수가 2000개 미만이면 가중치를 (2000-행개수) 만큼 늘린다. )
+# 행개수 점수: max(10, 남은행개수 * 0.01)
+# 자기중복 수: 10 - (0, (자기중복수 - 100) * 0.1, 10)
+# 다른 row와 중복 수: 10 - (0, (자기중복수 - 1000) * 0.01, 10)
+# null 행: 10 - (0, (null행수 - 100) * 0.01, 10)
+# null 비율: (1 - null비율 * 0.5) * 10
+def CalCulateScore_ReturnRefinedDF(data1, TaskID, MainID):
+    """
+    data1: 원본데이터를 pandas df형태로 넣으면 됨, 단, column이름을 태스크 column에 맞게 올바르게 갖고 있어야 한다.
+    TaskID: 해당하는 TaskID
+    MainID: 제출자의 MainID
+    return:
+        Info : {"NullRow": 전체가 null인 열(null비율 50%이상) 개수 , "SelfDupRow": 자기가 제출한 데이터 똑같은거 몇개 제출?, "OtherDupRow" : 다른 사람이 제출한 데이터와 중복개수
+        , "NullPercent" : 남은 행 중에서 null 값 개수, "TotalRow": 전체 제출 row개수, "RestRow": 중복제거하고 남은 행개수, "TotalColumn" : 전체 열개수, "Score": 점수}
+        data2: 중복제거되고 남은 데이터 -> Insert로 해당테이블에 넣으면 됨
+    """
+    try:
+        dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
+        # NullRow기준(전체 50%이상 Null)
+        Info = {"NullRow": 0, "SelfDupRow": 0, "OtherDupRow" : 0, "NullPercent" : 0, "TotalRow": 0, "RestRow": 0, "TotalColumn" : 0, "Score": 0}
+
+        TableName, TaskSchema = next(select(dbconn,"SELECT TableName, TaskSchema FROM TASK WHERE TaskID ={}".format(TaskID)))
+        TaskSchema = TaskSchema.split("%")[::2]
+
+        Info["TotalColumn"] = len(TaskSchema)
+        Info["TotalRow"] = len(data1)
+        data2 = data1[data1.notnull().mean(axis=1) > 0.5]
+        Info["NullRow"] = len(data1) - len(data2)
+        t1 = select(dbconn, "SELECT SubmitterID,{} FROM {} A, PARSING_DATA B WHERE A.SubmissionID = B.SubmissionID".format(",".join(TaskSchema), TableName)) ; t1 = pd.DataFrame(t1, columns= ["SubmitterID"] + TaskSchema)
+        tmp = t1.iloc[:,1:].append(data2)
+        dup = tmp.duplicated()
+        data2 = tmp[~dup][len(t1):]
+        dup_data = t1[tmp.duplicated(keep=False)[:len(t1)]]
+        dup_data = dup_data["SubmitterID"] == MainID
+        Info["SelfDupRow"] = dup_data.sum()
+        Info["OtherDupRow"] = (~dup_data).sum()
+
+
+
+        t1 = select(dbconn, "SELECT {} FROM {}_W A, PARSING_DATA B WHERE A.SubmissionID = B.SubmissionID and SubmitterID = '{}'".format(",".join(TaskSchema), TableName,MainID))
+        t1 = pd.DataFrame(t1, columns=TaskSchema)
+        tmp = t1.append(data2)
+        dup = tmp.duplicated()
+        data2 = tmp[~dup][len(t1):]
+        Info["SelfDupRow"] += tmp.duplicated().sum()
+
+        Info["NullPercent"] = data2.isnull().values.mean()
+        Info["RestRow"] = len(data2)
+
+
+        score = np.array([Info["RestRow"] * 0.01, 10 - (Info["SelfDupRow"] - 100) * 0.1, 10 - (Info["OtherDupRow"] - 1000) * 0.01,
+                  10 - (Info["NullRow"] - 100) * 0.01], (1- Info["NullPercent"] * 0.5) * 10)
+        score = np.clip(score,0,10)
+
+        if Info["RestRow"] < 2000:
+            weight = np.ones(4)
+            weight[0] = (2000 - Info["RestRow"])
+        else:
+            weight = np.ones(4)
+        weight = weight / weight.sum()
+        score = (score * weight).sum()
+        Info["Score"] = score
+
+        return (Info, data2)
+    except:
+        Info = {"NullRow": -1, "SelfDupRow": -1, "OtherDupRow": -1, "NullPercent": -1, "TotalRow": -1, "RestRow": -1,
+                "TotalColumn": -1, "Score": -1}
+        data2 = pd.DateFrame()
+        return (Info, data2)
+    finally:
+        dbconn.close()
+
