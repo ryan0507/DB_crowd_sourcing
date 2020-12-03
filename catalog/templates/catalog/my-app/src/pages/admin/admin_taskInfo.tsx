@@ -31,13 +31,13 @@ interface taskInfo{
 interface userList {
     UserID : string,
     UserName : string,
-    QualAssessment : string,
+    Average : string,
 }
 
 interface requestUser {
     UserID : string,
     UserName : string,
-    QualAssessment : string,
+    Average : string,
 }
 
 interface statistic{
@@ -261,17 +261,38 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
 
       const handleClickYes = (e :React.MouseEvent<HTMLButtonElement, MouseEvent>, userName : string) =>{
           e.preventDefault();
-          let tempUserList : userList[] = Object.assign([], []);
+          let tempUserList : userList[] = Object.assign([], info.Participant);
           let tempRequestUser : requestUser[] = [];
 
           info.Request.map((user)=>{
               if(userName != user.UserName){tempRequestUser.push(user)}
               else{tempUserList.push(user)}
           })
-          setInfo({...info, ["Request"]: tempRequestUser})
+          setInfo({...info,["Participant"]: tempUserList, ["Request"]: tempRequestUser})
 
-
+          _axiosPost(tempUserList, tempRequestUser);
       }
+      const _axiosPost = (tempUserList : userList[], tempRequestUser : requestUser[]) => {
+          axios.post(`http://127.0.0.1:8000/adminUI/${props.match.params.task_id}/`, {
+                TaskID : info.TaskID,
+                Name : info.Name,
+                SubmissionPeriod : info.SubmissionPeriod,
+                Description: info.Description,
+                Threshold : info.Threshold,
+                Mapping : info.Mapping,
+                Participant : tempUserList,
+                Request : tempRequestUser,
+                Statistics : info.Statistics,
+            }).then((r) => {
+                console.log(tempUserList);
+                console.log(r);
+                console.log(r.data);
+                console.log('hhhhhhhhhhhhhhhh');
+            }).catch((err) => {
+                 console.log(err.response.data);
+                 console.log(err.response.status);
+                 console.log(err.response.headers); } )
+    }
 
    return(
        <div className={"taskInfo"}>
@@ -406,7 +427,7 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
                                        <li>
                                            <div className={"sequenceNum"}>{++userNum}.</div>
                                            <div className={"personal_name"}>{item.UserName}</div>
-                                           <div className={"personal_score"}>{item.QualAssessment}점</div>
+                                           <div className={"personal_score"}>{item.Average}점</div>
                                        </li>
                                    );
 
@@ -428,7 +449,7 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
                                        <li>
                                            <div className={"sequenceNum"}>{++requestUserNum}.</div>
                                            <div className={"personal_name"}>{item.UserName}</div>
-                                           <div className={"personal_score"}>{item.QualAssessment}점</div>
+                                           <div className={"personal_score"}>{item.Average}점</div>
                                            <button className={"_button"} id={"yes"} onClick={(e)=> handleClickYes(e, item.UserName)}>승인</button>
                                            <button className={"_button"} id={"no"}>거절</button>
                                        </li>
