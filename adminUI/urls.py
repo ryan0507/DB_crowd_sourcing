@@ -26,4 +26,6 @@ urlpatterns = [
     path('user/assessor/<int:as_ID>', EstimatorDetailView),
     # admin_alterPassword
     path('alterpw/', alterPassword),
+    # download_csv_file
+    path('downloadcsv/<int:TaskID>',download_csv_data)
 ]

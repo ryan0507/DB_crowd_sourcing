@@ -1,9 +1,11 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 import mysql.connector
 import json
 from datetime import date, datetime
+import csv
+from django.utils.encoding import smart_str
 
-dbconn = mysql.connector.connect(host="34.64.198.135", user="root", passwd="111111", database="DB_test")
+# dbconn = mysql.connector.connect(host="34.64.198.135", user="root", passwd="111111", database="DB_test")
 DB_HOST = "34.64.198.135"
 DB_ROOT = "root"
 DB_PASSWD = "111111"
@@ -410,3 +412,22 @@ def alterPassword(request):
         return JsonResponse([], safe=False)
     finally:
         dbconn.close()
+
+def download_csv_data(request, TaskID):
+    try:
+        dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
+        TableName, TaskSchema = next(select(dbconn, "SELECT TableName, TaskSchema FROM TASK WHERE TaskID = {}".format(TaskID)))
+
+        # response content type
+        response = HttpResponse(status=200,content_type='text/csv')
+        # decide the file name
+        response['Content-Disposition'] = 'attachment; filename="{}.csv"'.format(TableName)
+        writer = csv.writer(response, csv.excel)
+        writer.writerow([smart_str(i) for i in TaskSchema.split("%")[::2]])
+        data = select(dbconn, "SELECT * FROM {}".format(TableName))
+        [writer.writerow(row[1:]) for row in data]
+        return response
+    except Exception as e:
+        return HttpResponse("오류가 발생했습니다.",status=202)
+    finally:
+        dbconn.close();

@@ -569,5 +569,9 @@ def execute(dbconn, query, bufferd=True):
 
 
 dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
-execute(dbconn,"DELETE FROM Rest_Rev_W WHERE SubmissionID IN ('29','28')")
+# merge_bulk(dbconn,"INSERT INTO Rest_Rev VALUE (%s, %s, %s, %s, %s)",[(124,"1",1,1,1)])
+# merge_bulk(dbconn,"INSERT INTO Rest_Rev VALUE (%s, %s, %s, %s, %s)",[(125,"1",2,1,1)])
+# dbconn.commit()
+
+execute(dbconn,"DELETE FROM Rest_Rev WHERE SubmissionID IN ('124','125')")
 
