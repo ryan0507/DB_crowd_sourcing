@@ -27,7 +27,14 @@ def merge(dbconn, query, values, buffered=True):
     try:
         cursor = dbconn.cursor(buffered=buffered);
         cursor.execute(query, values);
-        dbconn.commit();
+    except Exception as e:
+        dbconn.rollback();
+        raise e;
+
+def merge_bulk(dbconn, query, values, bufferd=True):
+    try:
+        cursor = dbconn.cursor(buffered=bufferd);
+        cursor.executemany(query, values);
     except Exception as e:
         dbconn.rollback();
         raise e;
@@ -162,10 +169,18 @@ def RaterFileDetailMergeView(request):
                         WHERE SubmissionID = %s""", val_tuple)
 
         ## 테이블 수정 (P -> 튜플 옮기기, NP -> 튜플 삭제)
+        sql = """SELECT T.TABLENAME FROM TASK AS T, PARSING_DATA AS P, ORIGINAL_DATA_TYPE AS O 
+                WHERE P.ORIGINALTYPEID = O.ORIGINALTYPEID AND O.TASKID = T.TASKID AND P.SUBMISSIONID = '{}'""".format(data["SubmissionID"])
+        for row in select(dbconn, sql):
+            tableName = row[0]+"_W"
 
         # NP인 경우
-        #if data["P_NP" == "NP":
+        sql2 = ""
+        if data["P_NP"] == "NP":
+            sql2 = """DELETE FROM {} WHERE SUBMISSIONID = '{}'""".format(tableName, data["SubmissionID"])
+        merge_bulk(dbconn, sql2)
 
+        dbconn.commit();
         return JsonResponse({"state" : "s", "message" : "평가가 반영되었습니다. 평가한 파일은 평가 내역에서 확인할 수 있습니다."})
 
     except Exception as e:
