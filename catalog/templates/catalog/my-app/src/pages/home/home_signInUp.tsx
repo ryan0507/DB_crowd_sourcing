@@ -132,7 +132,6 @@ function Home_signInUp() {
         }).then((r) => {
             console.log(r);
             console.log(r.data);
-            console.log('hhhhhhhhhhhhhhhh');
         }).catch((err) => {
             console.log(err.response.data);
             console.log(err.response.status);
