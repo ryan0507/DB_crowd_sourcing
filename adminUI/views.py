@@ -78,11 +78,6 @@ def TaskInfoView(request, infoID):
                 FROM TASK T, ORIGINAL_DATA_TYPE O
                 WHERE T.TaskID = %s AND T.TaskID = O.TaskID"""
 
-        sql2 = """SELECT U.MainID, U.Name, P.Pass, D.QualAssessment 
-                FROM USER U, PARTICIPATE_TASK P, PARSING_DATA D, ORIGINAL_DATA_TYPE O
-                WHERE U.MainID = P.SubmitterID AND P.SubmitterID = D.SubmitterID 
-                    AND O.TaskID = P.TaskID AND O.OriginalTypeID = D.OriginalTypeID AND P.TaskID = %s"""
-
         sql2 = """SELECT U.MainID, U.Name, P.Pass
                 FROM PARTICIPATE_TASK P, USER U
                 WHERE U.MainID = P.SubmitterID AND P.TaskID = %s"""
@@ -103,7 +98,18 @@ def TaskInfoView(request, infoID):
         info_dict["Request"] = []
         for info in selectDetail(dbconn, sql2, list_arg):
 
-            info_dict["Participant"].append({"UserID": info[0][3:], "UserName": info[1], "Pass": info[2]})
+            score = 0
+            file_num = 0
+            sql = "SELECT QualAssessment FROM PARSING_DATA WHERE SubmitterID = %s"
+            user_id = ["su " + str(info[0][3:])]
+            print(user_id)
+            for user in selectDetail(dbconn, sql, user_id):
+                score += user[0]
+                file_num += 1
+            average = score / file_num
+
+            info_dict["Participant"].append({"UserID": info[0][3:], "UserName": info[1],
+                                             "Pass": info[2], "Average": average})
             if info[2] == "W":
                 info_dict["Request"].append({"UserID": info[0][3:], "UserName": info[1]})
 
