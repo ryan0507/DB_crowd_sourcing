@@ -83,7 +83,8 @@ def TaskInfoView(request, infoID):
                 FROM PARTICIPATE_TASK P, USER U
                 WHERE U.MainID = P.SubmitterID AND P.TaskID = %s"""
 
-        sql3 = """SELECT U.MainID, U.Name, O.OriginSchema, D.SubmissionDate, D.SubmissionNumber, D.FileName, D.P_NP 
+        sql3 = """SELECT U.MainID, U.Name, O.OriginSchema, D.SubmissionDate, 
+                    D.SubmissionNumber, D.FileName, D.NumberOfTuple, D.P_NP 
                 FROM TASK T, ORIGINAL_DATA_TYPE O, PARSING_DATA D, USER U
                 WHERE T.TaskID = %s AND T.TaskID = O.TaskID 
                     AND O.OriginalTypeID = D.OriginalTypeID AND D.SubmitterID = U.MainID"""
@@ -92,13 +93,14 @@ def TaskInfoView(request, infoID):
         list_arg.append(infoID)
 
         for info in selectDetail(dbconn, sql1, list_arg):
+            tmp = info[5].split("%")
             info_dict = {"TaskID": info[0], "Name": info[1], "SubmissionPeriod": info[2],
-                         "Description": info[3], "Threshold": info[4], "Mapping": info[5]}
+                         "Description": info[3], "Threshold": info[4],
+                         "Schema": [{"Big": tmp[2 * i],"small": tmp[2 * i + 1]} for i in range(len(tmp) // 2)]}
 
         info_dict["Participant"] = []
         info_dict["Request"] = []
         for info in selectDetail(dbconn, sql2, list_arg):
-
             score = 0
             file_num = 0
             sql = "SELECT QualAssessment FROM PARSING_DATA WHERE SubmitterID = %s"
@@ -106,7 +108,8 @@ def TaskInfoView(request, infoID):
             for user in selectDetail(dbconn, sql, user_id):
                 score += user[0]
                 file_num += 1
-            average = score / file_num
+            if file_num == 0: average = 0
+            else: average = score / file_num
 
             if info[2] == "W":
                 info_dict["Request"].append({"UserID": info[0][3:], "UserName": info[1], "Average": average})
@@ -115,24 +118,27 @@ def TaskInfoView(request, infoID):
 
         file_total = 0
         file_pass = 0
+        tuple_pass = 0
         info_dict["Statistics"] = {"Files": []}
         for info in selectDetail(dbconn, sql3, list_arg):
             sub_dict = {"UserID": info[0][3:], "UserName": info[1], "OriginSchema": info[2], "SubmissionDate": info[3],
-                        "SubmissionNumber": info[4], "FileName": info[5], "P_NP": info[6]}
+                        "SubmissionNumber": info[4], "FileName": info[5], "P_NP": info[7]}
             sub_dict["SubmissionTime"] = sub_dict["SubmissionDate"].strftime('%H:%M:%S')
             sub_dict["SubmissionDate"] = sub_dict["SubmissionDate"].strftime('%Y-%m-%d')
             info_dict["Statistics"]["Files"].append(sub_dict)
             file_total += 1
-            if (sub_dict["P_NP"] == "P"): file_pass += 1
+            if (sub_dict["P_NP"] == "P"):
+                file_pass += 1
+                tuple_pass += info[6]
         info_dict["Statistics"]["Total"] = file_total
         info_dict["Statistics"]["Pass"] = file_pass
+        info_dict["Statistics"]["Tuple"] = tuple_pass
         info_lst.append(info_dict)
 
         return JsonResponse(info_dict, safe=False)
 
-    #    except Exception as e:
-    #       print("why here")
-    #       return JsonResponse([], safe=False)
+    except Exception as e:
+           return JsonResponse([], safe=False)
     finally:
         dbconn.close()
 
@@ -152,8 +158,10 @@ def FileDetailView(request, infoID, fileID):
         list_arg.append(fileID)
 
         for file in selectDetail(dbconn, sql, list_arg):
+            tmp = file[5].split("%")
             file_dict = {"OriginalTypeID": file[0], "TaskID": file[1], "OriginSchema": file[2],
-                         "Mapping": file[3], "Files": file[4]}
+                         "Schema": [{"Big": tmp[2 * i],"small": tmp[2 * i + 1]} for i in range(len(tmp) // 2)],
+                         "Files": file[4]}
             file_lst.append(file_dict)
 
         return JsonResponse(file_dict, safe=False)
