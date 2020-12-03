@@ -63,7 +63,7 @@ def TaskInfoView(request, infoID):
             FROM TASK T, ORIGINAL_DATA_TYPE O
             WHERE T.TaskID = %s AND T.TaskID = O.TaskID"""
 
-    sql2 = """SELECT U.MainID, U.Name, P.Pass, D.QualAssessment,
+    sql2 = """SELECT U.MainID, U.Name, P.Pass, D.QualAssessment
             FROM TASK T, ORIGINAL_DATA_TYPE O, PARSING_DATA D, PARTICIPATE_TASK P, USER U 
             WHERE T.TaskID = %s AND T.TaskID = O.TaskID AND T.TaskID = P.TaskID 
                 AND O.OriginalTypeID = D.OriginalTypeID AND U.MainID = P.SubmitterID"""

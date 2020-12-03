@@ -51,14 +51,16 @@ interface file{
     UserName : string,
     OriginSchema : string,
     SubmissionDate : string,
+    SubmissionNumber : number,
     FileName : string,
     P_NP : string,
     SubmissionTime : string,
 }
 
 interface Column {
-  id: 'SubmissionDate'| 'SubmissionTime' | 'OriginSchema' | 'UserName' | 'FileName' | 'P_NP';
+  id: 'OriginSchema' | 'SubmissionNumber' | 'SubmissionDate'|  'UserName' | 'FileName' | 'P_NP';
   label: string;
+  maxWidth?: number;
   minWidth?: number;
   align?: 'center';
   alignment?: 'center';
@@ -66,13 +68,14 @@ interface Column {
 }
 
 const columns: Column[] = [
-  { id: 'SubmissionDate', label: '제출 날짜', minWidth: 80 },
-  {
-    id: 'SubmissionTime',
+    { id: 'OriginSchema', label: '원본데이터타입',},
+    {
+    id: 'SubmissionNumber',
     label: '회차',
     minWidth: 90,
   },
-    { id: 'OriginSchema', label: '원본데이터타입',},
+  { id: 'SubmissionDate', label: '제출 날짜', minWidth: 80 },
+
   { id: 'UserName', label: '제출자', minWidth: 80 },
   {
     id: 'FileName',
