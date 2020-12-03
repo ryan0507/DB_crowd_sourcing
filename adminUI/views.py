@@ -75,7 +75,8 @@ def TaskInfoView(request, infoID):
 
         info_lst = []
 
-        sql1 = """SELECT T.TaskID, T.Name, T.SubmissionPeriod, T.Description, T.TaskThreshold, O.Mapping
+        sql1 = """SELECT T.TaskID, T.Name, T.SubmissionPeriod, T.Description, T.TaskThreshold, T.TaskSchema,
+                    O.OriginSchema, O.Mapping
                 FROM TASK T, ORIGINAL_DATA_TYPE O
                 WHERE T.TaskID = %s AND T.TaskID = O.TaskID"""
 
@@ -93,10 +94,15 @@ def TaskInfoView(request, infoID):
         list_arg.append(infoID)
 
         for info in selectDetail(dbconn, sql1, list_arg):
-            tmp = info[5].split("%")
+            ta_tmp = info[5].split("%")
+            or_tmp = info[7].split("%")
             info_dict = {"TaskID": info[0], "Name": info[1], "SubmissionPeriod": info[2],
                          "Description": info[3], "Threshold": info[4],
-                         "Schema": [{"Big": tmp[2 * i],"small": tmp[2 * i + 1]} for i in range(len(tmp) // 2)]}
+                         "Task_Schema": [{"Big": ta_tmp[2 * i], "small": ta_tmp[2 * i + 1]} for i in
+                                    range(len(ta_tmp) // 2)],
+                         "SchemaName": info[6],
+                         "Original_Schema": [{"Big": or_tmp[2 * i],"small": or_tmp[2 * i + 1]} for i
+                                    in range(len(or_tmp) // 2)]}
 
         info_dict["Participant"] = []
         info_dict["Request"] = []
@@ -137,8 +143,8 @@ def TaskInfoView(request, infoID):
 
         return JsonResponse(info_dict, safe=False)
 
-    except Exception as e:
-           return JsonResponse([], safe=False)
+    #except Exception as e:
+           #return JsonResponse([], safe=False)
     finally:
         dbconn.close()
 
@@ -180,8 +186,8 @@ def DataTypeAddView(request, infoID):
         if len(request.body) != 0:
             body_unicode = request.body.decode('utf-8')
             data = json.loads(body_unicode)
-            val_tuple = (data["OriginSchema"], data["Mapping"])
-            merge(dbconn, "INSERT INTO Origianl_Data_Type(OriginSchema, Mapping) VALUES (%s %s)", val_tuple)
+            val_tuple = (infoID, data["Up"], data["Down"])
+            merge(dbconn, "INSERT INTO Origianl_Data_Type(TaskID, OriginSchema, Mapping) VALUES (%d %s %s)", val_tuple)
             value_lst.append(val_tuple)
             return JsonResponse(value_lst, safe=False)
         else:
@@ -201,9 +207,9 @@ def TableSchemaAddView(request, infoID):
         if len(request.body) != 0:
             body_unicode = request.body.decode('utf-8')
             data = json.loads(body_unicode)
-            val_dict = (data["TaskSchema"])
-            merge(dbconn, "INSERT INTO TASK(TaskSchema) VALUES (%s)", val_dict)
-            value_lst.append(val_dict)
+            val_tuple = (str(infoID), data["TaskSchema"])
+            merge(dbconn, "UPDATE TASK SET TaskSchema = %s WHERE TaskID = %s", val_tuple)
+            value_lst.append(val_tuple)
             return JsonResponse(value_lst, safe=False)
         else:
             return JsonResponse([], safe=False)
