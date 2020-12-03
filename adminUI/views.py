@@ -37,14 +37,36 @@ def AdminMainView(request):
     try:
         dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, password=DB_PASSWD, database=DB_DATABASE)
         result_lst = []
-        for row in select(dbconn, "SELECT TaskID, Name, Description FROM TASK"):
-            tmp_dict = {"TaskID": row[0], "Name": row[1], "Description": row[2]}
+        for row in select(dbconn, "SELECT T.TaskID, T.Name, T.Description, COUNT(*) FROM TASK AS T, PARTICIPATE_TASK AS P WHERE P.Pass='W' AND T.TaskID = P.TaskID GROUP BY T.TaskID"):
+            tmp_dict = {"TaskID": row[0], "Name": row[1], "Description": row[2], "Count": row[3]}
             result_lst.append(tmp_dict)
         return JsonResponse(result_lst, safe=False)
     except Exception as e:
         return JsonResponse([], safe=False)
     finally:
         dbconn.close();
+
+
+def TableSchemaAddView(request, infoID):
+    try:
+        dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
+
+        value_lst = []
+        if len(request.body) != 0:
+            body_unicode = request.body.decode('utf-8')
+            data = json.loads(body_unicode)
+            val_tuple = (str(infoID), data["TaskSchema"])
+            merge(dbconn, "UPDATE TASK SET TaskSchema = %s WHERE TaskID = %s", val_tuple)
+            value_lst.append(val_tuple)
+            return JsonResponse(value_lst, safe=False)
+        else:
+            return JsonResponse([], safe=False)
+
+    except Exception as e:
+        return JsonResponse([], safe=False)
+    finally:
+        dbconn.close()
+
 
 
 def TaskAddView(request):

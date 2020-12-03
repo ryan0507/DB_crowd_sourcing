@@ -9,9 +9,8 @@ interface Task{
     TaskID: string;
     Name : string;
     Description: string;
+    Count : number;
 }
-
-
 const Admin_main = (props : RouteComponentProps<{}>,)=>{
     const[task, setTask] = useState<Task[]>([]);
     const getApi = async() =>{
@@ -36,7 +35,7 @@ const Admin_main = (props : RouteComponentProps<{}>,)=>{
                            <Link to = {`/admin/taskinfo/${item.TaskID}`}>
                                <div className="content_list">
                                    <div className={"taskName"}>{item.Name}</div>
-                                   <div className={"applicant"}>새로운 신청자 1명</div>
+                                   <div className={"applicant"}>새로운 신청자 {item.Count}명</div>
                                    <div className={"aboutTask"}>{item.Description}</div>
                                </div>
                             </Link>
