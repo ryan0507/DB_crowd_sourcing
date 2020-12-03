@@ -96,7 +96,7 @@ function createData(pars : ParsingData): Data[] {
     let temp : Data[] = [];
     pars.data.map((item)=>{
         let tempPass : string = item.passNonpass;
-        if(item.passNonpass === "W"){tempPass = '제출 전'}
+        if(item.passNonpass === "W"){tempPass = '평가 전'}
         temp.push({originTypeID : item.originalTypeID, submitNum : item.submitNum, submitDate : item.submitDate.substring(0,10),
             Ntuple: item.Ntuple, submitFileName : item.submitFileName, quanScore : item.quanScore, qualScore : item.qualScore,
             passNonpass : tempPass})
@@ -118,9 +118,7 @@ interface TaskForStat{
     Submissionthreshold : string;
     SubOK : boolean;
 }
-// interface Score {
-//     score : string;
-// }
+
 
 export default function Submit_taskInfo2(props : RouteComponentProps<{task_id : string}>,){
     const[task, setTask] = useState<Task>({name : "Error", tablename : "Error", description: "Error", original_schema : [],

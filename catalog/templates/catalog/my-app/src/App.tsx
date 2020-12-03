@@ -61,6 +61,7 @@ function App() {
                     <Route path="/submit/filedetail" component={submit}/>
                     <Route path="/submit/submitfile" component={submit}/>
                     <Route path="/submit/changeinfo" component={submit}/>
+                    <Route path="/submit/submitfilecheck" component={submit}/>
 
                     <Route exact path="/rater/main" component={Rater}/>
                     <Route exact path="/rater/main2" component={Rater}/>

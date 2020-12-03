@@ -16,5 +16,6 @@ urlpatterns = [
     path('taskinfo2_4/<int:infoID>/', SubmitTaskInfo2_4),
     path('downloadcsvfile/<int:SubmissionID>/', download_csv_data),
     path('getsubtime/<int:infoID>/', getSubTime),
-
+    path('postfile/',postFile),
+    path('getresult/<int:id>/',getResult)
 ]

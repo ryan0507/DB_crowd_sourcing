@@ -27,11 +27,9 @@ def merge(dbconn, query, values, buffered=True):
     try:
         cursor = dbconn.cursor(buffered=buffered);
         cursor.execute(query, values);
-        dbconn.commit();
     except Exception as e:
         dbconn.rollback();
         raise e;
-
 
 def AdminMainView(request):
     try:
@@ -58,11 +56,13 @@ def TableSchemaAddView(request, infoID):
             val_tuple = (str(infoID), data["TaskSchema"])
             merge(dbconn, "UPDATE TASK SET TaskSchema = %s WHERE TaskID = %s", val_tuple)
             value_lst.append(val_tuple)
+            dbconn.commit();
             return JsonResponse(value_lst, safe=False)
         else:
             return JsonResponse([], safe=False)
 
     except Exception as e:
+        dbconn.rollback();
         return JsonResponse([], safe=False)
     finally:
         dbconn.close()
@@ -99,11 +99,12 @@ def TaskAddView(request):
                 VALUES (%s, %s, %s, %s, %s, %s)""", val_tuple)
 
             merge(dbconn, sql, tmp_tuple)
-
+            dbconn.commit();
             return JsonResponse(value_lst, safe=False)
         else:
             return JsonResponse({}, safe=False)
     except Exception as e:
+        dbconn.rollback();
         return JsonResponse({}, safe=False)
     finally:
         dbconn.close()
@@ -233,11 +234,13 @@ def DataTypeAddView(request, infoID):
             val_tuple = (infoID, SchemaName, mapping)
             merge(dbconn, "INSERT INTO Origianl_Data_Type(TaskID, OriginSchema, Mapping) VALUES (%d %s %s)", val_tuple)
             value_lst.append(val_tuple)
+            dbconn.commit();
             return JsonResponse(value_lst, safe=False)
         else:
             return JsonResponse([], safe=False)
 
     except Exception as e:
+        dbconn.rollback();
         return JsonResponse([], safe=False)
     finally:
         dbconn.close()
@@ -254,11 +257,13 @@ def TableSchemaAddView(request, infoID):
             val_tuple = (str(infoID), data["TaskSchema"])
             merge(dbconn, "UPDATE TASK SET TaskSchema = %s WHERE TaskID = %s", val_tuple)
             value_lst.append(val_tuple)
+            dbconn.commit();
             return JsonResponse(value_lst, safe=False)
         else:
             return JsonResponse([], safe=False)
 
     except Exception as e:
+        dbconn.rollback();
         return JsonResponse([], safe=False)
     finally:
         dbconn.close()
@@ -398,8 +403,10 @@ def alterPassword(request):
 
         val_tuple = (data["Password"],  data["MainID"])
         merge(dbconn, """UPDATE USER SET Password = %s WHERE MainID = %s""", val_tuple)
+        dbconn.commit()
         return JsonResponse({"state": "s", "message": "개인정보가 성공적으로 수정 되었습니다."})
     except Exception as e:
+        dbconn.rollback();
         return JsonResponse([], safe=False)
     finally:
         dbconn.close()

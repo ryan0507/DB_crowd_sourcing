@@ -8,6 +8,7 @@ import Submit_taskCheck from "./submit_taskCheck";
 import Submit_fileDetail from "./submit_fileDetail";
 import Submit_submitFile from "./submit_submitFile";
 import Submit_changeInfo from "./submit_changeInfo";
+import Submit_taskSubmitCheck from "./submit_taskSubmitCheck"
 import axios from "axios";
 import "./submit.css";
 
@@ -70,6 +71,7 @@ function Submit() {
                     <Route exact path="/submit/filedetail" component={Submit_fileDetail}/>
                     <Route exact path="/submit/submitfile/:task_id" component={Submit_submitFile}/>
                     <Route exact path="/submit/changeinfo" component={Submit_changeInfo}/>
+                    <Route exact path="/submit/submitfilecheck/:id" component={Submit_taskSubmitCheck}/>
                 </Switch>
             </body>
       </Router>

@@ -47,6 +47,11 @@ interface OriginalSchema {
 interface time{
     subtime : number;
 }
+interface state {
+    state: string;
+    message: string;
+}
+
 
 export default function Submit_submitFile(props : RouteComponentProps<{task_id : string}>,) {
     const [task, setTask] = useState<Task>({
@@ -83,15 +88,12 @@ export default function Submit_submitFile(props : RouteComponentProps<{task_id :
         setEndDate(e.target.value);
     }
 
-
-
-
     const classes = useStyles();
-    const [minUpload, setMinUpload] = React.useState<string | number>('');
+    const [minUpload, setMinUpload] = React.useState<string>(' ');
     const [open, setOpen] = React.useState(false);
 
     const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        setMinUpload(event.target.value as number);
+        setMinUpload(event.target.value as string);
     };
 
     const handleClose = () => {
@@ -101,6 +103,55 @@ export default function Submit_submitFile(props : RouteComponentProps<{task_id :
     const handleOpen = () => {
         setOpen(true);
     };
+
+    const [file, setFile] = React.useState<Blob>(new Blob(['<div>Hello Blob!</div>']));
+    const [subbutton, setButton] = React.useState<boolean>(true);
+
+    const signFile = (e:any) => {
+        setFile(e.target.files[0]);
+    }
+
+
+    const submit_file = () => {
+        if (!subbutton) {
+            alert("제출 중입니다. 페이지를 떠나지 말고 잠시만 기다려 주세요.")
+        }
+        else if (startDate === "" || endDate ==="" || file === null || minUpload === "") {
+            alert("주어진 양식을 모두 입력해 주세요. 파일명에 이름을 넣어주세요.")
+        }
+        else if (startDate > endDate) {
+            alert("데이터 수집 시작일이 종료일보다 앞에 있어야합니다.")
+        }
+        else {
+            const formData = new FormData();
+            formData.append('TaskID', props.match.params.task_id);
+            formData.append('OriginalID', minUpload);
+            formData.append('SubmissionNumber', st.subtime.toString());
+            formData.append('startDate', startDate);
+            formData.append('endDate', endDate);
+            formData.append('file', file);
+            console.log(minUpload);
+            axios.post('http://127.0.0.1:8000/submitUI/postfile/', formData,{headers: {"content-type": "multipart/form-data"}})
+                .then(res => {console.log(res.data)
+                    let st: state = res.data;
+                    if (st.state === "200") {
+                        window.location.replace("/submit/submitfilecheck/" + st.message + "/");
+                    } else if (st.state === "202") {
+                        alert(st.message);
+                    } else {
+                        alert(st.message);
+                        window.location.replace("/submit/main2/");
+                    }})
+                .catch(err => {
+                    alert("오류가 발생했습니다.");
+                    window.location.replace("/submit/main2/")
+                })
+        }
+    }
+
+
+
+
     return (
         <div className="submit_submitFile">
             <div className="wrapper">
@@ -159,39 +210,31 @@ export default function Submit_submitFile(props : RouteComponentProps<{task_id :
                                         open={open}
                                         onClose={handleClose}
                                         onOpen={handleOpen}
-                                        value={minUpload}
                                         onChange={handleChange}
                                         style={{textAlign: 'center'}}>
                                         {task.original_schema.map((item) => {
                                             return (
-                                                <MenuItem value={'001'}>{item.name}</MenuItem>
+                                                <MenuItem value={item.name}>{item.name}</MenuItem>
                                             )
                                         })}
                                     </Select>
                                 </FormControl>
-
                             </div>
                         </div>
-
-
                         <div className={"dataTable_name"}>
                             <div className={"wrapper_title"}>데이터 수집날짜(시작일, 종료일)</div>
                             <input type="date" className="select__birth" onChange={signUpstartDate} value={startDate} ></input>
                             <input type="date" className="select__birth" onChange={signUpendDate} value={endDate} ></input>
                         </div>
-
-
                         <div className={"dataTableSchema"}>
                             <div className={"wrapper_title"}>제출 파일</div>
                             <form>
-                                <input type="file"/>
+                                <input  type="file" id = "csvfile" accept='.csv' onChange = {signFile}/>
                             </form>
                         </div>
                         <div className={"TaskParticipate"}>
                             <div className={"wrapper_title"}>
-                                <Link to="/submit/taskinfo2" className="link-task-participate">
-                                    <button className="task-participate">파일 제출하기</button>
-                                </Link>
+                                <button className="task-participate" onClick={submit_file}>{subbutton? "파일 제출하기":"제출 중..."}</button>
                             </div>
                         </div>
                     </div>
