@@ -31,14 +31,6 @@ def merge(dbconn, query, values, buffered=True):
         dbconn.rollback();
         raise e;
 
-def merge_bulk(dbconn, query, values, bufferd=True):
-    try:
-        cursor = dbconn.cursor(buffered=bufferd);
-        cursor.executemany(query, values);
-    except Exception as e:
-        dbconn.rollback();
-        raise e;
-
 def RaterMainView(request):
     try:
         dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
@@ -152,7 +144,14 @@ def RaterFileDetailMergeView(request):
     try:
         data = json.loads(request.body)
         dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
-
+        sql = """SELECT T.TABLENAME FROM TASK AS T, PARSING_DATA AS P, ORIGINAL_DATA_TYPE AS O 
+                WHERE P.ORIGINALTYPEID = O.ORIGINALTYPEID AND O.TASKID = T.TASKID AND P.SUBMISSIONID = '{}'""".format(data["SubmissionID"])
+        for row in select(dbconn, sql):
+            tableName = row[0]+"_W"
+        sql = """SELECT * FROM {} 
+                   WHERE SubmissionID = {}""".format(tableName, data["SubmissionID"])
+        for row in select(dbconn, sql):
+            print(row)
         ## 평가 반영 ##
         noQual, noPNP = False, False
         if ((data["QualAssessment"] == 0) | (data["QualAssessment"] == '')) : noQual = True
@@ -165,6 +164,7 @@ def RaterFileDetailMergeView(request):
             return JsonResponse({"state" : "noPNP", "message" : "평가를 위해서는 패스 여부를 입력해야 합니다."})
         val_tuple = (data["QualAssessment"], data["P_NP"] , data["SubmissionID"])
         print(val_tuple)
+
         merge(dbconn, """UPDATE PARSING_DATA SET QualAssessment = %s, P_NP = %s
                         WHERE SubmissionID = %s""", val_tuple)
 
@@ -177,9 +177,9 @@ def RaterFileDetailMergeView(request):
         # NP인 경우
         sql2 = ""
         if data["P_NP"] == "NP":
-            sql2 = """DELETE FROM {} WHERE SUBMISSIONID = '{}'""".format(tableName, data["SubmissionID"])
-        merge_bulk(dbconn, sql2)
-
+            val_tuple2 = ()
+            merge(dbconn, """DELETE FROM {} 
+                   WHERE SubmissionID = {}""".format(tableName, data["SubmissionID"]), val_tuple2)
         dbconn.commit();
         return JsonResponse({"state" : "s", "message" : "평가가 반영되었습니다. 평가한 파일은 평가 내역에서 확인할 수 있습니다."})
 

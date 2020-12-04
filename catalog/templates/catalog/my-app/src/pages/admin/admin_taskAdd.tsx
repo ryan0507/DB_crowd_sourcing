@@ -346,7 +346,6 @@ function Admin_taskAdd(){
            <div className="Title">태스크 추가</div>
            <Link to = "/admin/main" className="right_side_small">뒤로가기</Link>
            <div className="formContent">
-               <form onSubmit={(event) => handleSubmitDD(event)}>
                <div className={"task_name"}>
                    <div className={"wrapper_title"}>태스크 이름</div>
                        <InputBase
@@ -532,7 +531,8 @@ function Admin_taskAdd(){
                    {/*<Link className={"addDataType"} to = "/admin/datatypeadd">원본 데이터 타입 추가하기</Link>*/}
 
                </div>
-               <input type="submit" value="제출"/>
+               <form onSubmit={(event) => handleSubmitDD(event)}>
+                   <input type="submit" value="제출"/>
                </form>
            </div>
        </div>
