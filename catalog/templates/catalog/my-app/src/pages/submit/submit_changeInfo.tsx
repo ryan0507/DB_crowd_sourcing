@@ -230,8 +230,8 @@ const Submit_changeInfo = ()=>{
                                 <input placeholder="- 생략하고 적어주세요."type="text" className="signup__input1" onChange={e=> handleInputChange('PhoneNumber', e.target.value)} value = {newUser.PhoneNumber}></input>
                             </div>
                             <div className="submit__button_s">
-                                <button className="signup-submit_s" onClick={withdrawalSuccess}>탈퇴</button>
-                                <button className="signup-submit_s" onClick={(event) => ChangeInfo(event)}> 저장</button>
+                                <button className="signup-submit_s"  onClick={withdrawalSuccess}>탈퇴</button>
+                                <button className="signup-submit_s" id="leftButton" onClick={(event) => ChangeInfo(event)}> 저장</button>
                             </div>
                         </div>
                     </div>

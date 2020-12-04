@@ -384,7 +384,9 @@
 }
 
 .submit__button_s {
-    margin : 0px 120px;
+    clear: both;
+    margin : 0px auto;
+    display: table;
 }
 
 .signup-submit_s{
@@ -403,6 +405,9 @@
     margin-right: auto;
     display: table;
     float: right;
+}
+#leftButton{
+    margin-right: 80px;
 }
 
 .changeInfo_main selected{
@@ -474,16 +479,19 @@
     font: normal normal 600 20px Apple SD Gothic Neo;
 }
 .next{
-    width : 100%;
+    margin: 0px auto;
+    display: table;
 }
 .next button[type="submit"]{
-    margin : 25px 0px 0px 315px;
+    margin-top : 25px;
+    margin-bottom: 0px;
     display: block;
     clear: both;
     font-size : 20px;
 }
 .next button[type="submit"]:disabled{
-    margin : 25px 0px 0px 315px;
+    margin-top: 25px;
+    margin-bottom: 0px;
     display: block;
     clear: both;
     font-size : 20px;

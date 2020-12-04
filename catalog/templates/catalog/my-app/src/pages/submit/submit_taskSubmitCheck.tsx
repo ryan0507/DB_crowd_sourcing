@@ -63,6 +63,7 @@ export default function Submit_taskSubmitCheck(props : RouteComponentProps<{id :
         <div className="submit_taskCheck">
             <div className="wrapper">
                 <div className="Title">결과 확인</div>
+                <div className="right_side_small"></div>
                 <div className="formContent">
                     <div className={"task_name"}>
                         <div className={"wrapper_title"}>제출 결과</div>
