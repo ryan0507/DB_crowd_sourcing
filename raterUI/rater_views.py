@@ -6,7 +6,7 @@ from datetime import date
 
 DB_HOST = "34.64.198.135"
 DB_ROOT = "root"
-DB_PASSWD = "111111"
+DB_PASSWD = '1246team!'
 DB_DATABASE = "DB_test"
 
 def select(dbconn, query, bufferd=True):
@@ -144,14 +144,7 @@ def RaterFileDetailMergeView(request):
     try:
         data = json.loads(request.body)
         dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
-        sql = """SELECT T.TABLENAME FROM TASK AS T, PARSING_DATA AS P, ORIGINAL_DATA_TYPE AS O 
-                WHERE P.ORIGINALTYPEID = O.ORIGINALTYPEID AND O.TASKID = T.TASKID AND P.SUBMISSIONID = '{}'""".format(data["SubmissionID"])
-        for row in select(dbconn, sql):
-            tableName = row[0]+"_W"
-        sql = """SELECT * FROM {} 
-                   WHERE SubmissionID = {}""".format(tableName, data["SubmissionID"])
-        for row in select(dbconn, sql):
-            print(row)
+
         ## 평가 반영 ##
         noQual, noPNP = False, False
         if ((data["QualAssessment"] == 0) | (data["QualAssessment"] == '')) : noQual = True
@@ -165,21 +158,45 @@ def RaterFileDetailMergeView(request):
         val_tuple = (data["QualAssessment"], data["P_NP"] , data["SubmissionID"])
         print(val_tuple)
 
-        merge(dbconn, """UPDATE PARSING_DATA SET QualAssessment = %s, P_NP = %s
-                        WHERE SubmissionID = %s""", val_tuple)
-
         ## 테이블 수정 (P -> 튜플 옮기기, NP -> 튜플 삭제)
         sql = """SELECT T.TABLENAME FROM TASK AS T, PARSING_DATA AS P, ORIGINAL_DATA_TYPE AS O 
                 WHERE P.ORIGINALTYPEID = O.ORIGINALTYPEID AND O.TASKID = T.TASKID AND P.SUBMISSIONID = '{}'""".format(data["SubmissionID"])
         for row in select(dbconn, sql):
-            tableName = row[0]+"_W"
+            tableName = row[0]
+            waitTableName = row[0] + "_W"
 
-        # NP인 경우
-        sql2 = ""
-        if data["P_NP"] == "NP":
-            val_tuple2 = ()
-            merge(dbconn, """DELETE FROM {} 
-                   WHERE SubmissionID = {}""".format(tableName, data["SubmissionID"]), val_tuple2)
+        # P인 경우
+        if data["P_NP"] == "P":
+            nullNumberChanged, originalNum, changedNum = False, 0, 0
+            sql2 = "SELECT * FROM {} WHERE SUBMISSIONID = '{}'".format(waitTableName, data["SubmissionID"]) # 대기 테이블의 모든 튜플을 가져오는 sql
+            sql3 = "SELECT NUMBEROFTUPLE FROM PARSING_DATA WHERE SUBMISSIONID = '{}'".format(data["SubmissionID"]) # 해당 제출의 저장된 튜플 수 가져오는 sql
+
+            for row in select(dbconn, sql2):
+                value_template = "%s" + (", %s" * (len(row) - 1))
+                sql4 = "INSERT INTO {} VALUES ({})".format(tableName, value_template)
+
+                try:
+                    merge(dbconn, sql4, row)
+                except:
+                    changedNum += 1
+                    nullNumberChanged = True
+
+            if nullNumberChanged: # 중복된 data tuple이 있는 경우
+                for row in select(dbconn, sql3):
+                    originalNum = row[0]
+                newTupleNum = originalNum - changedNum
+                sql5 = "UPDATE PARSING_DATA SET NUMBEROFTUPLE = {} WHERE SUBMISSIONID = {}".format(newTupleNum, data["SubmissionID"]) # parsing_data의 numberOfTuple을 새로 업데이트하는 sql
+                merge(dbconn, sql5, ())
+
+        # P & NP인 경우 -> wait table의 data tuple 삭제해야한다
+        val_tuple2 = ()
+        sql6 = "DELETE FROM {} WHERE SubmissionID = {}".format(waitTableName, data["SubmissionID"])
+        merge(dbconn, sql6, val_tuple2)
+
+        # 위의 점수 및 패스여부 반영
+        merge(dbconn, """UPDATE PARSING_DATA SET QualAssessment = %s, P_NP = %s
+                                WHERE SubmissionID = %s""", val_tuple)
+
         dbconn.commit();
         return JsonResponse({"state" : "s", "message" : "평가가 반영되었습니다. 평가한 파일은 평가 내역에서 확인할 수 있습니다."})
 
