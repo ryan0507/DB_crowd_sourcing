@@ -349,7 +349,7 @@ export default function Submit_taskInfo2(props : RouteComponentProps<{task_id : 
                                                                     return (
                                                                         <TableCell key={column.id} align='center'
                                                                                    style={{fontSize: '14px', fontWeight: 'normal', color:'black' }}>
-                                                                            <button onClick = {(i) => downloadfile(value[1],value[0])}>
+                                                                            <button className={"wordButton"} onClick = {(i) => downloadfile(value[1],value[0])}>
                                                                                 {column.format && typeof value[0] === 'number' ? column.format(value[0]) : value[0]}
                                                                             </button>
                                                                         </TableCell>

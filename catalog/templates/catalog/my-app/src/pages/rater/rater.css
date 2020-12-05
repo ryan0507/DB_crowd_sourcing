@@ -44,8 +44,9 @@
 }
 
 /*admin_taskInfo*/
-.task_howToPass, .originDataType {
-    margin-top: 20px;
+.task_howToPass, .originDataType, .task_num, .task_duration, .file_download, .taskData_table_name,
+.passNonpass, .score, .passed{
+    padding-top: 20px;
     clear: both;
 }
 .originDataType .wrapper_title{
@@ -359,7 +360,7 @@
     float: left;
 }
 .rater_fileDetail .passNonpass .dropdown{
-    transform: translate(2%,10%);
+    transform: translate(10px,-3px);
 }
 
 .rater_fileDetail .task_info input[type="text"],
@@ -372,6 +373,28 @@
 .rater_fileDetail .task_name .wrapper_title{
     float: left;
     line-height: 60px;
+}
+.rater_taskDetail .downloadCSV,
+.rater_fileDetail .downloadCSV{
+  display: inline-block;
+  background-color: #56baed;
+  border: none;
+  color: white;
+  padding: 10px 15px;
+    transform: translate(15px, -5px);
+  text-align: center;
+  text-decoration: none;
+  font-size: 13px;
+  border-radius: 3px;
+  outline: none;
+  white-space: nowrap;
+  -webkit-user-select: none;
+  cursor: pointer;
+  font-weight: 700;
+}
+.rater_taskDetail .file_download .wrapper_title,
+.rater_fileDetail .file_download .wrapper_title{
+    float: left;
 }
 .rater_fileDetail .task_name input[type="text"]{
     width : 730px;
@@ -423,7 +446,7 @@
 }
 
 .rater_fileDetail .dataTableSchema {
-    margin-top: 40px;
+    margin-top: 20px;
     clear: both;
 }
 
@@ -462,7 +485,7 @@
     float: left;
 }
 .rater_fileDetail .minUpload .dropdown{
-    transform: translate(2%,10%);
+    transform: translate(12px,-8px);
     width : 120px;
     height: 30px;
     border-radius: 20px;
@@ -472,21 +495,18 @@
 
 .rater_fileDetail .rater_fileDetailSubmit{
     text-align: center;
-    font: normal normal 600 25px Apple SD Gothic Neo;
+    font: normal normal 600 20px Apple SD Gothic Neo;
     letter-spacing: 0px;
     color: #FFFAFA;
     border : none;
     background: #6EB9E8 0% 0% no-repeat padding-box;
     box-shadow: 0px 3px 6px #00000029;
     border-radius: 5px;
-    width: 100px;
+    width: 140px;
     height: 50px;
-    margin: 100px 0px 0px 200px;
+    margin: 80px 0px 0px 180px;
     display: table;
     position: relative;
-}
-.rater_fileDetail .score .wrapper_title{
-    margin-top : 80px;
 }
 
 .blue{

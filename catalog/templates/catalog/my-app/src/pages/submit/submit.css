@@ -22,7 +22,6 @@
 
 /*admin_taskInfo*/
 .task_howToPass, .originDataType {
-    margin-top: 20px;
     clear: both;
 }
 .originDataType .wrapper_title{
@@ -418,6 +417,12 @@
     font-size : 20px;
     background-color: #A7A7A7;
     box-shadow: none;
+}
+.submit_taskInfo2 .wordButton{
+    color: #56baed;
+    font-weight: 500;
+    border: none;
+    background-color: white;
 }
 
 /*submit_submitFile*/

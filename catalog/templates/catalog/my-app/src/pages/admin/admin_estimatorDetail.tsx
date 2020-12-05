@@ -22,6 +22,7 @@ interface assesor {
 interface file {
     TaskName : string,
     SubmitterName : string,
+    OriginSchema : string,
     Filename: string,
     QualAssessment: string,
     P_NP : string,
@@ -30,7 +31,7 @@ interface file {
 
 
 interface Column {
-  id:  'taskname'| 'presenter' | 'fileName' | 'presenterScore' | 'pNp';
+  id:  'taskname'| 'presenter' | 'OriginSchema' | 'fileName' | 'presenterScore' | 'pNp';
   label: string;
   minWidth?: number;
   align?: 'center';
@@ -42,6 +43,7 @@ const columns: Column[] = [
     {id: 'taskname', label: '태스크\u00a0이름'},
 
     {id: 'presenter', label: '제출자'},
+    {id : "OriginSchema", label : '원본 데이터 타입'},
   {
     id: 'fileName',
     label: '평가\u00a0파일명',
@@ -66,6 +68,7 @@ const useStyles = makeStyles({
 interface Data {
     taskname: string,
   presenter: string,
+    OriginSchema: string,
   fileName: string;
   presenterScore: string,
   pNp: string;
@@ -78,7 +81,7 @@ interface Data {
 function createData(files : file[]): Data[] {
     let temp : Data[] = [];
     files.map((item)=>{
-        temp.push({taskname : item.TaskName, presenter: item.SubmitterName, fileName: item.Filename, presenterScore: item.QualAssessment, pNp: item.P_NP,})
+        temp.push({taskname : item.TaskName, presenter: item.SubmitterName, OriginSchema:item.OriginSchema, fileName: item.Filename, presenterScore: item.QualAssessment, pNp: item.P_NP,})
     })
   return temp;
 }
