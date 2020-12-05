@@ -352,7 +352,7 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
           info.Request.map((user)=>{
               if(userID !== user.UserID){tempRequestUser.push(user)}
               else{
-                  user.Pass = "NP";
+                  user.Pass = "N";
                   tempRequestUser.push(user);
               }
           })

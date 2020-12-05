@@ -71,14 +71,11 @@
     clear: both;
     margin-top: 80px;
 }
-.originDataTypeRequest ul{
-    transform: translate(0%, -25%);
-}
 #yes{color:#6EB9E8}
 #no{color:#E86E77}
-
 .YesNo{
     float: right;
+    line-height: 26px;
 }
 
 .applicantList{
@@ -132,7 +129,7 @@
 .taskInfo .presenters .applicants li .personal_score,
 .taskInfo .applicantList .applicants li .personal_score{
     float: left;
-    transform: translate(70px, 19px);
+    transform: translate(78px, 19px);
 }
 .taskInfo .applicants #yes{
     margin-left: 100px;
