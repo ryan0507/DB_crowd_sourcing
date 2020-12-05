@@ -159,11 +159,12 @@ def RaterFileDetailMergeView(request):
         print(val_tuple)
 
         ## 테이블 수정 (P -> 튜플 옮기기, NP -> 튜플 삭제)
-        sql = """SELECT T.TABLENAME FROM TASK AS T, PARSING_DATA AS P, ORIGINAL_DATA_TYPE AS O 
+        sql = """SELECT T.TABLENAME, T.TaskSchema FROM TASK AS T, PARSING_DATA AS P, ORIGINAL_DATA_TYPE AS O 
                 WHERE P.ORIGINALTYPEID = O.ORIGINALTYPEID AND O.TASKID = T.TASKID AND P.SUBMISSIONID = '{}'""".format(data["SubmissionID"])
         for row in select(dbconn, sql):
             tableName = row[0]
             waitTableName = row[0] + "_W"
+            taskschema = row[1].split("%")[::2]
 
         # P인 경우
         if data["P_NP"] == "P":
@@ -175,11 +176,15 @@ def RaterFileDetailMergeView(request):
                 value_template = "%s" + (", %s" * (len(row) - 1))
                 sql4 = "INSERT INTO {} VALUES ({})".format(tableName, value_template)
 
-                try:
+                a = "SELECT EXISTS (SELECT * FROM " + tableName + " WHERE " + " and ".join([j + "=" "'{}'".format(i) if type(i) is str else "ROUND({},4)".format(j) + "=" + "ROUND({},4)".format(i) for j, i in
+                                                                                            zip(taskschema, row[1:])]) + ")"
+                if next(select(dbconn, a))[0]:
                     merge(dbconn, sql4, row)
-                except:
+                else:
                     changedNum += 1
                     nullNumberChanged = True
+
+
 
             if nullNumberChanged: # 중복된 data tuple이 있는 경우
                 for row in select(dbconn, sql3):
@@ -206,3 +211,29 @@ def RaterFileDetailMergeView(request):
         return JsonResponse({}, safe=False)
     finally:
         dbconn.close()
+# dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
+#
+# tableName = "Rest_Rev"
+# taskschema = ["Name",	'Rev',	"Pop",	"Pas"]
+# rows = [(1,"새마을 식당",50.27,10,1),
+#         (6,"학생식당",1.27,1,0),
+#         (1,"한신포차",200,10,0),
+#         (6,"홍콩반점",20,20,0),
+#         (6,"홍콩반점",20,20,1),
+#         (6,"홍콩반점",20,20,2),
+#         (6,"홍콩반점",20,20,3)]
+# import pandas as pd
+# # print()
+# a = pd.DataFrame(list(select(dbconn,"SELECT * FROM " + tableName)))
+# a = a.append(pd.DataFrame(rows))
+# # print(a[a.duplicated()])
+# print(a.round(4))
+# for row in rows:
+#     a = "SELECT EXISTS (SELECT * FROM " + tableName + " WHERE " + " and ".join([j + "=" "'{}'".format(i) if type(i) is str else "ROUND({},5)".format(j) +"=" +  "ROUND({},5)".format(i) for j,i in zip(taskschema,row[1:])]) + ")"
+#     print(a)
+#     if next(select(dbconn, a))[0]:
+#         print("맞음")
+#     else:
+#         print("틀림")
+#
+# # "SELECT * FROM PARSING_DATA WHERE "

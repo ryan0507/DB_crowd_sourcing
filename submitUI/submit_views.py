@@ -388,6 +388,7 @@ def postFile(request):
         schema = next(select(dbconn,"SELECT Mapping FROM ORIGINAL_DATA_TYPE WHERE OriginalTypeID = {}".format(post_data["OriginalID"])))
         TableName, type = next(select(dbconn,"SELECT TableName, TaskSchema FROM TASK WHERE TaskID = {}".format(post_data["TaskID"])))
         schema = schema[0].split("%")
+        col_length = len(schema)//2
         type = type.split("%")
         schema = dict(zip(schema[::2],schema[1::2]))
         type = dict(zip(type[::2],type[1::2]))
@@ -424,7 +425,6 @@ def postFile(request):
             else:
                 raise Exception
         data = data.rename(columns=schema)
-        data = data[list(type.keys())]
         score, data = CalCulateScore_ReturnRefinedDF(data, post_data["TaskID"], request.session["MainID"])
         if score:
             pass
@@ -443,8 +443,6 @@ def postFile(request):
                      score["RestRow"], float(score["Score"]), "W", str(datetime.now()),0)])
         key = next(select(dbconn,"SELECT LAST_INSERT_ID()"))[0]
         data["SubmissionID"] = key
-        print("INSERT INTO {} VALUES (%s, {})".format(TableName + "_W(" + ",".join(list(data.columns)) + ")", insert_type[:-1]))
-        print([list(i) for i in data.values])
         merge_bulk(dbconn,"INSERT INTO {} VALUES (%s, {})".format(TableName + "_W(" + ",".join(list(data.columns)) + ")", insert_type[:-1])
                    ,[tuple(i) for i in data.values])
 
@@ -490,20 +488,22 @@ def CalCulateScore_ReturnRefinedDF(data1, TaskID, MainID):
 
         TableName, TaskSchema = next(select(dbconn,"SELECT TableName, TaskSchema FROM TASK WHERE TaskID ={}".format(TaskID)))
         TaskSchema = TaskSchema.split("%")[::2]
+        TaskSchema = [i for i in TaskSchema if i in data1.columns]
+        data1 = data1[[TaskSchema]]
 
         Info["TotalColumn"] = len(TaskSchema)
         Info["TotalRow"] = len(data1)
         data2 = data1[data1.notnull().mean(axis=1) > 0.5]
         Info["NullRow"] = len(data1) - len(data2)
-        tmp = data2.duplicated()
+        tmp = data2.round(4).duplicated()
         data2 = data2[~tmp]
         Info["SelfDupRow"] += tmp.sum()
 
         t1 = select(dbconn, "SELECT SubmitterID,{} FROM {} A, PARSING_DATA B WHERE A.SubmissionID = B.SubmissionID".format(",".join(TaskSchema), TableName)) ; t1 = pd.DataFrame(t1, columns= ["SubmitterID"] + TaskSchema)
         tmp = t1.iloc[:,1:].append(data2)
-        dup = tmp.duplicated()
+        dup = tmp.round(4).duplicated()
         data2 = tmp[~dup][len(t1):]
-        dup_data = t1[tmp.duplicated(keep=False)[:len(t1)]]
+        dup_data = t1[tmp.round(4).duplicated(keep=False)[:len(t1)]]
         dup_data = dup_data["SubmitterID"] == MainID
         Info["SelfDupRow"] += dup_data.sum()
         Info["OtherDupRow"] = (~dup_data).sum()
@@ -513,9 +513,9 @@ def CalCulateScore_ReturnRefinedDF(data1, TaskID, MainID):
         t1 = select(dbconn, "SELECT {} FROM {}_W A, PARSING_DATA B WHERE A.SubmissionID = B.SubmissionID and SubmitterID = '{}'".format(",".join(TaskSchema), TableName,MainID))
         t1 = pd.DataFrame(t1, columns=TaskSchema)
         tmp = t1.append(data2)
-        dup = tmp.duplicated()
+        dup = tmp.round(4).duplicated()
         data2 = tmp[~dup][len(t1):]
-        Info["SelfDupRow"] += tmp.duplicated().sum()
+        Info["SelfDupRow"] += dup.sum()
 
         Info["NullPercent"] = data2.isnull().values.mean()
         Info["RestRow"] = len(data2)

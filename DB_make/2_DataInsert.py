@@ -1,5 +1,5 @@
 import mysql.connector
-dbconn = mysql.connector.connect(host = "34.64.198.135", user = "root", passwd = "111111", database = "DB_test")
+dbconn = mysql.connector.connect(host = "34.64.198.135", user = "root", passwd = "1246team!", database = "DB_test")
 
 # DML(Data Manipulation Language)의 insert, update, delete를 대랑 처리하는 함수	
 def merge_bulk(query, values, bufferd=True):	
