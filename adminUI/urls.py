@@ -14,6 +14,8 @@ urlpatterns = [
     path('<int:infoID>/', TaskInfoView),
     # admin_typeAdd
     path('<int:infoID>/create/', TypeAddView),
+    # admin_UserUpdate
+    path('<int:infoID>/pass/', UserUpdateView),
     # admin_fileDetail
     path('<int:infoID>/<int:fileID>/', FileDetailView),
     # admin_userList

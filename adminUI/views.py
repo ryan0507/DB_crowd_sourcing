@@ -199,15 +199,15 @@ def TaskInfoView(request, infoID):
         for info in selectDetail(dbconn, sql2, list_arg):
             score = 0
             file_num = 0
-            sql = "SELECT QualAssessment FROM PARSING_DATA WHERE SubmitterID = %s"
+            sql = "SELECT QualAssessment, QuanAssessment FROM PARSING_DATA WHERE SubmitterID = %s"
             user_id = ["su " + str(info[0][3:])]
             for user in selectDetail(dbconn, sql, user_id):
-                score += user[0]
+                score += ((user[0] + user[1]) / 2)
                 file_num += 1
             if file_num == 0:
                 average = 0
             else:
-                average = score / file_num
+                average = round(score / file_num, 2)
 
             if info[2] == "W":
                 info_dict["Request"].append({"UserID": info[0][3:], "UserName": info[1],
@@ -286,7 +286,32 @@ def TypeAddView(request, infoID):
         sql += ");"
         select(dbconn, sql)
         dbconn.commit();
+
         return JsonResponse([], safe=False)
+
+    except Exception as e:
+        return JsonResponse([], safe=False)
+    finally:
+        dbconn.close()
+
+
+def UserUpdateView(request, infoID):
+    try:
+        dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
+
+        body_unicode = request.body.decode('utf-8')
+        data = json.loads(body_unicode)
+
+        for i in range(len(data["Participant"])):
+            if data["Participant"][i]["Pass"] == "P":
+                userID = "su " + data["Participant"][i]["UserID"]
+                tuple_arg = (userID, str(infoID))
+                sql = "UPDATE PARTICIPATE_TASK SET PASS = 'P' WHERE SubmitterID = %s AND TaskID = %s"
+                merge(dbconn, sql, tuple_arg)
+                dbconn.commit()
+
+        return JsonResponse([], safe=False)
+
     except Exception as e:
         return JsonResponse([], safe=False)
     finally:
@@ -368,7 +393,7 @@ def UserListView(request):
 def PresenterDetailView(request, su_ID):
     try:
         dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
-        sql = """SELECT A.ID, T.Name, P.SubmissionDate, P.FileName, P.QualAssessment, P.P_NP 
+        sql = """SELECT A.ID, T.Name, P.SubmissionDate, P.FileName, P.QualAssessment, P.P_NP, P.QuanAssessment 
                         FROM PARSING_DATA P, TASK T, ORIGINAL_DATA_TYPE O, USER A
                         WHERE O.OriginalTypeID = P.OriginalTypeID AND T.TaskID = O.TaskID 
                         AND A.MainID = P.SubmitterID AND P.SubmitterID = %s"""
@@ -383,7 +408,7 @@ def PresenterDetailView(request, su_ID):
         for row in selectDetail(dbconn, sql, list_arg):
             pre_dict["ID"] = row[0]
             taskName = row[1]
-            score += row[4]
+            score += (row[4] + row[6])
             file_dict = {"SubmissionDate": row[2], "FileName": row[3], "QualAssessment": row[4], "P_NP": row[5]}
             file_dict["SubmissionTime"] = file_dict["SubmissionDate"].strftime('%H:%M:%S')
             file_dict["SubmissionDate"] = file_dict["SubmissionDate"].strftime('%Y-%m-%d')
@@ -400,7 +425,7 @@ def PresenterDetailView(request, su_ID):
                 pre_dict["Tasks"][tasks_dict[taskName]]["Files"].append(file_dict)
             if file_dict["P_NP"] == "P": pre_dict["Tasks"][tasks_dict[taskName]]["Pass"] += 1
             count += 1
-        pre_dict["score"] = score / count
+        pre_dict["score"] = round(score / count, 2)
         return JsonResponse(pre_dict, safe=False)
 
     except Exception as e:
