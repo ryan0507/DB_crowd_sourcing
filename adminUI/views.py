@@ -1,6 +1,6 @@
 from django.http import JsonResponse, HttpResponse
 import mysql.connector
-import json
+import json, sys
 from datetime import date, datetime
 import csv
 from django.utils.encoding import smart_str
@@ -161,7 +161,7 @@ def TaskAddView(request):
 
 
 def TaskInfoView(request, infoID):
-    # try:
+    try:
         dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
 
         info_lst = []
@@ -173,12 +173,16 @@ def TaskInfoView(request, infoID):
                 FROM PARTICIPATE_TASK P, USER U
                 WHERE U.MainID = P.SubmitterID AND P.TaskID = %s"""
 
-        sql3 = """SELECT U.MainID, U.Name, O.OriginSchema, D.SubmissionDate,
-                    D.SubmissionNumber, D.FileName, D.NumberOfTuple, D.P_NP, D.SubmissionID
-                FROM PARSING_DATA D, USER U, TASK T, ORIGINAL_DATA_TYPE O
-                WHERE T.TaskID = %s AND T.TaskID = O.TaskID
-                    AND O.OriginalTypeID = D.OriginalTypeID AND D.SubmitterID = U.MainID"""
+        # sql3 = """SELECT U.MainID, U.Name, O.OriginSchema, D.SubmissionDate,
+        #             D.SubmissionNumber, D.FileName, D.NumberOfTuple, D.P_NP, D.SubmissionID
+        #         FROM PARSING_DATA D, USER U, TASK T, ORIGINAL_DATA_TYPE O
+        #         WHERE T.TaskID = %s AND T.TaskID = O.TaskID
+        #             AND O.OriginalTypeID = D.OriginalTypeID AND D.SubmitterID = U.MainID"""
 
+        sql3 = """SELECT U.MainID, U.Name, O.OriginSchema, D.SubmissionDate,
+                        D.SubmissionNumber, D.FileName, D.NumberOfTuple, D.P_NP, D.SubmissionID
+                    FROM PARSING_DATA D LEFT JOIN USER U ON D.SubmitterID = U.MainID, TASK T, ORIGINAL_DATA_TYPE O
+                    WHERE T.TaskID = %s AND T.TaskID = O.TaskID AND O.OriginalTypeID = D.OriginalTypeID"""
         list_arg = [infoID]
 
         for info in selectDetail(dbconn, sql1, list_arg):
@@ -221,8 +225,14 @@ def TaskInfoView(request, infoID):
         tuple_pass = 0
         info_dict["Statistics"] = {"Files": []}
         for info in selectDetail(dbconn, sql3, list_arg):
-            sub_dict = {"UserID": info[0][3:], "UserName": info[1], "OriginSchema": info[2], "SubmissionDate": info[3],
+            if info[0] == None:
+                sub_dict = {"UserID": sys.maxsize, "UserName": "탈퇴한 회원", "OriginSchema": info[2], "SubmissionDate": info[3],
                             "SubmissionNumber": info[4], "FileName": info[5], "P_NP": info[7], "SubmissionID": info[8]}
+            else:
+                sub_dict = {"UserID": info[0][3:], "UserName": info[1], "OriginSchema": info[2],"SubmissionDate": info[3],
+                            "SubmissionNumber": info[4], "FileName": info[5], "P_NP": info[7], "SubmissionID": info[8]}
+                
+            
             sub_dict["SubmissionTime"] = sub_dict["SubmissionDate"].strftime('%H:%M:%S')
             sub_dict["SubmissionDate"] = sub_dict["SubmissionDate"].strftime('%Y-%m-%d')
             info_dict["Statistics"]["Files"].append(sub_dict)
@@ -237,11 +247,10 @@ def TaskInfoView(request, infoID):
 
         return JsonResponse(info_dict, safe=False)
 
-    # except Exception as e:
-    #     print(e)
-    #     return JsonResponse([], safe=False)
-    # finally:
-    #     dbconn.close()
+    except Exception as e:
+        return JsonResponse([], safe=False)
+    finally:
+        dbconn.close()
 
 
 def TypeAddView(request, infoID):
