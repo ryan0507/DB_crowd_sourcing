@@ -132,12 +132,15 @@ function Home_signInUp() {
         }).then((r) => {
             console.log(r);
             console.log(r.data);
+            window.location.href="/"
         }).catch((err) => {
+            alert("에러가 발생했습니다.")
             console.log(err.response.data);
             console.log(err.response.status);
-            console.log(err.response.headers); } );
+            console.log(err.response.headers);
+            window.location.href="/"} );
 
-            window.location.href="/"
+
         }
         else if(isnull){
             alert("정보를 모두 입력해주세요.");

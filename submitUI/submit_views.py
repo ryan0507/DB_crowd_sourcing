@@ -526,7 +526,7 @@ def CalCulateScore_ReturnRefinedDF(data1, TaskID, MainID):
         data2 = tmp[~dup][len(t1):]
         Info["SelfDupRow"] += dup.sum()
 
-        Info["NullPercent"] = data2.isnull().values.mean()
+        Info["NullPercent"] = data2.isnan().values.mean()
         Info["RestRow"] = len(data2)
 
 
