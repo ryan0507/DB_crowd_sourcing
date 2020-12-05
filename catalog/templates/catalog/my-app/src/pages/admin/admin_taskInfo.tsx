@@ -174,7 +174,7 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
     const [toggleData, setToggleData] = useState<boolean>(true);
     const handleToggleData = () => {
         if(!toggleData){
-            axios.post(`http://127.0.0.1:8000/adminUI/${props.match.params.task_id}/create`, {
+            axios.post(`http://127.0.0.1:8000/adminUI/${props.match.params.task_id}/create/`, {
                 TaskID : info.TaskID,
                 Name : info.Name,
                 SubmissionPeriod : info.SubmissionPeriod,

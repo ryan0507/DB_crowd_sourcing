@@ -27,7 +27,6 @@ def selectDetail(dbconn, query, thisID, buffered=True):
 
 def merge(dbconn, query, values, buffered=True):
     try:
-        print("values: ", values)
         cursor = dbconn.cursor(buffered=buffered);
         cursor.execute(query, values);
     except Exception as e:
@@ -41,7 +40,6 @@ def AdminMainView(request):
         result_lst = []
         for row in select(dbconn, "SELECT T.TaskID, T.Name, T.Description FROM TASK T"):
             tmp_dict = {"TaskID": row[0], "Name": row[1], "Description": row[2], "Count": 0}
-
 
         # for row in select(dbconn, "SELECT T.TaskID, T.Name, T.Description, COUNT(*) FROM TASK AS T, PARTICIPATE_TASK AS P
         #                            WHERE P.Pass='W' AND T.TaskID = P.TaskID GROUP BY T.TaskID"):
@@ -167,7 +165,7 @@ def TaskInfoView(request, infoID):
 
         info_lst = []
 
-        sql1 = """SELECT TaskID, Name, SubmissionPeriod, Description, TaskThreshold, TaskSchema
+        sql1 = """SELECT TaskID, Name, SubmissionPeriod, Description, TaskThreshold, TaskSchema, TableName
                         FROM TASK WHERE TaskID = %s"""
 
         sql2 = """SELECT U.MainID, U.Name, P.Pass
@@ -184,6 +182,7 @@ def TaskInfoView(request, infoID):
 
         for info in selectDetail(dbconn, sql1, list_arg):
             ta_tmp = info[5].split("%")
+            tableName = info[6]
             info_dict = {"TaskID": info[0], "Name": info[1], "SubmissionPeriod": info[2], "Description": info[3],
                          "Threshold": info[4], "Task_Schema": [{"Big": ta_tmp[2 * i], "small": ta_tmp[2 * i + 1]}
                                                                for i in range(len(ta_tmp) // 2)], "OriginalData": []}
@@ -211,9 +210,11 @@ def TaskInfoView(request, infoID):
                 average = score / file_num
 
             if info[2] == "W":
-                info_dict["Request"].append({"UserID": info[0][3:], "UserName": info[1], "Average": average})
+                info_dict["Request"].append({"UserID": info[0][3:], "UserName": info[1],
+                                             "Average": average, "Pass": info[2]})
             else:
-                info_dict["Participant"].append({"UserID": info[0][3:], "UserName": info[1], "Average": average})
+                info_dict["Participant"].append({"UserID": info[0][3:], "UserName": info[1],
+                                                 "Average": average, "Pass": info[2]})
 
         file_total = 0
         file_pass = 0
@@ -242,6 +243,56 @@ def TaskInfoView(request, infoID):
         dbconn.close()
 
 
+def TypeAddView(request, infoID):
+    try:
+        dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
+
+        body_unicode = request.body.decode('utf-8')
+        data = json.loads(body_unicode)
+
+        list_arg = [infoID]
+        for row in selectDetail(dbconn, "SELECT TableName FROM TASK WHERE TaskID = %s", list_arg):
+            tableName = row[0]
+
+        oSchema = data["OriginalData"][len(data["OriginalData"]) - 1]["Schema"]
+        for j in range(len(oSchema)):
+            if j == 0:
+                mapping = oSchema[j]["Big"] + "%" + oSchema[j]["small"]
+            else:
+                mapping = mapping + "%" + oSchema[j]["Big"] + "%" + oSchema[j]["small"]
+
+        data_tuple = (infoID, data["OriginalData"][j]["Name"], mapping)
+        merge(dbconn, """INSERT INTO ORIGINAL_DATA_TYPE(TaskID, OriginSchema, Mapping) 
+                            VALUES (%s, %s, %s)""", data_tuple)
+        dbconn.commit()
+
+        sub = mapping.split("%")
+        table = data["Task_Schema"]
+        typeName = tableName + "_" + data["OriginalData"][j]["Name"]
+        sql = "CREATE TABLE " + typeName + "(TableID INT AUTO_INCREMENT PRIMARY KEY"
+        for i in range(len(sub) // 2):
+            for k in range(len(table)):
+                if sub[2 * i + 1] == table[k]["Big"]:
+                    sub[2 * i] = table[k]["Big"]
+                    if table[k]["small"] == "string":
+                        sub[2 * i + 1] = "VARCHAR(40)"
+                    elif table[k]["small"] == "float":
+                        sub[2 * i + 1] = "FLOAT(6,4)"
+                    elif table[k]["small"] == "integer":
+                        sub[2 * i + 1] = "INT"
+                    elif table[k]["small"] == "boolean":
+                        sub[2 * i + 1] = "BOOLEAN"
+            sql = sql + "," + sub[2 * i] + " " + sub[2 * i + 1]
+        sql += ");"
+        select(dbconn, sql)
+        dbconn.commit();
+        return JsonResponse([], safe=False)
+    except Exception as e:
+        return JsonResponse([], safe=False)
+    finally:
+        dbconn.close()
+
+
 def FileDetailView(request, infoID, fileID):
     try:
         dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
@@ -264,60 +315,6 @@ def FileDetailView(request, infoID, fileID):
         return JsonResponse(file_dict, safe=False)
 
     except Exception as e:
-        return JsonResponse([], safe=False)
-    finally:
-        dbconn.close()
-
-
-def DataTypeAddView(request, infoID):
-    try:
-        dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
-
-        value_lst = []
-        if len(request.body) != 0:
-            body_unicode = request.body.decode('utf-8')
-            data = json.loads(body_unicode)
-            SchemaName = data[len(data) - 1]["Name"]
-            mapping = ""
-            for data in len(data[len(data) - 1]["Schema"]):
-                if data != 0:
-                    mapping = mapping + "%" + data["Up"]
-                else:
-                    mapping += data["Up"]
-                mapping = mapping + "%" + data["Down"]
-            val_tuple = (infoID, SchemaName, mapping)
-            merge(dbconn, "INSERT INTO Origianl_Data_Type(TaskID, OriginSchema, Mapping) VALUES (%d %s %s)", val_tuple)
-            value_lst.append(val_tuple)
-            dbconn.commit();
-            return JsonResponse(value_lst, safe=False)
-        else:
-            return JsonResponse([], safe=False)
-
-    except Exception as e:
-        dbconn.rollback();
-        return JsonResponse([], safe=False)
-    finally:
-        dbconn.close()
-
-
-def TableSchemaAddView(request, infoID):
-    try:
-        dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
-
-        value_lst = []
-        if len(request.body) != 0:
-            body_unicode = request.body.decode('utf-8')
-            data = json.loads(body_unicode)
-            val_tuple = (str(infoID), data["TaskSchema"])
-            merge(dbconn, "UPDATE TASK SET TaskSchema = %s WHERE TaskID = %s", val_tuple)
-            value_lst.append(val_tuple)
-            dbconn.commit();
-            return JsonResponse(value_lst, safe=False)
-        else:
-            return JsonResponse([], safe=False)
-
-    except Exception as e:
-        dbconn.rollback();
         return JsonResponse([], safe=False)
     finally:
         dbconn.close()
