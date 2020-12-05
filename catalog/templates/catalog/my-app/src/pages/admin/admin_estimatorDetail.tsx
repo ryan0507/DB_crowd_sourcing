@@ -146,7 +146,7 @@ export default function Admin_presenterDetail(props : RouteComponentProps<{as_ID
                                            return (
                                               <TableCell key={column.id} align='center'
                                                   style={{fontSize: '14px', fontWeight: 'normal', color:'black' }}>
-                                                    <Link to ="/admin/filedetail">
+                                                    <Link to ="/admin/filedetail/">
                                                         {column.format && typeof value === 'number' ? column.format(value) : value}
                                                     </Link>
                                               </TableCell>
