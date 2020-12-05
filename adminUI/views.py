@@ -102,7 +102,9 @@ def TaskAddView(request):
             dbconn.commit()
 
             tmp = tableSchema.split("%")
-            sql = "CREATE TABLE " + data["TableName"] + "(TableID INT AUTO_INCREMENT PRIMARY KEY"
+            tablename = data["TableName"] + "_W"
+            sql1 = "CREATE TABLE " + data["TableName"] + "(TableID INT AUTO_INCREMENT PRIMARY KEY"
+            sql2 = "CREATE TABLE " + tablename + "(TableID INT AUTO_INCREMENT PRIMARY KEY"
             for i in range(len(tmp) // 2):
                 if tmp[2 * i + 1] == "string":
                     tmp[2 * i + 1] = "VARCHAR(40)"
@@ -112,9 +114,12 @@ def TaskAddView(request):
                     tmp[2 * i + 1] = "INT"
                 elif tmp[2 * i + 1] == "boolean":
                     tmp[2 * i + 1] = "BOOLEAN"
-                sql = sql + "," + tmp[2 * i] + " " + tmp[2 * i + 1]
-            sql += ");"
-            select(dbconn, sql)
+                sql1 = sql1 + "," + tmp[2 * i] + " " + tmp[2 * i + 1]
+                sql2 = sql2 + "," + tmp[2 * i] + " " + tmp[2 * i + 1]
+            sql1 += ");"
+            sql2 += ");"
+            select(dbconn, sql1)
+            select(dbconn, sql2)
             dbconn.commit();
 
             list_arg = [data["Name"]]
@@ -133,18 +138,6 @@ def TaskAddView(request):
                 merge(dbconn, """INSERT INTO ORIGINAL_DATA_TYPE(TaskID, OriginSchema, Mapping) 
                                     VALUES (%s, %s, %s)""", data_tuple)
                 dbconn.commit()
-
-                sub = mapping.split("%")
-                typeName = data["TableName"] + "_" + data["OriginData"][j]["name"]
-                sql = "CREATE TABLE " + typeName + "(TableID INT AUTO_INCREMENT PRIMARY KEY"
-                for i in range(len(sub) // 2):
-                    for k in range(len(tmp) // 2):
-                        if sub[2 * i + 1] == tmp[2 * k]:
-                            sub[2 * i + 1] = tmp[2 * k + 1]
-                    sql = sql + "," + sub[2 * i] + " " + sub[2 * i + 1]
-                sql += ");"
-                select(dbconn, sql)
-                dbconn.commit();
 
             value_lst = ["solved"]
             return JsonResponse(value_lst, safe=False)
@@ -182,7 +175,6 @@ def TaskInfoView(request, infoID):
 
         for info in selectDetail(dbconn, sql1, list_arg):
             ta_tmp = info[5].split("%")
-            tableName = info[6]
             info_dict = {"TaskID": info[0], "Name": info[1], "SubmissionPeriod": info[2], "Description": info[3],
                          "Threshold": info[4], "Task_Schema": [{"Big": ta_tmp[2 * i], "small": ta_tmp[2 * i + 1]}
                                                                for i in range(len(ta_tmp) // 2)], "OriginalData": []}
@@ -265,27 +257,6 @@ def TypeAddView(request, infoID):
         merge(dbconn, """INSERT INTO ORIGINAL_DATA_TYPE(TaskID, OriginSchema, Mapping) 
                             VALUES (%s, %s, %s)""", data_tuple)
         dbconn.commit()
-
-        sub = mapping.split("%")
-        table = data["Task_Schema"]
-        typeName = tableName + "_" + data["OriginalData"][j]["Name"]
-        sql = "CREATE TABLE " + typeName + "(TableID INT AUTO_INCREMENT PRIMARY KEY"
-        for i in range(len(sub) // 2):
-            for k in range(len(table)):
-                if sub[2 * i + 1] == table[k]["Big"]:
-                    sub[2 * i] = table[k]["Big"]
-                    if table[k]["small"] == "string":
-                        sub[2 * i + 1] = "VARCHAR(40)"
-                    elif table[k]["small"] == "float":
-                        sub[2 * i + 1] = "FLOAT(6,4)"
-                    elif table[k]["small"] == "integer":
-                        sub[2 * i + 1] = "INT"
-                    elif table[k]["small"] == "boolean":
-                        sub[2 * i + 1] = "BOOLEAN"
-            sql = sql + "," + sub[2 * i] + " " + sub[2 * i + 1]
-        sql += ");"
-        select(dbconn, sql)
-        dbconn.commit();
 
         return JsonResponse([], safe=False)
 
