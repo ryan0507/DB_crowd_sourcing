@@ -325,11 +325,11 @@ def FileDetailView(request, infoID, fileID):
         data_dict = {"Columns": [], "Submissions": []}
         for j in range(len(column_lst)):
             data_dict["Columns"].append(''.join(column_lst[j]))
-        sub_dict = {}
+        sub_lst = []
         for data in selectDetail(dbconn, sql2, list_arg2):
             for i in range(len(column_lst)):
-                sub_dict[''.join(column_lst[i])] = str(data[i])
-            data_dict["Submissions"].append(sub_dict)
+                sub_lst.append(str(data[i]))
+            data_dict["Submissions"].append(sub_lst)
 
         return JsonResponse(data_dict, safe=False)
 
