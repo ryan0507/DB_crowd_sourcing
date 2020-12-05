@@ -179,8 +179,8 @@ def TaskInfoView(request, infoID):
         #         WHERE T.TaskID = %s AND T.TaskID = O.TaskID
         #             AND O.OriginalTypeID = D.OriginalTypeID AND D.SubmitterID = U.MainID"""
 
-        sql3 = """SELECT U.MainID, U.Name, O.OriginSchema, D.SubmissionDate,
-                        D.SubmissionNumber, D.FileName, D.NumberOfTuple, D.P_NP, D.SubmissionID
+        sql3 = """SELECT U.MainID, U.Name, O.OriginSchema, D.SubmissionDate, D.SubmissionNumber, D.FileName, 
+                        D.NumberOfTuple, D.P_NP, D.SubmissionID, D.QualAssessment, D.QuanAssessment
                     FROM PARSING_DATA D LEFT JOIN USER U ON D.SubmitterID = U.MainID, TASK T, ORIGINAL_DATA_TYPE O
                     WHERE T.TaskID = %s AND T.TaskID = O.TaskID AND O.OriginalTypeID = D.OriginalTypeID"""
         list_arg = [infoID]
@@ -227,14 +227,17 @@ def TaskInfoView(request, infoID):
         for info in selectDetail(dbconn, sql3, list_arg):
             if info[0] == None:
                 sub_dict = {"UserID": sys.maxsize, "UserName": "탈퇴한 회원", "OriginSchema": info[2], "SubmissionDate": info[3],
-                            "SubmissionNumber": info[4], "FileName": info[5], "P_NP": info[7], "SubmissionID": info[8]}
+                            "SubmissionNumber": info[4], "FileName": info[5], "P_NP": info[7], "SubmissionID": info[8],
+                            "QualAssessment": info[9], "QuanAssessment": info[10]}
             else:
                 sub_dict = {"UserID": info[0][3:], "UserName": info[1], "OriginSchema": info[2],"SubmissionDate": info[3],
-                            "SubmissionNumber": info[4], "FileName": info[5], "P_NP": info[7], "SubmissionID": info[8]}
-                
-            
+                            "SubmissionNumber": info[4], "FileName": info[5], "P_NP": info[7], "SubmissionID": info[8],
+                            "QualAssessment": info[9], "QuanAssessment": info[10]}
+
             sub_dict["SubmissionTime"] = sub_dict["SubmissionDate"].strftime('%H:%M:%S')
             sub_dict["SubmissionDate"] = sub_dict["SubmissionDate"].strftime('%Y-%m-%d')
+            sub_dict["QualAssessment"] = int(sub_dict["QualAssessment"])
+            sub_dict["QuanAssessment"] = round(sub_dict["QuanAssessment"], 2)
             info_dict["Statistics"]["Files"].append(sub_dict)
             file_total += 1
             if sub_dict["P_NP"] == "P":
@@ -344,8 +347,8 @@ def FileDetailView(request, infoID, fileID):
 
         return JsonResponse(data_dict, safe=False)
 
-    #except Exception as e:
-    #    return JsonResponse([], safe=False)
+    except Exception as e:
+        return JsonResponse([], safe=False)
     finally:
         dbconn.close()
 
@@ -398,10 +401,11 @@ def UserListView(request):
 def PresenterDetailView(request, su_ID):
     try:
         dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
-        sql = """SELECT A.ID, T.Name, P.SubmissionDate, P.FileName, P.QualAssessment, P.P_NP, P.QuanAssessment 
-                        FROM PARSING_DATA P, TASK T, ORIGINAL_DATA_TYPE O, USER A
-                        WHERE O.OriginalTypeID = P.OriginalTypeID AND T.TaskID = O.TaskID 
-                        AND A.MainID = P.SubmitterID AND P.SubmitterID = %s"""
+        sql = """SELECT A.ID, T.Name, P.SubmissionNumber, P.SubmissionDate, O.OriginSchema, 
+                        P.FileName, P.QualAssessment, P.QuanAssessment, P.P_NP 
+                    FROM PARSING_DATA P, TASK T, ORIGINAL_DATA_TYPE O, USER A
+                    WHERE O.OriginalTypeID = P.OriginalTypeID AND T.TaskID = O.TaskID 
+                    AND A.MainID = P.SubmitterID AND P.SubmitterID = %s"""
 
         su_ID = "su " + str(su_ID)
         list_arg = [su_ID]
@@ -413,11 +417,13 @@ def PresenterDetailView(request, su_ID):
         for row in selectDetail(dbconn, sql, list_arg):
             pre_dict["ID"] = row[0]
             taskName = row[1]
-            score += ((row[4] + row[6]) / 2)
-            file_dict = {"SubmissionDate": row[2], "FileName": row[3], "QualAssessment": row[4], "P_NP": row[5]}
+            score += ((row[6] + row[7]) / 2)
+            file_dict = {"SubmissionNum": row[2], "SubmissionDate": row[3], "OriginSchema": row[4], "FileName": row[5],
+                         "QualAssessment": row[6], "QuanAssessment": row[7], "P_NP": row[6]}
             file_dict["SubmissionTime"] = file_dict["SubmissionDate"].strftime('%H:%M:%S')
             file_dict["SubmissionDate"] = file_dict["SubmissionDate"].strftime('%Y-%m-%d')
             file_dict["QualAssessment"] = int(file_dict["QualAssessment"])
+            file_dict["QuanAssessment"] = round(file_dict["QuanAssessment"], 2)
             if taskName not in tasks_dict.keys():
                 tasks_dict = {taskName: count}
                 task_dict = {"TaskName": taskName}
@@ -443,7 +449,7 @@ def EstimatorDetailView(request, as_ID):
     try:
         dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
 
-        sql = """SELECT A.ID, T.Name, S.Name, P.FileName, P.QualAssessment, P.P_NP
+        sql = """SELECT A.ID, T.Name, S.Name, O.OriginSchema, P.FileName, P.QualAssessment, P.P_NP
                             FROM PARSING_DATA P, TASK T, ORIGINAL_DATA_TYPE O, USER A, USER S
                             WHERE O.OriginalTypeID = P.OriginalTypeID AND O.TaskID = T.TaskID 
                             AND P.AssessorID = A.MainID AND P.SubmitterID = S.MainID AND P.AssessorID = %s"""
@@ -457,8 +463,8 @@ def EstimatorDetailView(request, as_ID):
         est_lst = []
         for row in selectDetail(dbconn, sql, list_arg):
             as_ID = row[0]
-            file_dict = {"TaskName": row[1], "SubmitterName": row[2], "Filename": row[3],
-                         "QualAssessment": row[4], "P_NP": row[5]}
+            file_dict = {"TaskName": row[1], "SubmitterName": row[2], "OriginSchema": row[3], "Filename": row[4],
+                         "QualAssessment": row[5], "P_NP": row[6]}
             file_dict["QualAssessment"] = int(file_dict["QualAssessment"])
             est_lst.append(file_dict)
             total_num += 1
