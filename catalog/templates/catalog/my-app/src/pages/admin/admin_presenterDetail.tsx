@@ -26,15 +26,18 @@ interface task{
     Pass : number,
 }
 interface file{
+    SubmissionNum : string,
     SubmissionDate : string,
+    OriginSchema : string,
     FileName : string,
     QualAssessment : string,
+    QuanAssessment : string,
     P_NP : string,
     SubmissionTime : string,
 }
 
 interface Column {
-  id:  'SubmissionDate'| 'SubmissionTime' | 'FileName' | 'QualAssessment' | 'P_NP';
+  id: 'SubmissionNum' | 'SubmissionDate'| 'OriginSchema' | 'FileName' | 'QualAssessment' | 'QuanAssessment' | 'P_NP';
   label: string;
   minWidth?: number;
   align?: 'center';
@@ -43,14 +46,16 @@ interface Column {
 }
 
 const columns: Column[] = [
+    {id : "OriginSchema", label: '원본 데이터 타입'},
+    {id : "SubmissionNum", label : '회차'},
   { id: 'SubmissionDate', label: '제출일', minWidth: 80 },
-    {id: 'SubmissionTime', label : '제출 시간'},
   {
     id: 'FileName',
     label: '제출\u00a0파일명',
     minWidth: 140,
   },
-    {id : 'QualAssessment', label: '평가 점수'},
+    {id : 'QualAssessment', label: '정성 점수'},
+    {id : 'QuanAssessment', label: '정량 점수'},
   {
     id: 'P_NP',
     label: 'Pass\u00a0여부',

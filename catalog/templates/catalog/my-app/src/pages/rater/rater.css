@@ -45,7 +45,7 @@
 
 /*admin_taskInfo*/
 .task_howToPass, .originDataType {
-    margin-top: 20px;
+    padding-top: 20px;
     clear: both;
 }
 .originDataType .wrapper_title{
