@@ -451,7 +451,7 @@ def postFile(request):
         key = next(select(dbconn,"SELECT LAST_INSERT_ID()"))[0]
         data["SubmissionID"] = key
         merge_bulk(dbconn,"INSERT INTO {} VALUES (%s, {})".format(TableName + "_W(" + ",".join(list(data.columns)) + ")", insert_type[:-1])
-                   ,[tuple(i) for i in data.values])
+                   ,[tuple(i) for i in data.where(pd.notnull(data), None).values])
 
         info = {"TotalColumn" : str(score["TotalColumn"]), "NullRow" : str(score["NullRow"]),
          "SelfDupRow" : str(score["SelfDupRow"]), "OtherDupRow" : str(score["OtherDupRow"]),
