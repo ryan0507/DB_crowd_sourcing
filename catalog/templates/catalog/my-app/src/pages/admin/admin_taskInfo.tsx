@@ -58,6 +58,7 @@ interface statistic{
     Files : file[],
     Total : number,
     Pass : number,
+    Tuple : number,
 }
 
 interface file{
@@ -147,7 +148,7 @@ const defaultTempValue: tempValue ={
 
 
 export default function Admin_taskInfo(props : RouteComponentProps<{task_id : string}>,){
-    const [info, setInfo] = useState<taskInfo>({TaskID : '', Name: '', SubmissionPeriod: 0, Description: '', Threshold: '', OriginalData: [], Task_Schema : [], Participant: [], Request: [], Statistics: {Files: [],  Total : 0, Pass: 0,}});
+    const [info, setInfo] = useState<taskInfo>({TaskID : '', Name: '', SubmissionPeriod: 0, Description: '', Threshold: '', OriginalData: [], Task_Schema : [], Participant: [], Request: [], Statistics: {Files: [],  Total : 0, Pass: 0, Tuple: 0,}});
     const getApi = async() =>{
         await axios.get(`http://127.0.0.1:8000/adminUI/${props.match.params.task_id}/`).then((r)=>{
             let temp: taskInfo = r.data;
@@ -546,7 +547,7 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
                    <div className={"lightgray_wrapper"}>
                        <div className={"submitFiles"}>제출된 파일 수 : {info.Statistics.Total}개</div>
                        <div className={"passFiles"}>Pass된 파일 수 : {info.Statistics.Pass}개</div>
-                       <div className={"passTuples"}>Pass된 튜플 수 : 000개</div>
+                       <div className={"passTuples"}>Pass된 튜플 수 : {info.Statistics.Tuple}개</div>
                        <Paper className={classes.root}>
                           <TableContainer className={classes.container}>
                             <Table stickyHeader aria-label="sticky table">
@@ -573,7 +574,7 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
                                            return (
                                               <TableCell key={column.id} align='center'
                                                   style={{fontSize: '14px', fontWeight: 'normal', color:'black' }}>
-                                                    <Link to ="/admin/filedetail">
+                                                    <Link to ={`/admin/filedetail/`}>
                                                         {column.format && typeof value === 'number' ? column.format(value) : value}
                                                     </Link>
                                               </TableCell>
