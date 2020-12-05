@@ -11,6 +11,13 @@ DB_ROOT = "root"
 DB_PASSWD = "1246team!"
 DB_DATABASE = "DB_test"
 
+def execute(dbconn, query, bufferd=True):
+    try:
+        cursor = dbconn.cursor(buffered=bufferd);
+        cursor.execute(query);
+    except Exception as e:
+        dbconn.rollback();
+        raise e;
 
 def select(dbconn, query, bufferd=True):
     cursor = dbconn.cursor(buffered=bufferd);
@@ -41,9 +48,9 @@ def AdminMainView(request):
         for row in select(dbconn, "SELECT T.TaskID, T.Name, T.Description FROM TASK T"):
             tmp_dict = {"TaskID": row[0], "Name": row[1], "Description": row[2], "Count": 0}
 
-        # for row in select(dbconn, "SELECT T.TaskID, T.Name, T.Description, COUNT(*) FROM TASK AS T, PARTICIPATE_TASK AS P
-        #                            WHERE P.Pass='W' AND T.TaskID = P.TaskID GROUP BY T.TaskID"):
-        #    tmp_dict = {"TaskID": row[0], "Name": row[1], "Description": row[2], "Count": row[3]}
+            # for row in select(dbconn, "SELECT T.TaskID, T.Name, T.Description, COUNT(*) FROM TASK AS T, PARTICIPATE_TASK AS P
+            #                            WHERE P.Pass='W' AND T.TaskID = P.TaskID GROUP BY T.TaskID"):
+            #    tmp_dict = {"TaskID": row[0], "Name": row[1], "Description": row[2], "Count": row[3]}
 
             for row2 in select(dbconn, "SELECT TaskID, COUNT(*) FROM PARTICIPATE_TASK WHERE Pass = 'W' GROUP BY TaskID"):
                 if row[0] == row2[0]:
@@ -99,28 +106,38 @@ def TaskAddView(request):
                          data["SubmissionPeriod"], data["TableName"], tableSchema)
             merge(dbconn, """INSERT INTO TASK(Name, Description, TaskThreshold, SubmissionPeriod, TableName, TaskSchema) 
                                         VALUES (%s, %s, %s, %s, %s, %s)""", val_tuple)
-            dbconn.commit()
 
             tmp = tableSchema.split("%")
             tablename = data["TableName"] + "_W"
+<<<<<<< Updated upstream
             sql1 = "CREATE TABLE " + data["TableName"] + "(TableID INT AUTO_INCREMENT PRIMARY KEY, SubmissionID INT"
             sql2 = "CREATE TABLE " + tablename + "(TableID INT AUTO_INCREMENT PRIMARY KEY"
+=======
+
+
+            sql1 = "CREATE TABLE " + data["TableName"] + "(SubmissionID INT"
+            sql2 = "CREATE TABLE " + tablename + "(SubmissionID INT"
+            pk1 = ",PRIMARY KEY("
+            pk2 = ",PRIMARY KEY(SubmissionID"
+>>>>>>> Stashed changes
             for i in range(len(tmp) // 2):
                 if tmp[2 * i + 1] == "string":
-                    tmp[2 * i + 1] = "VARCHAR(40)"
+                    tmp[2 * i + 1] = "VARCHAR(50)"
                 elif tmp[2 * i + 1] == "float":
-                    tmp[2 * i + 1] = "FLOAT(6,4)"
+                    tmp[2 * i + 1] = "FLOAT"
                 elif tmp[2 * i + 1] == "integer":
                     tmp[2 * i + 1] = "INT"
                 elif tmp[2 * i + 1] == "boolean":
-                    tmp[2 * i + 1] = "BOOLEAN"
+                    tmp[2 * i + 1] = "INT"
                 sql1 = sql1 + "," + tmp[2 * i] + " " + tmp[2 * i + 1]
                 sql2 = sql2 + "," + tmp[2 * i] + " " + tmp[2 * i + 1]
-            sql1 += ");"
-            sql2 += ");"
-            select(dbconn, sql1)
-            select(dbconn, sql2)
-            dbconn.commit();
+                pk1 = pk1 + "," + tmp[2 * i]
+                pk2 = pk2 + "," + tmp[2 * i]
+            sql1 += (pk1 + "));")
+            sql2 += (pk2 + "));")
+            execute(dbconn, sql1)
+            execute(dbconn, sql2)
+
 
             list_arg = [data["Name"]]
             for row in selectDetail(dbconn, "SELECT TaskID FROM TASK WHERE Name = %s", list_arg):
@@ -145,7 +162,6 @@ def TaskAddView(request):
             return JsonResponse({}, safe=False)
 
     except Exception as e:
-        return JsonResponse({}, safe=False)
         dbconn.rollback();
         return JsonResponse({}, safe=False)
     finally:
@@ -257,6 +273,7 @@ def TypeAddView(request, infoID):
         return JsonResponse([], safe=False)
 
     except Exception as e:
+        dbconn.rollback()
         return JsonResponse([], safe=False)
     finally:
         dbconn.close()
@@ -275,19 +292,19 @@ def UserUpdateView(request, infoID):
                 tuple_arg = (userID, str(infoID))
                 sql = "UPDATE PARTICIPATE_TASK SET PASS = 'P' WHERE SubmitterID = %s AND TaskID = %s"
                 merge(dbconn, sql, tuple_arg)
-                dbconn.commit()
+
         for i in range(len(data["Request"])):
             if data["Request"][i]["Pass"] == "N":
                 userID = "su " + data["Request"][i]["UserID"]
                 tuple_arg = (userID, str(infoID))
                 sql = "DELETE FROM PARTICIPATE_TASK WHERE SubmitterID = %s AND TaskID = %s"
                 merge(dbconn, sql, tuple_arg)
-                dbconn.commit()
 
+        dbconn.commit()
         return JsonResponse([], safe=False)
 
     except Exception as e:
-        print(e)
+        dbconn.rollback()
         return JsonResponse([], safe=False)
     finally:
         dbconn.close()
