@@ -394,39 +394,44 @@ def PresenterDetailView(request, su_ID):
         count = 0
         score = 0
         pre_dict = {"Tasks": [], "ID": "", "score": 0}
-        tasks_dict = {}
 
         for row in selectDetail(dbconn, sql, list_arg):
             pre_dict["ID"] = row[1]
 
-            sql2 = """SELECT T.Name, P.SubmissionNumber, P.SubmissionDate, O.OriginSchema,
-                            P.FileName, P.QualAssessment, P.QuanAssessment, P.P_NP
-                      FROM PARSING_DATA P, TASK T, ORIGINAL_DATA_TYPE O
-                      WHERE O.OriginalTypeID=  P.OriginalTypeID AND T.TaskID = O.TaskID AND P.SubmitterID = %s"""
+        sql3 = """SELECT T.Name, T.TaskID FROM TASK T, PARTICIPATE_TASK P 
+                    WHERE P.TaskID = T.TaskID AND P.Pass = 'P' AND P.SubmitterID = %s"""
 
-            for row2 in selectDetail(dbconn, sql2, list_arg):
-                taskName = row2[0]
-                score += ((row2[5] + row2[6]) / 2)
-                file_dict = {"SubmissionNum": row2[1], "SubmissionDate": row2[2], "OriginSchema": row2[3], "FileName": row2[4],
-                             "QualAssessment": row2[5], "QuanAssessment": row2[6], "P_NP": row2[7]}
+        for row3 in selectDetail(dbconn, sql3, list_arg):
+            taskName = row3[0]
+            taskID = row3[1]
+            score = 0
+            task_dict = {"TaskName": taskName, "Files": [], "Total": 0, "Pass": 0}
+            pre_dict["Tasks"].append(task_dict)
+
+            sql2 = """SELECT P.SubmissionNumber, P.SubmissionDate, O.OriginSchema,
+                            P.FileName, P.QualAssessment, P.QuanAssessment, P.P_NP
+                        FROM PARSING_DATA P, ORIGINAL_DATA_TYPE O
+                        WHERE O.OriginalTypeID = P.OriginalTypeID AND O.TaskID = %s AND P.SubmitterID = %s"""
+
+            list_arg2 = (taskID, su_ID)
+            for row2 in selectDetail(dbconn, sql2, list_arg2):
+                score += ((row2[4] + row2[5]) / 2)
+                file_dict = {"SubmissionNum": row2[0], "SubmissionDate": row2[1], "OriginSchema": row2[2], "FileName": row2[3],
+                                "QualAssessment": row2[4], "QuanAssessment": row2[5], "P_NP": row2[6]}
                 file_dict["SubmissionTime"] = file_dict["SubmissionDate"].strftime('%H:%M:%S')
                 file_dict["SubmissionDate"] = file_dict["SubmissionDate"].strftime('%Y-%m-%d')
                 file_dict["QualAssessment"] = int(file_dict["QualAssessment"])
                 file_dict["QuanAssessment"] = round(file_dict["QuanAssessment"], 2)
-                if taskName not in tasks_dict.keys():
-                    tasks_dict = {taskName: count}
-                    task_dict = {"TaskName": taskName}
-                    task_dict["Files"] = [file_dict]
-                    task_dict["Total"] = 1
-                    task_dict["Pass"] = 0
-                    pre_dict["Tasks"].append(task_dict)
-                else:
-                    pre_dict["Tasks"][tasks_dict[taskName]]["Total"] += 1
-                    pre_dict["Tasks"][tasks_dict[taskName]]["Files"].append(file_dict)
-                if file_dict["P_NP"] == "P": pre_dict["Tasks"][tasks_dict[taskName]]["Pass"] += 1
-                count += 1
-            if count != 0:
-                pre_dict["score"] = round(score / count, 2)
+                if file_dict["P_NP"] == "P": task_dict["Pass"] += 1
+
+                for j in range(len(pre_dict["Tasks"])):
+                    if pre_dict["Tasks"][j]["TaskName"] == taskName:
+                        pre_dict["Tasks"][j]["Files"].append(file_dict)
+                task_dict["Total"] += 1
+
+        count += 1
+        if count != 0:
+            pre_dict["score"] = round(score / count, 2)
 
         return JsonResponse(pre_dict, safe=False)
 
@@ -455,6 +460,7 @@ def EstimatorDetailView(request, as_ID):
         est_lst = []
         for row in selectDetail(dbconn, sql, list_arg):
             as_ID = row[0]
+            print("here")
             file_dict = {"TaskName": row[1], "SubmitterName": "탈퇴", "OriginSchema": row[2], "Filename": row[3],
                          "QualAssessment": row[4], "P_NP": row[5]}
             file_dict["QualAssessment"] = int(file_dict["QualAssessment"])
