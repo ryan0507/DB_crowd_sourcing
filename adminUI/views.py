@@ -126,8 +126,8 @@ def TaskAddView(request):
                 sql2 = sql2 + "," + tmp[2 * i] + " " + tmp[2 * i + 1]
                 pk1 = pk1 + tmp[2 * i] + ","
                 pk2 = pk2 + tmp[2 * i] + ","
-            sql1 += (pk1[:-1] + "));")
-            sql2 += (pk2[:-1] + "));")
+            sql1 += (pk1[:-1] + "),FOREIGN KEY (SubmissionID) REFERENCES PARSING_DATA(SubmissionID));")
+            sql2 += (pk2[:-1] + "),FOREIGN KEY (SubmissionID) REFERENCES PARSING_DATA(SubmissionID));")
             execute(dbconn, sql1)
             execute(dbconn, sql2)
 

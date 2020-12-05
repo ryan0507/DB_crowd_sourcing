@@ -40,6 +40,8 @@ execute("DELETE FROM PARSING_DATA")
 execute("DELETE FROM PARTICIPATE_TASK")
 execute("DELETE FROM Rest_Rev")
 execute("DELETE FROM Float_pop")
+execute("DELETE FROM Rest_Rev_W")
+execute("DELETE FROM Float_pop_W")
 execute("ALTER TABLE TASK AUTO_INCREMENT = 1")
 execute("ALTER TABLE ORIGINAL_DATA_TYPE AUTO_INCREMENT = 1")
 execute("ALTER TABLE PARSING_DATA AUTO_INCREMENT = 1")
@@ -82,25 +84,27 @@ if (True):
             ('su 3', '2', 'W')]
   merge_bulk("INSERT INTO PARTICIPATE_TASK(SubmitterID, TaskID, Pass) VALUES (%s, %s, %s)",values)
 
-  # execute("""
-  #   CREATE TABLE Rest_Rev(
-  #   SubmissionID INT,
-  #   Name         VARCHAR(50),
-  #   Rev          FLOAT,
-  #   Pop          INT,
-  #   Pas           INT check (Pas = 0 or Pas = 1),
-  #   PRIMARY KEY(Name, Rev, Pop, Pas)
-  #   );""")
-  #
-  # execute("""
-  #     CREATE TABLE Rest_Rev_W(
-  #     SubmissionID INT,
-  #     Name         VARCHAR(50),
-  #     Rev          FLOAT,
-  #     Pop          INT,
-  #     Pas           INT check (Pas = 0 or Pas = 1),
-  #     PRIMARY KEY(SubmissionID, Name, Rev, Pop, Pas)
-  #     );""")
+  execute("""
+    CREATE TABLE Rest_Rev(
+    SubmissionID INT,
+    Name         VARCHAR(50),
+    Rev          FLOAT,
+    Pop          INT,
+    Pas           INT check (Pas = 0 or Pas = 1),
+    PRIMARY KEY(Name, Rev, Pop, Pas),
+    FOREIGN KEY (SubmissionID) REFERENCES PARSING_DATA(SubmissionID)
+    );""")
+
+  execute("""
+      CREATE TABLE Rest_Rev_W(
+      SubmissionID INT,
+      Name         VARCHAR(50),
+      Rev          FLOAT,
+      Pop          INT,
+      Pas           INT check (Pas = 0 or Pas = 1),
+      PRIMARY KEY(SubmissionID, Name, Rev, Pop, Pas),
+      FOREIGN KEY (SubmissionID) REFERENCES PARSING_DATA(SubmissionID)
+      );""")
 
   values = [("1", "새마을 식당", "50.27", "10", "1"),
             ("1", "한신포차", "200", "10", "0")]
@@ -110,25 +114,25 @@ if (True):
   merge_bulk("INSERT INTO Rest_Rev_W VALUES (%s, %s, %s, %s, %s)", values)
 
 
-  # execute("""
-  #   CREATE TABLE Float_pop(
-  #   SubmissionID INT,
-  #   Loc          VARCHAR(50),
-  #   Tem          FLOAT,
-  #   Fpop         INT,
-  #   Lpop           INT,
-  #   PRIMARY KEY(Loc, Tem, Fpop, Lpop)
-  #   );""")
-  #
-  # execute("""
-  #   CREATE TABLE Float_pop_W(
-  #   SubmissionID INT,
-  #   Loc          VARCHAR(50),
-  #   Tem          FLOAT,
-  #   Fpop         INT,
-  #   Lpop           INT,
-  #   PRIMARY KEY(SubmissionID, Loc, Tem, Fpop, Lpop)
-  #   );""")
+  execute("""
+    CREATE TABLE Float_pop(
+    SubmissionID INT,
+    Loc          VARCHAR(50),
+    Tem          FLOAT,
+    Fpop         INT,
+    Lpop           INT,
+    PRIMARY KEY(Loc, Tem, Fpop, Lpop)
+    );""")
+
+  execute("""
+    CREATE TABLE Float_pop_W(
+    SubmissionID INT,
+    Loc          VARCHAR(50),
+    Tem          FLOAT,
+    Fpop         INT,
+    Lpop           INT,
+    PRIMARY KEY(SubmissionID, Loc, Tem, Fpop, Lpop)
+    );""")
   values = [("4", "강남", "18", "10", "30"),
             ("4", "강서", "28", "20", "50")]
   merge_bulk("INSERT INTO Float_pop VALUES (%s, %s, %s, %s, %s)", values)
