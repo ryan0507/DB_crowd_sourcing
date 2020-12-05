@@ -160,11 +160,11 @@ export default function Submit_submitFile(props : RouteComponentProps<{task_id :
                       className="right_side_small">뒤로가기</Link>
                 <div className="formContent">
                     <div className={"TaskSchema"}>
-                        <div className={"TaskSchema"}>
-                            <div className={"TaskName"}>
-                                <div className={"wrapper_title"}>제출 회차</div>
-                                <div className={"lightgray_wrapper"}>{st.subtime}회</div>
-                            </div>
+                        <div className={"TaskName"}>
+                            <div className={"wrapper_title"}>제출 회차</div>
+                            <div className={"lightgray_wrapper"}>{st.subtime}회</div>
+                        </div>
+                        <div className={"dataTableSchema"}>
                             <div className={"wrapper_title"}>태스크 데이터 테이블 스키마</div>
                             <ul className={"value_list"}>
                                 {task.schema.map((item) => {
@@ -180,25 +180,26 @@ export default function Submit_submitFile(props : RouteComponentProps<{task_id :
 
                         <div className={"originDataType"}>
                             <div className={"wrapper_title"}>원본 데이터 타입</div>
-                            {task.original_schema.map((item) => {
-                                return (
-                                    <ul className={"datatype_list"}>
-                                        <span>[ {item.name} ] :</span>
-                                        <li>
-                                            <ul className={"value_list"}>
-                                                {item.schema.map((item2) => {
-                                                    return (
-                                                        <li>
-                                                            <div className={"decidedName"}>{item2.Big}</div>
-                                                            <div className={"originName"}>{item2.small}</div>
-                                                        </li>
-                                                    )
-                                                })}
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                )
-                            })}
+                                <ul className={"datatype_list"}>
+                                    {task.original_schema.map((item) => {
+                                        return (
+                                            <li className={"dataVertical"}>
+                                                <div className={"datatypeID"}>[ {item.name} ] :</div>
+
+                                                    {item.schema.map((item2) => {
+                                                        return (
+                                                            <ul className={"value_list"}>
+                                                                <li>
+                                                                    <div className={"decidedName"}>{item2.Big}</div>
+                                                                    <div className={"originName"}>{item2.small}</div>
+                                                                </li>
+                                                            </ul>
+                                                        )
+                                                    })}
+                                            </li>
+                                        )
+                                    })}
+                                </ul>
                         </div>
                         <div className={"minUpload"}>
                             <div className={"wrapper_title"}>원본 데이터 타입 선택</div>
@@ -224,12 +225,13 @@ export default function Submit_submitFile(props : RouteComponentProps<{task_id :
                         <div className={"dataTable_name"}>
                             <div className={"wrapper_title"}>데이터 수집날짜(시작일, 종료일)</div>
                             <input type="date" className="select__birth" onChange={signUpstartDate} value={startDate} ></input>
+                            <div className={"wave"}>~</div>
                             <input type="date" className="select__birth" onChange={signUpendDate} value={endDate} ></input>
                         </div>
-                        <div className={"dataTableSchema"}>
-                            <div className={"wrapper_title"}>제출 파일</div>
+                        <div className={"fileSubmit"}>
+                            <div className={"wrapper_title"}>제출 파일 선택</div>
                             <form>
-                                <input  type="file" id = "csvfile" accept='.csv' onChange = {signFile}/>
+                                <input className={"custom-file-input"}  type="file" id = "csvfile" accept='.csv'  onChange = {signFile}/>
                             </form>
                         </div>
                         <div className={"TaskParticipate"}>
