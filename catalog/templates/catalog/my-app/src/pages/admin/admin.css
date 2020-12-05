@@ -170,6 +170,18 @@
     color: #56baed;
     font-weight: 500;
 }
+/*file detail*/
+.fileDetail .downloadCSV{
+    transform: translate(0px, 0px);
+}
+.fileDetail .downloadCSV button{
+    background-color: white;
+    border: 0px;
+    border-radius: 2px;
+    padding : 5px 10px;
+    color : #6EB9E8;
+    font-weight: 800;
+}
 
 
 /*alter Password*/

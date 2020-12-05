@@ -46,7 +46,7 @@ const columns: Column[] = [
     id: 'fileName',
     label: '평가\u00a0파일명',
   },
-    {id: 'presenterScore', label: '제출자\u00a0점수'},
+    {id: 'presenterScore', label: '평가한\u00a0점수'},
   {
     id: 'pNp',
     label: 'Pass\u00a0여부',

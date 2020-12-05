@@ -17,6 +17,7 @@ axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
 
 interface fileDetail{
+    Filename : string,
     Columns : string[],
     Submissions : _submission[],
 }
@@ -36,7 +37,7 @@ const useStyles = makeStyles({
 });
 
 export default function Admin_fileDetail(props : RouteComponentProps<{task_id : string, submission_id : string}>,){
-    const [detail, setDetail] = useState<fileDetail>({Columns: [], Submissions: []});
+    const [detail, setDetail] = useState<fileDetail>({Filename: '', Columns: [], Submissions: []});
     const getApi = async() =>{
         await axios.get(`http://127.0.0.1:8000/adminUI/${props.match.params.task_id}/${props.match.params.submission_id}`).then((r)=>{
             let temp: fileDetail = r.data;
@@ -59,10 +60,34 @@ export default function Admin_fileDetail(props : RouteComponentProps<{task_id : 
         setRowsPerPage(+event.target.value);
         setPage(0);
     };
+    const downloadfile = (i:string, name:string) => {
+        axios({method: 'GET', url: `http://127.0.0.1:8000/adminUI/downloadcsv/${i}`,
+        responseType: 'blob' }).then((r)=>{
+            if (r.status === 200) {
+                const url = window.URL.createObjectURL(new Blob([r.data], { type: r.headers['content-type'] }));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download',  name + ".csv");
+                document.body.appendChild(link);
+                link.click();
+                alert('파일이 다운로드 됩니다.')
+            }else if (r.status === 201) {
+                alert('NonPass를 받은 파일은 삭제됩니다')
+            }else {
+                alert('오류가 발생했습니다.')
+            }
+        })
+    }
    return(
+       <div className={"fileDetail"}>
        <div className="wrapper">
-           <div className="Title">file name</div>
+           <div className="Title">{detail.Filename}</div>
            <Link to = "/admin/taskinfo" className="right_side_small">뒤로가기</Link>
+           <div className={"downloadCSV"}>
+               <button onClick = {(i) => downloadfile(props.match.params.task_id,detail.Filename)}>
+                    해당 파일 다운
+                </button>
+           </div>
            <Paper className={classes.root}>
               <TableContainer className={classes.container}>
                 <Table stickyHeader aria-label="sticky table">
@@ -102,7 +127,7 @@ export default function Admin_fileDetail(props : RouteComponentProps<{task_id : 
                 onChangeRowsPerPage={handleChangeRowsPerPage}
               />
             </Paper>
-
+        </div>
        </div>
    );
 }
