@@ -64,29 +64,6 @@ def AdminMainView(request):
         dbconn.close();
 
 
-def TableSchemaAddView(request, infoID):
-    try:
-        dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
-
-        value_lst = []
-        if len(request.body) != 0:
-            body_unicode = request.body.decode('utf-8')
-            data = json.loads(body_unicode)
-            val_tuple = (str(infoID), data["TaskSchema"])
-            merge(dbconn, "UPDATE TASK SET TaskSchema = %s WHERE TaskID = %s", val_tuple)
-            value_lst.append(val_tuple)
-            dbconn.commit();
-            return JsonResponse(value_lst, safe=False)
-        else:
-            return JsonResponse([], safe=False)
-
-    except Exception as e:
-        dbconn.rollback();
-        return JsonResponse([], safe=False)
-    finally:
-        dbconn.close()
-
-
 def TaskAddView(request):
     try:
         dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
@@ -111,8 +88,8 @@ def TaskAddView(request):
 
             sql1 = "CREATE TABLE " + data["TableName"] + "(SubmissionID INT"
             sql2 = "CREATE TABLE " + tablename + "(SubmissionID INT"
-            pk1 = ",PRIMARY KEY("
-            pk2 = ",PRIMARY KEY(SubmissionID,"
+            # pk1 = ",PRIMARY KEY("
+            # pk2 = ",PRIMARY KEY(SubmissionID,"
             for i in range(len(tmp) // 2):
                 if tmp[2 * i + 1] == "string":
                     tmp[2 * i + 1] = "VARCHAR(50)"
@@ -124,10 +101,13 @@ def TaskAddView(request):
                     tmp[2 * i + 1] = "INT"
                 sql1 = sql1 + "," + tmp[2 * i] + " " + tmp[2 * i + 1]
                 sql2 = sql2 + "," + tmp[2 * i] + " " + tmp[2 * i + 1]
-                pk1 = pk1 + tmp[2 * i] + ","
-                pk2 = pk2 + tmp[2 * i] + ","
-            sql1 += (pk1[:-1] + "),FOREIGN KEY (SubmissionID) REFERENCES PARSING_DATA(SubmissionID));")
-            sql2 += (pk2[:-1] + "),FOREIGN KEY (SubmissionID) REFERENCES PARSING_DATA(SubmissionID));")
+                # pk1 = pk1 + tmp[2 * i] + ","
+                # pk2 = pk2 + tmp[2 * i] + ","
+            # sql1 += (pk1[:-1] + "),FOREIGN KEY (SubmissionID) REFERENCES PARSING_DATA(SubmissionID));")
+            # sql2 += (pk2[:-1] + "),FOREIGN KEY (SubmissionID) REFERENCES PARSING_DATA(SubmissionID));")
+            sql1 += ",FOREIGN KEY (SubmissionID) REFERENCES PARSING_DATA(SubmissionID));"
+            sql2 += ",FOREIGN KEY (SubmissionID) REFERENCES PARSING_DATA(SubmissionID));"
+
             execute(dbconn, sql1)
             execute(dbconn, sql2)
 
@@ -419,7 +399,7 @@ def PresenterDetailView(request, su_ID):
             taskName = row[1]
             score += ((row[6] + row[7]) / 2)
             file_dict = {"SubmissionNum": row[2], "SubmissionDate": row[3], "OriginSchema": row[4], "FileName": row[5],
-                         "QualAssessment": row[6], "QuanAssessment": row[7], "P_NP": row[6]}
+                         "QualAssessment": row[6], "QuanAssessment": row[7], "P_NP": row[8]}
             file_dict["SubmissionTime"] = file_dict["SubmissionDate"].strftime('%H:%M:%S')
             file_dict["SubmissionDate"] = file_dict["SubmissionDate"].strftime('%Y-%m-%d')
             file_dict["QualAssessment"] = int(file_dict["QualAssessment"])
@@ -449,10 +429,10 @@ def EstimatorDetailView(request, as_ID):
     try:
         dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
 
-        sql = """SELECT A.ID, T.Name, S.Name, O.OriginSchema, P.FileName, P.QualAssessment, P.P_NP
-                            FROM PARSING_DATA P, TASK T, ORIGINAL_DATA_TYPE O, USER A, USER S
-                            WHERE O.OriginalTypeID = P.OriginalTypeID AND O.TaskID = T.TaskID 
-                            AND P.AssessorID = A.MainID AND P.SubmitterID = S.MainID AND P.AssessorID = %s"""
+        sql = """SELECT A.ID, T.Name, O.OriginSchema, P.FileName, P.QualAssessment, P.P_NP, P.SubmissionID
+                    FROM PARSING_DATA P, TASK T, ORIGINAL_DATA_TYPE O, USER A
+                    WHERE O.OriginalTypeID = P.OriginalTypeID AND O.TaskID = T.TaskID
+                    AND P.AssessorID = A.MainID AND P.AssessorID = %s"""
 
         as_ID = "as " + str(as_ID)
         list_arg = [as_ID]
@@ -463,9 +443,13 @@ def EstimatorDetailView(request, as_ID):
         est_lst = []
         for row in selectDetail(dbconn, sql, list_arg):
             as_ID = row[0]
-            file_dict = {"TaskName": row[1], "SubmitterName": row[2], "OriginSchema": row[3], "Filename": row[4],
-                         "QualAssessment": row[5], "P_NP": row[6]}
+            file_dict = {"TaskName": row[1], "SubmitterName": "탈퇴", "OriginSchema": row[2], "Filename": row[3],
+                         "QualAssessment": row[4], "P_NP": row[5]}
             file_dict["QualAssessment"] = int(file_dict["QualAssessment"])
+            list_arg2 = [row[6]]
+            sql2 = "SELECT S.Name FROM USER S, PARSING_DATA P WHERE P.SubmitterID = S.MainID AND P.SubmissionID = %s"
+            for row2 in selectDetail(dbconn, sql2, list_arg2):
+                file_dict["SubmitterName"] = row2[0]
             est_lst.append(file_dict)
             total_num += 1
             if row[5] != 'W': check_num += 1
@@ -478,7 +462,10 @@ def EstimatorDetailView(request, as_ID):
         return JsonResponse(est_dict, safe=False)
 
     except Exception as e:
+        print(e)
         return JsonResponse([], safe=False)
+    finally:
+        dbconn.close()
 
 
 def alterPassword(request):
