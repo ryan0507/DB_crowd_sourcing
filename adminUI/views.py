@@ -8,7 +8,7 @@ from django.utils.encoding import smart_str
 # dbconn = mysql.connector.connect(host="34.64.198.135", user="root", passwd="111111", database="DB_test")
 DB_HOST = "34.64.198.135"
 DB_ROOT = "root"
-DB_PASSWD = "111111"
+DB_PASSWD = "1246team!"
 DB_DATABASE = "DB_test"
 
 
@@ -27,18 +27,30 @@ def selectDetail(dbconn, query, thisID, buffered=True):
 
 def merge(dbconn, query, values, buffered=True):
     try:
+        print("values: ", values)
         cursor = dbconn.cursor(buffered=buffered);
         cursor.execute(query, values);
     except Exception as e:
         dbconn.rollback();
         raise e;
 
+
 def AdminMainView(request):
     try:
         dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, password=DB_PASSWD, database=DB_DATABASE)
         result_lst = []
-        for row in select(dbconn, "SELECT T.TaskID, T.Name, T.Description, COUNT(*) FROM TASK AS T, PARTICIPATE_TASK AS P WHERE P.Pass='W' AND T.TaskID = P.TaskID GROUP BY T.TaskID"):
-            tmp_dict = {"TaskID": row[0], "Name": row[1], "Description": row[2], "Count": row[3]}
+        for row in select(dbconn, "SELECT T.TaskID, T.Name, T.Description FROM TASK T"):
+            tmp_dict = {"TaskID": row[0], "Name": row[1], "Description": row[2], "Count": 0}
+
+
+        # for row in select(dbconn, "SELECT T.TaskID, T.Name, T.Description, COUNT(*) FROM TASK AS T, PARTICIPATE_TASK AS P
+        #                            WHERE P.Pass='W' AND T.TaskID = P.TaskID GROUP BY T.TaskID"):
+        #    tmp_dict = {"TaskID": row[0], "Name": row[1], "Description": row[2], "Count": row[3]}
+
+            for row2 in select(dbconn, "SELECT TaskID, COUNT(*) FROM PARTICIPATE_TASK WHERE Pass = 'W' GROUP BY TaskID"):
+                if row[0] == row2[0]:
+                    tmp_dict["Count"] = row2[1]
+
             result_lst.append(tmp_dict)
         return JsonResponse(result_lst, safe=False)
     except Exception as e:
@@ -70,20 +82,29 @@ def TableSchemaAddView(request, infoID):
         dbconn.close()
 
 
-
 def TaskAddView(request):
+
     try:
         dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
-        value_lst = []
         if len(request.body) != 0:
             body_unicode = request.body.decode('utf-8')
             data = json.loads(body_unicode)
-            val_tuple = (data["Name"], data["Description"], data["TaskThreshold"],
-                         data["SubmissionPeriod"], data["TableName"], data["TableSchema"])
-            value_lst.append(val_tuple)
+            tSchema = data["TableSchema"]
 
-            tmp = data["TaskSchema"].split("%")
-            sql = "CREATE TABLE %s(TableID	INT	AUTO_INCREMENT PRIMARY KEY"
+            for i in range(len(tSchema)):
+                if i == 0:
+                    tableSchema = tSchema[i]["up"] + "%" + tSchema[i]["down"]
+                else:
+                    tableSchema = tableSchema + "%" + tSchema[i]["up"] + "%" + tSchema[i]["down"]
+
+            val_tuple = (data["Name"], data["Description"], data["TaskThreshold"],
+                         data["SubmissionPeriod"], data["TableName"], tableSchema)
+            merge(dbconn, """INSERT INTO TASK(Name, Description, TaskThreshold, SubmissionPeriod, TableName, TaskSchema) 
+                                        VALUES (%s, %s, %s, %s, %s, %s)""", val_tuple)
+            dbconn.commit()
+
+            tmp = tableSchema.split("%")
+            sql = "CREATE TABLE " + data["TableName"] + "(TableID INT AUTO_INCREMENT PRIMARY KEY"
             for i in range(len(tmp) // 2):
                 if tmp[2 * i + 1] == "string":
                     tmp[2 * i + 1] = "VARCHAR(40)"
@@ -93,19 +114,47 @@ def TaskAddView(request):
                     tmp[2 * i + 1] = "INT"
                 elif tmp[2 * i + 1] == "boolean":
                     tmp[2 * i + 1] = "BOOLEAN"
-                sql = sql + "," + " %s %s"
+                sql = sql + "," + tmp[2 * i] + " " + tmp[2 * i + 1]
             sql += ");"
-            tmp_tuple = (data["TableName"]) + tuple(tmp)
-
-            merge(dbconn, """INSERT INTO TASK(Name, Description, TaskThreshold, SubmissionPeriod, TableName, TaskSchema) 
-                VALUES (%s, %s, %s, %s, %s, %s)""", val_tuple)
-
-            merge(dbconn, sql, tmp_tuple)
+            select(dbconn, sql)
             dbconn.commit();
+
+            list_arg = [data["Name"]]
+            for row in selectDetail(dbconn, "SELECT TaskID FROM TASK WHERE Name = %s", list_arg):
+                taskID = str(row[0])
+
+            for j in range(len(data["OriginData"])):
+                oSchema = data["OriginData"][j]["schema"]
+                for i in range(len(oSchema)):
+                    if i == 0:
+                        mapping = oSchema[i]["up"] + "%" + oSchema[i]["down"]
+                    else:
+                        mapping = mapping + "%" + oSchema[i]["up"] + "%" + oSchema[i]["down"]
+
+                data_tuple = (taskID, data["OriginData"][j]["name"], mapping)
+                merge(dbconn, """INSERT INTO ORIGINAL_DATA_TYPE(TaskID, OriginSchema, Mapping) 
+                                    VALUES (%s, %s, %s)""", data_tuple)
+                dbconn.commit()
+
+                sub = mapping.split("%")
+                typeName = data["TableName"] + "_" + data["OriginData"][j]["name"]
+                sql = "CREATE TABLE " + typeName + "(TableID INT AUTO_INCREMENT PRIMARY KEY"
+                for i in range(len(sub) // 2):
+                    for k in range(len(tmp) // 2):
+                        if sub[2 * i + 1] == tmp[2 * k]:
+                            sub[2 * i + 1] = tmp[2 * k + 1]
+                    sql = sql + "," + sub[2 * i] + " " + sub[2 * i + 1]
+                sql += ");"
+                select(dbconn, sql)
+                dbconn.commit();
+
+            value_lst = ["solved"]
             return JsonResponse(value_lst, safe=False)
         else:
             return JsonResponse({}, safe=False)
+
     except Exception as e:
+        return JsonResponse({}, safe=False)
         dbconn.rollback();
         return JsonResponse({}, safe=False)
     finally:
@@ -142,8 +191,8 @@ def TaskInfoView(request, infoID):
             for schema in selectDetail(dbconn, sql, list_arg):
                 or_tmp = schema[1].split("%")
                 schema_dict = {"Name": schema[0],
-                               "Schema": [{"Big": or_tmp[2 * i],"small": or_tmp[2 * i + 1]}
-                                                    for i in range(len(or_tmp) // 2)]}
+                               "Schema": [{"Big": or_tmp[2 * i], "small": or_tmp[2 * i + 1]}
+                                          for i in range(len(or_tmp) // 2)]}
                 info_dict["OriginalData"].append(schema_dict)
 
         info_dict["Participant"] = []
@@ -156,8 +205,10 @@ def TaskInfoView(request, infoID):
             for user in selectDetail(dbconn, sql, user_id):
                 score += user[0]
                 file_num += 1
-            if file_num == 0: average = 0
-            else: average = score / file_num
+            if file_num == 0:
+                average = 0
+            else:
+                average = score / file_num
 
             if info[2] == "W":
                 info_dict["Request"].append({"UserID": info[0][3:], "UserName": info[1], "Average": average})
@@ -186,7 +237,7 @@ def TaskInfoView(request, infoID):
         return JsonResponse(info_dict, safe=False)
 
     except Exception as e:
-           return JsonResponse([], safe=False)
+        return JsonResponse([], safe=False)
     finally:
         dbconn.close()
 
@@ -206,7 +257,7 @@ def FileDetailView(request, infoID, fileID):
         for file in selectDetail(dbconn, sql, list_arg):
             tmp = file[5].split("%")
             file_dict = {"OriginalTypeID": file[0], "TaskID": file[1], "OriginSchema": file[2],
-                         "Schema": [{"Big": tmp[2 * i],"small": tmp[2 * i + 1]} for i in range(len(tmp) // 2)],
+                         "Schema": [{"Big": tmp[2 * i], "small": tmp[2 * i + 1]} for i in range(len(tmp) // 2)],
                          "Files": file[4]}
             file_lst.append(file_dict)
 
@@ -231,7 +282,8 @@ def DataTypeAddView(request, infoID):
             for data in len(data[len(data) - 1]["Schema"]):
                 if data != 0:
                     mapping = mapping + "%" + data["Up"]
-                else: mapping += data["Up"]
+                else:
+                    mapping += data["Up"]
                 mapping = mapping + "%" + data["Down"]
             val_tuple = (infoID, SchemaName, mapping)
             merge(dbconn, "INSERT INTO Origianl_Data_Type(TaskID, OriginSchema, Mapping) VALUES (%d %s %s)", val_tuple)
@@ -403,7 +455,7 @@ def alterPassword(request):
         body_unicode = request.body.decode('utf-8')
         data = json.loads(body_unicode)
 
-        val_tuple = (data["Password"],  data["MainID"])
+        val_tuple = (data["Password"], data["MainID"])
         merge(dbconn, """UPDATE USER SET Password = %s WHERE MainID = %s""", val_tuple)
         dbconn.commit()
         return JsonResponse({"state": "s", "message": "개인정보가 성공적으로 수정 되었습니다."})
@@ -413,13 +465,15 @@ def alterPassword(request):
     finally:
         dbconn.close()
 
+
 def download_csv_data(request, TaskID):
     try:
         dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
-        TableName, TaskSchema = next(select(dbconn, "SELECT TableName, TaskSchema FROM TASK WHERE TaskID = {}".format(TaskID)))
+        TableName, TaskSchema = next(
+            select(dbconn, "SELECT TableName, TaskSchema FROM TASK WHERE TaskID = {}".format(TaskID)))
 
         # response content type
-        response = HttpResponse(status=200,content_type='text/csv')
+        response = HttpResponse(status=200, content_type='text/csv')
         # decide the file name
         response['Content-Disposition'] = 'attachment; filename="{}.csv"'.format(TableName)
         writer = csv.writer(response, csv.excel)
@@ -428,6 +482,6 @@ def download_csv_data(request, TaskID):
         [writer.writerow(row[1:]) for row in data]
         return response
     except Exception as e:
-        return HttpResponse("오류가 발생했습니다.",status=202)
+        return HttpResponse("오류가 발생했습니다.", status=202)
     finally:
         dbconn.close();
