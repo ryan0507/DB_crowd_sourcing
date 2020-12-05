@@ -373,7 +373,7 @@ def getSubTime(request, infoID):
         dbconn.close();
 
 def postFile(request):
-    try:
+    # try:
         post_data = {i: j[0] for i, j in dict(request.POST).items()}
         post_data["OriginalID"] = post_data["OriginalID"].split(":")[0].replace("ID ", "")
         fileName = str(request.FILES["file"])
@@ -466,13 +466,12 @@ def postFile(request):
         request.session[id] = info
         dbconn.commit()
         return JsonResponse({"state": "200","message": str(id)})
-    except Exception as e:
-
-        dbconn.rollback()
-        return JsonResponse({"state": "203", "message": "오류가 발생했습니다."})
-
-    finally:
-        dbconn.close()
+    # except Exception as e:
+    #     dbconn.rollback()
+    #     return JsonResponse({"state": "203", "message": "오류가 발생했습니다."})
+    #
+    # finally:
+    #     dbconn.close()
 
 # 점수 계산 방법: 아래 점수의 평균(만약 남은 행의 개수가 2000개 미만이면 가중치를 (2000-행개수) 만큼 늘린다. )
 # 행개수 점수: max(10, 남은행개수 * 0.01)
@@ -526,7 +525,7 @@ def CalCulateScore_ReturnRefinedDF(data1, TaskID, MainID):
         data2 = tmp[~dup][len(t1):]
         Info["SelfDupRow"] += dup.sum()
 
-        Info["NullPercent"] = data2.isnan().values.mean()
+        Info["NullPercent"] = data2.isna().values.mean()
         Info["RestRow"] = len(data2)
 
 
@@ -545,7 +544,7 @@ def CalCulateScore_ReturnRefinedDF(data1, TaskID, MainID):
 
         return (Info, data2)
     except Exception as e:
-
+        print(e)
         Info = {"NullRow": -1, "SelfDupRow": -1, "OtherDupRow": -1, "NullPercent": -1, "TotalRow": -1, "RestRow": -1,
                 "TotalColumn": -1, "Score": -1}
         data2 = pd.DataFrame()
