@@ -205,6 +205,31 @@
 }
 
 /*task add*/
+.taskAdd .Description{
+    border: 2px solid #6EB9E8;
+    border-radius: 10px;
+    width: 700px;
+    margin: 20px auto;
+    padding: 20px;
+}
+.taskAdd .Description .descriptionTitle{
+    text-align: center;
+    font-size: 18px;
+    font-weight: 650;
+    text-decoration: underline #6EB9E8;
+    text-underline-position: under;
+}
+.taskAdd .Description .descriptionBody{
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 25px;
+    margin: 25px 50px 0px 50px ;
+}
+.taskAdd .Description .bodyTitle{
+    font-size: 16px;
+    font-weight: 550;
+    line-height: 30px;
+}
 .taskAdd input[type=text]::placeholder {
     font-size: 16px;
     text-align: left;
@@ -598,5 +623,11 @@
     color:#E86E77;
     font-size: 13px;
     font-weight: 780;
-    transform: translate(-503px, 83px);
+    transform: translate(240px,0px);
+}
+.notice1{
+    color:#E86E77;
+    font-size: 13px;
+    font-weight: 780;
+    transform: translate(175px,0px);
 }

@@ -118,7 +118,14 @@ function Admin_taskAdd(){
         setOpen(true);
     };
 
+    const handleTableNameChange = ( value: string) =>{
+        if(!value.includes(' ')){
+        setTask({...task, ["TableName"] : value});}
+    }
+
     const handleInputChange =<P extends keyof Task> (item : P, value: Task[P]) =>{
+        // if(item === "TableName" && value.includes(' ')){}
+        // let isBlank : boolean = (value.search(/\s/) != -1);
         setTask({...task, [item] : value});
     }
 
@@ -203,7 +210,11 @@ function Admin_taskAdd(){
       const [_tempValue, setTempValue] = useState(defaultTempValue);
       const onValueChange =<P extends keyof tempValue> (prop: P, value: tempValue[P]) =>
       {
-          setTempValue({..._tempValue, [prop]: value});
+          let special_pattern = /[`~!@#$%^&*|\\\'\";:\/?]/gi;
+          let korean_pattern = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
+          if(!special_pattern.test(value) && !korean_pattern) {
+              setTempValue({..._tempValue, [prop]: value});
+          }
       }
       const onTypeNameChange = (value : string) =>{
           setName(value);
@@ -425,6 +436,22 @@ function Admin_taskAdd(){
                       </FormControl>
                    </div>
                </div>
+               <div className={"Description"}>
+                   <div className={"descriptionTitle"}>데이터 테이블 및 원본 데이터 타입 생성 방법</div>
+                   <div className={"descriptionBody"}>
+                       <div className={"bodyTitle"}>[데이터 테이블 추가 방법] </div>
+                       1. 데이터 테이블의 이름 작성 <br/>
+                       2. '태스크 데이터 테이블 스키마 수정' 버튼 클릭 <br/>
+                       3. 추가하고 싶은 속성의 타입과 이름 지정하여 추가 <br/>
+                       4. 모든 속성을 추가했다면 우측 상단의 '태스크 데이터 테이블 스키마 저장' 버튼 클릭 <br/><br/>
+                       <div className={"bodyTitle"}>[원본 데이터 타입 추가 방법] </div>
+                       1. '원본 데이터 타입 추가' 버튼 클릭 <br/>
+                       2. 원본 데이터 타입의 이름 작성<br/>
+                       3. 알맞은 데이터 테이블의 속성 선택 후 속성의 이름 지정하여 추가 <br/>
+                       4. 모든 속성을 추가했다면 '원본 데이터타입 추가' 버튼 클릭 <br/>
+                       5. 원하는 원본 데이터 타입을 모두 추가했다면 우측 상단의 '원본 데이터 타입 저장' 버튼 클릭
+                   </div>
+               </div>
 
                <div className={"dataTable_name"}>
                    <div className={"wrapper_title"}>태스크 데이터 테이블 이름</div>
@@ -432,7 +459,8 @@ function Admin_taskAdd(){
                           className={"nameDataTable"}
                         placeholder="태스크 데이터 테이블의 이름을 작성해주세요."
                         inputProps={{ 'aria-label': '데이터 테이블 이름' }}
-                          onChange={e=> handleInputChange('TableName', e.target.value)}
+                          value={task.TableName}
+                          onChange={e=> handleTableNameChange(e.target.value)}
                           />
                </div>
 
@@ -534,6 +562,7 @@ function Admin_taskAdd(){
                                       onValueChange('name', e.target.value)
                                   }}
                                 />
+                                <div className={"notice1"}>*속성 이름에는 한글 및 특수문자를 사용할 수 없습니다.</div>
                               <form className="input" onClick={e => handleSubmit(e)}>
                                   <button className={"short"} type="submit">추가</button>
                               </form>

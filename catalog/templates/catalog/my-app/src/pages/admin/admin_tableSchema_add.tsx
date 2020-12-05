@@ -49,8 +49,12 @@ const Admin_tableSchema_add = ({onSchemaChange}:Props) => {
   const pushButton = <P extends keyof tempValue>(prop:P, x : any) => {setTempValue({..._tempValue, [prop] : x}); onSchemaChange(prop, x)}
   const [_tempValue, setTempValue] = useState(defaultTempValue);
   const onValueChange =<P extends keyof tempValue> (prop: P, value: tempValue[P]) => {
-      setTempValue({..._tempValue, [prop]: value});
-      onSchemaChange(prop, value)
+      let special_pattern = /[`~!@#$%^&*|\\\'\";:\/?]/gi;
+      let korean_pattern = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
+      if(!special_pattern.test(value) && !korean_pattern) {
+          setTempValue({..._tempValue, [prop]: value});
+          onSchemaChange(prop, value)
+      }
   }
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
@@ -98,7 +102,7 @@ const Admin_tableSchema_add = ({onSchemaChange}:Props) => {
                       </FormControl>
                    </div>
               </div>
-             <div className={"notice"}>*속성 이름에는 특수문자를 사용할 수 없습니다.</div>
+             <div className={"notice"}>*속성 이름에는 한글 및 특수문자를 사용할 수 없습니다.</div>
       </div>
   );
 }
