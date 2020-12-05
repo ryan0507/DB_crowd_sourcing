@@ -395,6 +395,7 @@ def postFile(request):
         col = data.columns
         insert_type = ""
         for i in schema.keys():
+            print(i)
             if i not in col:
                 return JsonResponse({"state": "202", "message": "제출한 파일이 원본 스키마와 맞지 않습니다."})
             if type[schema[i]] == "float":
@@ -405,9 +406,11 @@ def postFile(request):
                     return JsonResponse({"state": "202", "message": "제출한 파일이 스키마의 데이터 타입과 맞지 않습니다."})
             elif type[schema[i]] == "integer":
                 try:
+                    print(data[i])
                     data[i] = data[i].astype(int)
                     insert_type += "%s,"
-                except:
+                except Exception as e:
+                    print(e)
                     return JsonResponse({"state": "202", "message": "제출한 파일이 스키마의 데이터 타입과 맞지 않습니다."})
             elif type[schema[i]] == "boolean":
                 try:
@@ -567,11 +570,11 @@ def execute(dbconn, query, bufferd=True):
         dbconn.rollback();
         raise e;
 
-
-# dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
-# merge_bulk(dbconn,"INSERT INTO Rest_Rev VALUE (%s, %s, %s, %s, %s)",[(124,"1",1,1,1)])
-# merge_bulk(dbconn,"INSERT INTO Rest_Rev VALUE (%s, %s, %s, %s, %s)",[(125,"1",2,1,1)])
-# dbconn.commit()
+import numpy as np
+dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
+merge_bulk(dbconn,"INSERT INTO Rest_Rev VALUE (%s, %s, %s, %s, %s)",[(1,"1",None,1,1)])
+# merge_bulk(dbconn,"INSERT INTO Rest_Rev VALUE (%s, %s, %s, %s, %s)",[(1,"1",2,1,1.)])
+dbconn.commit()
 
 # execute(dbconn,"DELETE FROM Rest_Rev WHERE SubmissionID IN ('124','125')")
 

@@ -111,8 +111,8 @@ def TaskAddView(request):
 
             sql1 = "CREATE TABLE " + data["TableName"] + "(SubmissionID INT"
             sql2 = "CREATE TABLE " + tablename + "(SubmissionID INT"
-            pk1 = ",PRIMARY KEY("
-            pk2 = ",PRIMARY KEY(SubmissionID,"
+            # pk1 = ",PRIMARY KEY("
+            # pk2 = ",PRIMARY KEY(SubmissionID,"
             for i in range(len(tmp) // 2):
                 if tmp[2 * i + 1] == "string":
                     tmp[2 * i + 1] = "VARCHAR(50)"
@@ -124,10 +124,13 @@ def TaskAddView(request):
                     tmp[2 * i + 1] = "INT"
                 sql1 = sql1 + "," + tmp[2 * i] + " " + tmp[2 * i + 1]
                 sql2 = sql2 + "," + tmp[2 * i] + " " + tmp[2 * i + 1]
-                pk1 = pk1 + tmp[2 * i] + ","
-                pk2 = pk2 + tmp[2 * i] + ","
-            sql1 += (pk1[:-1] + "),FOREIGN KEY (SubmissionID) REFERENCES PARSING_DATA(SubmissionID));")
-            sql2 += (pk2[:-1] + "),FOREIGN KEY (SubmissionID) REFERENCES PARSING_DATA(SubmissionID));")
+                # pk1 = pk1 + tmp[2 * i] + ","
+                # pk2 = pk2 + tmp[2 * i] + ","
+            # sql1 += (pk1[:-1] + "),FOREIGN KEY (SubmissionID) REFERENCES PARSING_DATA(SubmissionID));")
+            # sql2 += (pk2[:-1] + "),FOREIGN KEY (SubmissionID) REFERENCES PARSING_DATA(SubmissionID));")
+            sql1 += ",FOREIGN KEY (SubmissionID) REFERENCES PARSING_DATA(SubmissionID));"
+            sql2 += ",FOREIGN KEY (SubmissionID) REFERENCES PARSING_DATA(SubmissionID));"
+
             execute(dbconn, sql1)
             execute(dbconn, sql2)
 

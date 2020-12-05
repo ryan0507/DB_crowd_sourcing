@@ -90,8 +90,7 @@ if (True):
     Name         VARCHAR(50),
     Rev          FLOAT,
     Pop          INT,
-    Pas           INT check (Pas = 0 or Pas = 1),
-    PRIMARY KEY(Name, Rev, Pop, Pas),
+    Pas           INT,
     FOREIGN KEY (SubmissionID) REFERENCES PARSING_DATA(SubmissionID)
     );""")
 
@@ -101,8 +100,7 @@ if (True):
       Name         VARCHAR(50),
       Rev          FLOAT,
       Pop          INT,
-      Pas           INT check (Pas = 0 or Pas = 1),
-      PRIMARY KEY(SubmissionID, Name, Rev, Pop, Pas),
+      Pas           INT,
       FOREIGN KEY (SubmissionID) REFERENCES PARSING_DATA(SubmissionID)
       );""")
 
@@ -121,7 +119,7 @@ if (True):
     Tem          FLOAT,
     Fpop         INT,
     Lpop           INT,
-    PRIMARY KEY(Loc, Tem, Fpop, Lpop)
+    FOREIGN KEY (SubmissionID) REFERENCES PARSING_DATA(SubmissionID)
     );""")
 
   execute("""
@@ -131,7 +129,7 @@ if (True):
     Tem          FLOAT,
     Fpop         INT,
     Lpop           INT,
-    PRIMARY KEY(SubmissionID, Loc, Tem, Fpop, Lpop)
+    FOREIGN KEY (SubmissionID) REFERENCES PARSING_DATA(SubmissionID)
     );""")
   values = [("4", "강남", "18", "10", "30"),
             ("4", "강서", "28", "20", "50")]
