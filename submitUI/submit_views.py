@@ -380,9 +380,12 @@ def postFile(request):
 
         if fileName[-3:] != "csv":
             return JsonResponse({"state": 202, "message": "csv파일만을 제출해야합니다."})
-        data = [i.decode('utf-8').strip().strip("\ufeff").split(",") for i in request.FILES['file']]
-        data = pd.DataFrame(data[1:],columns=data[0])
-        data = data.where(data != "")
+        try:
+            data = [i.decode('utf-8').strip().strip("\ufeff").split(",") for i in request.FILES['file']]
+            data = pd.DataFrame(data[1:],columns=data[0])
+            data = data.where(data != "")
+        except:
+            return JsonResponse({"state": 202, "message": "utf-8로 디코딩이 되지 않습니다."})
 
 
         dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
@@ -442,7 +445,7 @@ def postFile(request):
             raise Exception
 
         lst = list(select(dbconn, "SELECT MainID FROM USER WHERE MainID LIKE 'as %'"))
-
+        random.shuffle(lst)
         rater = random.sample(lst,1)[0][0]
 
         merge_bulk(dbconn,"""INSERT INTO PARSING_DATA(OriginalTypeID, SubmitterID, AssessorID, SubmissionNumber,
@@ -469,7 +472,6 @@ def postFile(request):
     except Exception as e:
         dbconn.rollback()
         return JsonResponse({"state": "203", "message": "오류가 발생했습니다."})
-
     finally:
         dbconn.close()
 
