@@ -374,18 +374,20 @@ def getSubTime(request, infoID):
 
 def postFile(request):
     try:
+        dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
         post_data = {i: j[0] for i, j in dict(request.POST).items()}
         post_data["OriginalID"] = post_data["OriginalID"].split(":")[0].replace("ID ", "")
         fileName = str(request.FILES["file"])
 
         if fileName[-3:] != "csv":
             return JsonResponse({"state": 202, "message": "csv파일만을 제출해야합니다."})
-        data = [i.decode('utf-8').strip().strip("\ufeff").split(",") for i in request.FILES['file']]
-        data = pd.DataFrame(data[1:],columns=data[0])
-        data = data.where(data != "")
+        try:
+            data = [i.decode('utf-8').strip().strip("\ufeff").split(",") for i in request.FILES['file']]
+            data = pd.DataFrame(data[1:],columns=data[0])
+            data = data.where(data != "")
+        except:
+            return JsonResponse({"state": 202, "message": "utf-8로 디코딩이 되지 않습니다."})
 
-
-        dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
         schema = next(select(dbconn,"SELECT Mapping FROM ORIGINAL_DATA_TYPE WHERE OriginalTypeID = {}".format(post_data["OriginalID"])))
         TableName, type = next(select(dbconn,"SELECT TableName, TaskSchema FROM TASK WHERE TaskID = {}".format(post_data["TaskID"])))
         schema = schema[0].split("%")
@@ -442,7 +444,7 @@ def postFile(request):
             raise Exception
 
         lst = list(select(dbconn, "SELECT MainID FROM USER WHERE MainID LIKE 'as %'"))
-
+        random.shuffle(lst)
         rater = random.sample(lst,1)[0][0]
 
         merge_bulk(dbconn,"""INSERT INTO PARSING_DATA(OriginalTypeID, SubmitterID, AssessorID, SubmissionNumber,
@@ -469,7 +471,6 @@ def postFile(request):
     except Exception as e:
         dbconn.rollback()
         return JsonResponse({"state": "203", "message": "오류가 발생했습니다."})
-
     finally:
         dbconn.close()
 
