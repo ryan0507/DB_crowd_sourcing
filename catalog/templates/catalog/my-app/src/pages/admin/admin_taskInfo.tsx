@@ -611,7 +611,7 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
                                                     </Link>
                                               </TableCell>
                                             );
-                                        }else if(column.id =="UserName"){
+                                        }else if(column.id =="UserName" && value!="탈퇴한 회원"){
                                           return (
                                               <TableCell key={column.id} align='center'
                                                   style={{fontSize: '14px', fontWeight: 'normal', color:'black' }}>
