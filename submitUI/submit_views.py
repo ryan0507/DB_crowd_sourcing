@@ -374,6 +374,7 @@ def getSubTime(request, infoID):
 
 def postFile(request):
     try:
+        dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
         post_data = {i: j[0] for i, j in dict(request.POST).items()}
         post_data["OriginalID"] = post_data["OriginalID"].split(":")[0].replace("ID ", "")
         fileName = str(request.FILES["file"])
@@ -387,8 +388,6 @@ def postFile(request):
         except:
             return JsonResponse({"state": 202, "message": "utf-8로 디코딩이 되지 않습니다."})
 
-
-        dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
         schema = next(select(dbconn,"SELECT Mapping FROM ORIGINAL_DATA_TYPE WHERE OriginalTypeID = {}".format(post_data["OriginalID"])))
         TableName, type = next(select(dbconn,"SELECT TableName, TaskSchema FROM TASK WHERE TaskID = {}".format(post_data["TaskID"])))
         schema = schema[0].split("%")
