@@ -292,6 +292,9 @@
     padding: 10px 20px;
     background-color: #F6F6F6;
 }
+.taskAdd .dataTableSchema_list li{
+    margin-top: 10px;
+}
 .formContent .dataTableSchema{
     margin-top: 25px;
 }
@@ -414,10 +417,9 @@
 
 .taskAdd .datatypeName input[type="text"],
 .taskInfo .datatypeName input[type="text"]{
-    margin-top: 0px;
     width : 380px;
     float: right;
-    transform: translate(170px, -14px);
+    transform: translate(10px, 0px);
 }
 .admin_datatype_add .datatypeInput{
     clear: both;
@@ -451,13 +453,11 @@
     padding : 10px 20px;
     font-size: 16px;
     font-weight: 650;
-    transform: translate(30px, -40px);
+    transform: translate(90px, -20px);
+
 }
 .taskAdd .admin_datatype_add .long{
-    width : 200px;
-    margin-top: 40px;
-    position: relative;
-    /*transform: translate(0px, -80px);*/
+    clear: both;
 }
 
 .admin_datatype_add .datatypeList li{
@@ -536,13 +536,22 @@
 }
 .datatypeList .decimalList{
     list-style: decimal;
-    transform: translate(30px, 0px);
+    /*transform: translate(30px, 0px);*/
     font-size: 18px;
     font-weight: 600;
     /*color:#707070;*/
 }
+
+.decimalDatatypeList {
+    margin-left: 90px;
+}
+
 .taskAdd form.input1{
+    width: 860px;
     height: 76px;
+}
+.taskInfo .datatypeList{
+    transform: translate(0px, -30px);
 }
 
 .datatypeList li{

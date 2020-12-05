@@ -173,6 +173,27 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
 
     const [toggleData, setToggleData] = useState<boolean>(true);
     const handleToggleData = () => {
+        if(!toggleData){
+            axios.post(`http://127.0.0.1:8000/adminUI/${props.match.params.task_id}/`, {
+                TaskID : info.TaskID,
+                Name : info.Name,
+                SubmissionPeriod : info.SubmissionPeriod,
+                Description: info.Description,
+                Threshold : info.Threshold,
+                Task_Schema : info.Task_Schema,
+                OriginalData : info.OriginalData,
+                Participant : info.Participant,
+                Request : info.Request,
+                Statistics : info.Statistics,
+            }).then((r) => {
+                console.log(r);
+                console.log(r.data);
+                console.log('hhhhhhhhhhhhhhhh');
+            }).catch((err) => {
+                 console.log(err.response.data);
+                 console.log(err.response.status);
+                 console.log(err.response.headers); } )
+        }
         setToggleData(!toggleData);
     }
     const [dataTypeList, setDataTypeList] = useState<TypeList[]>([{Name : "", Schema:[]},]);
@@ -196,10 +217,15 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
       const handleSubmit = (e:any) =>{
           e.preventDefault();
           let exist : boolean = false;
+          let isName : boolean = true;
+          let existName : boolean = false;
           _list.map((item)=>{
               if(item.small === _tempValue.type){exist = true;}
+              if(item.Big === _tempValue.name){existName = true;}
           })
-          if(!exist){
+
+          if(_tempValue.name === ''){isName= false;}
+          if(!exist && !existName && isName){
               let content : schema ={
                   id: count,
                   small: _tempValue.type,
@@ -209,12 +235,16 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
               let l : schema[] = Object.assign([], _list);
               l.push(content);
               setList(l);
-          }else(alert("이미 선택한 태스크 데이터 테이블 속성입니다."))
+          }else if(existName){
+              alert("이미 존재하는 원본 데이터 타입 속성 이름입니다.")
+          }else if(!isName){
+              alert("해당 원본 데이터 타입 속성의 이름을 지정해주세요.")
+          } else(alert("이미 선택한 태스크 데이터 테이블 속성입니다."))
 
       }
       const datatypeList = _list.map((item) => {
         return (
-          <div key={item.id}>
+          <div className={"decimalDatatypeList"} key={item.id}>
               <li>
                   <div className={"dataName"}>{item.Big}</div>
                   <div className={"dataType"}>{item.small}</div>
@@ -244,11 +274,13 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
     const handleTypeSubmit = (e:any) =>{
           e.preventDefault();
           let exist : boolean = false;
+          let isName: boolean = true;
           info.OriginalData.map((item)=>{
               if(item.Name === _name){
               exist = true;}
           })
-          if(!exist){
+          if(_name === ''){isName=false;}
+          if(!exist && isName){
           let content : TypeList ={
                   Name: _name,
                   Schema: _list,
@@ -259,8 +291,8 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
               setInfo({...info, ["OriginalData"] : l});
               setList([]);
               setCount(1);
-          }else(alert("이미 존재하는 원본 데이터 타입 이름입니다."))
-      }
+          }else if(exist){alert("이미 존재하는 원본 데이터 타입 이름입니다.")}else{alert("원본 데이 타입의 이름을 지정해주세요.")}
+    }
 
       // const [userNum, setUserNum] = useState<number>(0);
       // const [requestUserNum, setRequestUserNum] = useState<number>(0);
@@ -418,10 +450,9 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
                           </div>
                           <div className={"datatypeInput"}>
                                 <div className={"small_lightgray_wrapper"}>{_tempValue.type}</div>
-
                                 <InputBase
                                   className={"datatypeValueName"}
-                                  placeholder="해당 원본 데이터 타입 속성 이름을 작성해주세요"
+                                  placeholder="해당 원본 데이터 타입 속성 이름을 작성해주세요."
                                   inputProps={{ 'aria-label': '원본 데이터 타입' }}
                                   value={_tempValue.name}
                                   onChange={e=> {
@@ -432,11 +463,12 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
                                   <button className={"short"} type="submit">추가</button>
                               </form>
                           </div>
-                      <div className={"datatypeList"}><ul className={"decimalList"}>{datatypeList}</ul></div>
-                       <form className="input" onClick={e => handleTypeSubmit(e)}>
-                          <button className={"long"} type="submit">원본 데이터타입 추가</button>
-                      </form>
-
+                           <div className={"datatypeList"}><ul className={"decimalList"}>{datatypeList}</ul></div>
+                           {_list.length >= 1 ?(
+                               <form className="input1" onClick={e => handleTypeSubmit(e)}>
+                                  <button className={"long"} type="submit">원본 데이터타입 추가</button>
+                              </form>
+                           ):(<div></div>)}
                        </div>
                    )}
                </div>

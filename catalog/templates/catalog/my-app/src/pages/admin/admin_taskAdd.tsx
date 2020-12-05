@@ -136,23 +136,31 @@ function Admin_taskAdd(){
     }
 
     const handleTableSchemaTypeAdd = ( e: React.FormEvent<HTMLFormElement> ) => {
-        e.preventDefault();
-        let content : dataTable ={
-          id: valueCount,
-          valueName: _tempDataTable.name,
-          valueType: _tempDataTable.type,
-      };
-      setValueCount(valueCount + 1);
-      let l : dataTable[] = Object.assign([], valueList);
-      l.push(content);
+          e.preventDefault();
+          let exist : boolean = false;
+            valueList.map((item)=>{
+                if(item.valueName === _tempDataTable.name){exist = true;}
+            })
 
-      let temp : schema[] = Object.assign([], task.TableSchema);
-      temp.push({id : valueCount, up : _tempDataTable.name, down: _tempDataTable.type});
+          if(!exist) {
+              let content : dataTable ={
+                  id: valueCount,
+                  valueName: _tempDataTable.name,
+                  valueType: _tempDataTable.type,
+              };
+              setValueCount(valueCount + 1);
+              let l : dataTable[] = Object.assign([], valueList);
+              l.push(content);
 
-      console.log(temp);
-      setTask({...task, ["TableSchema"] : temp})
-      console.log(task);
-      setValueList(l);
+              let temp : schema[] = Object.assign([], task.TableSchema);
+              temp.push({id : valueCount, up : _tempDataTable.name, down: _tempDataTable.type});
+
+              console.log(temp);
+              setTask({...task, ["TableSchema"] : temp})
+              console.log(task);
+              setValueList(l);
+          }else{alert('이미 존재하는 데이터 테이블 스키마 속성 이름입니다.')}
+
     }
 
     const onSchemaChange = <P extends keyof tempDataTable> (prop: P, value: tempDataTable[P]) => {
@@ -190,12 +198,7 @@ function Admin_taskAdd(){
     const [_tempDataTable, setTempDataTable] = useState(defaultTempDataTable);
 
     //datatype add
-    const [dataTypeList, setDataTypeList] = useState<TypeList[]>([
-        {name : "기본 음식", types:[{id:0, originName:'음식점 이름',decidedName:'음식점 이름'},
-                {id:0, originName:'월 매출',decidedName:'월 매출'},
-                {id:0, originName:'월 고객 수',decidedName:'월 고객 수'},
-                {id:0, originName:'월 순이익',decidedName:'월 순이익'}]},
-        ]);
+    const [dataTypeList, setDataTypeList] = useState<TypeList[]>([]);
     const [_list, setList] = useState<Type[]>( []);
     const [_name, setName] = useState<string>("");
     const [typeCount, setTypeCount] = useState<number>(dataTypeList.length+1);
@@ -214,11 +217,15 @@ function Admin_taskAdd(){
       const handleSubmit = (e:any) =>{
           e.preventDefault();
           let exist : boolean = false;
+          let isName : boolean = true;
+          let existName : boolean = false;
             _list.map((item)=>{
                 if(item.originName === _tempValue.type){exist = true;}
+                if(item.decidedName === _tempValue.name){existName = true;}
             })
+          if(_tempValue.name === ''){isName= false;}
 
-          if(!exist) {
+          if(!exist && !existName && isName) {
               let content: Type = {
                   id: count,
                   originName: _tempValue.type,
@@ -228,11 +235,15 @@ function Admin_taskAdd(){
               let l: Type[] = Object.assign([], _list);
               l.push(content);
               setList(l);
-          }else(alert("이미 선택한 태스크 데이터 테이블 속성입니다."))
+          }else if(existName){
+              alert("이미 존재하는 원본 데이터 타입 속성 이름입니다.")
+          }else if(!isName){
+              alert("해당 원본 데이터 타입 속성의 이름을 지정해주세요.")
+          } else(alert("이미 선택한 태스크 데이터 테이블 속성입니다."))
       }
       const datatypeList = _list.map((item) => {
         return (
-          <div key={item.originName}>
+          <div className={"decimalDatatypeList"} key={item.originName}>
               <li>
                   <div className={"dataName"}>{item.decidedName}</div>
                   <div className={"dataType"}>{item.originName}</div>
@@ -272,13 +283,15 @@ function Admin_taskAdd(){
     const handleTypeSubmit = (e:any) => {
           e.preventDefault();
         let exist: boolean = false;
+        let isName: boolean = true;
         task.OriginData.map((item) => {
             if (item.name === _name) {
                 exist = true;
             }
         })
+        if(_name === ''){isName=false;}
 
-        if (!exist) {
+        if (!exist && isName) {
             let content: TypeList = {
                 name: _name,
                 types: _list,
@@ -309,7 +322,7 @@ function Admin_taskAdd(){
 
             setList([]);
             setCount(1);
-        }else(alert("이미 존재하는 원본 데이터 타입 이름입니다."))
+        }else if(exist){alert("이미 존재하는 원본 데이터 타입 이름입니다.")}else{alert("원본 데이 타입의 이름을 지정해주세요.")}
     }
 
     const handleSubmitDD = ( event : React.FormEvent<HTMLFormElement> ) =>{
@@ -326,10 +339,12 @@ function Admin_taskAdd(){
         console.log(r);
         console.log(r.data);
         console.log('hhhhhhhhhhhhhhhh');
+        window.location.href="/admin/main/";
       }).catch((err) => {
          console.log(err.response.data);
          console.log(err.response.status);
          console.log(err.response.headers); } )
+
         // const taskName = {event.target.name}
         // setTask({e.target.name.task_name, 0, '', '', '', ''}) ;
         // {_TaskID: {e.target.elements.task_name},
@@ -510,7 +525,7 @@ function Admin_taskAdd(){
                                 <div className={"small_lightgray_wrapper"}>{_tempValue.type}</div>
                                 <InputBase
                                   className={"datatypeValueName"}
-                                  placeholder="해당 원본 데이터 타입의 이름을 작성해주세요"
+                                  placeholder="해당 원본 데이터 타입 속성 이름을 작성해주세요."
                                   inputProps={{ 'aria-label': '원본 데이터 타입' }}
                                   value={_tempValue.name}
                                   onChange={e=> {
@@ -521,10 +536,12 @@ function Admin_taskAdd(){
                                   <button className={"short"} type="submit">추가</button>
                               </form>
                           </div>
-                      <div className={"datatypeList"}><ul className={"decimalList"}>{datatypeList}</ul></div>
-                       <form className="input1" onClick={e => handleTypeSubmit(e)}>
-                          <button className={"long"} type="submit">원본 데이터타입 추가</button>
-                      </form>
+                           <div className={"datatypeList"}><ul className={"decimalList"}>{datatypeList}</ul></div>
+                           {_list.length >= 1 ?(
+                               <form className="input1" onClick={e => handleTypeSubmit(e)}>
+                                  <button className={"long"} type="submit">원본 데이터타입 추가</button>
+                              </form>
+                           ):(<div></div>)}
 
                        </div>
                    )}
