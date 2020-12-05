@@ -79,30 +79,6 @@ interface Data {
     P_NP : string,
 }
 
-// function createData(  date: string, time: string,fileName: string, pNp: string): Data {
-//   return { date, time, fileName, pNp };
-// }
-// function createData(_file : file[]): file[] {
-//     let temp : file[] = [];
-//
-//     _file.map((item)=>{
-//
-//         let tempJoined : string[] = [];
-//         if(item.Task != []){
-//         item.Task?.map((joined)=>{
-//             if(joined != null) {tempJoined.push(joined+", ")}
-//             else {tempJoined.push('-')}
-//         })}
-//         temp.push({ID : item.ID, name: item.Name, birth: item.DateOfBirth, ages: item.age+"대", sex: item.Gender, role:item.role, joined: tempJoined, phoneNum: item.PhoneNumber,})
-//     })
-//   return temp;
-// }
-
-// const rows = [
-//   createData('20.11.01', '23 : 15 : 20', '음악은_즐거워.csv', 'Non-pass'),
-//   createData( '20.11.02', '23 : 15 : 30', '새마을식당_10월.csv', 'Pass'),
-// ];
-
 export default function Admin_presenterDetail(props : RouteComponentProps<{su_ID : string}>,){
     const [submitter, setSubmitter] = useState<submitter>({Tasks: [], ID : '', score: '',});
     const getApi = async() =>{
@@ -117,6 +93,8 @@ export default function Admin_presenterDetail(props : RouteComponentProps<{su_ID
     },[])
 
 
+    let isNull : boolean = false;
+    if(submitter.Tasks.length===0){isNull= true;}
 
     const classes = useStyles();
     const [page, setPage] = React.useState(0);
@@ -137,7 +115,11 @@ export default function Admin_presenterDetail(props : RouteComponentProps<{su_ID
            <div className="Title">{submitter.ID} ({submitter.score}점)</div>
            <Link to = "/admin/main" className="right_side_small">뒤로가기</Link>
            <div className="formContent">
-               {submitter.Tasks.map((item)=>{
+               {isNull ? (
+                   <div>아직 제출한 데이터가 없습니다.</div>
+               ) : (
+                   <div>
+                    {submitter.Tasks.map((item)=>{
                    let rows = item.Files;
                    return(
                      <div className={"taskStatistic"}>
@@ -209,8 +191,11 @@ export default function Admin_presenterDetail(props : RouteComponentProps<{su_ID
                               />
                             </Paper>
                        </div>
-                   </div> );
-               })}
+                     </div>   );
+                    })}
+                   </div>
+               )}
+
 
            </div>
        </div>

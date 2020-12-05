@@ -418,6 +418,12 @@
     background-color: #A7A7A7;
     box-shadow: none;
 }
+.submit_taskInfo2 .wordButton{
+    color: #56baed;
+    font-weight: 500;
+    border: none;
+    background-color: white;
+}
 
 /*submit_submitFile*/
 .submit_submitFile .formContent .dataTableSchema {
