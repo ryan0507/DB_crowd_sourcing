@@ -307,8 +307,13 @@ def UserUpdateView(request, infoID):
                 userID = "su " + data["Participant"][i]["UserID"]
                 tuple_arg = (userID, str(infoID))
                 sql = "UPDATE PARTICIPATE_TASK SET PASS = 'P' WHERE SubmitterID = %s AND TaskID = %s"
-                merge(dbconn, sql, tuple_arg)
-                dbconn.commit()
+        for i in range(len(data["Request"])):
+            if data["Request"][i]["Pass"] == "N":
+                userID = "su " + data["Request"][i]["UserID"]
+                tuple_arg = (userID, str(infoID))
+                sql = "DELETE FROM PARTICIPATE_TASK WHERE SubmitterID = %s AND TaskID = %s"
+            merge(dbconn, sql, tuple_arg)
+            dbconn.commit()
 
         return JsonResponse([], safe=False)
 
