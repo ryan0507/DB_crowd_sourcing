@@ -88,7 +88,7 @@ def TableSchemaAddView(request, infoID):
 
 
 def TaskAddView(request):
-    # try:
+    try:
         dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
         if len(request.body) != 0:
             body_unicode = request.body.decode('utf-8')
@@ -153,11 +153,11 @@ def TaskAddView(request):
         else:
             return JsonResponse({}, safe=False)
 
-    # except Exception as e:
-    #     dbconn.rollback();
-    #     return JsonResponse({}, safe=False)
-    # finally:
-    #     dbconn.close()
+    except Exception as e:
+        dbconn.rollback();
+        return JsonResponse({}, safe=False)
+    finally:
+        dbconn.close()
 
 
 def TaskInfoView(request, infoID):
