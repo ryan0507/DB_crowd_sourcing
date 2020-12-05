@@ -363,6 +363,26 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
           _axiosPost(info.Participant, tempRequestUser);
       }
 
+
+      const downloadfile = (i:string, name:string) => {
+        axios({method: 'GET', url: `http://127.0.0.1:8000/submitUI/downloadcsvfile/${i}/`,
+        responseType: 'blob' }).then((r)=>{
+            if (r.status === 200) {
+                const url = window.URL.createObjectURL(new Blob([r.data], { type: r.headers['content-type'] }));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download',  name);
+                document.body.appendChild(link);
+                link.click();
+                alert('파일이 다운로드 됩니다.')
+            }else if (r.status === 201) {
+                alert('NonPass를 받은 파일은 삭제됩니다')
+            }else {
+                alert('오류가 발생했습니다.')
+            }
+        })
+    }
+
    return(
        <div className={"taskInfo"}>
        <div className="wrapper">
@@ -549,6 +569,11 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
                        <div className={"submitFiles"}>제출된 파일 수 : {info.Statistics.Total}개</div>
                        <div className={"passFiles"}>Pass된 파일 수 : {info.Statistics.Pass}개</div>
                        <div className={"passTuples"}>Pass된 튜플 수 : {info.Statistics.Tuple}개</div>
+                       <div className={"downloadCSV"}>
+                           <button onClick = {(i) => downloadfile(info.TaskID,info.Name)}>
+                                전체 파일 다운
+                            </button>
+                       </div>
                        <Paper className={classes.root}>
                           <TableContainer className={classes.container}>
                             <Table stickyHeader aria-label="sticky table">
@@ -575,7 +600,7 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
                                            return (
                                               <TableCell key={column.id} align='center'
                                                   style={{fontSize: '14px', fontWeight: 'normal', color:'black' }}>
-                                                    <Link to ={`/admin/filedetail/${row.SubmissionID}`}>
+                                                    <Link to ={`/admin/filedetail/${props.match.params.task_id}/${row.SubmissionID}`}>
                                                         {column.format && typeof value === 'number' ? column.format(value) : value}
                                                     </Link>
                                               </TableCell>

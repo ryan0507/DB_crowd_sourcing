@@ -154,6 +154,18 @@
     transform: translate(5%, 0%);
     margin-bottom: 10px;
 }
+
+.taskStatistic .downloadCSV{
+    float: right;
+    transform: translate(0px, -30px);
+}
+.taskStatistic .downloadCSV button{
+    background-color: #6EB9E8;
+    border: 0px;
+    border-radius: 2px;
+    padding : 5px 10px;
+    color : white;
+}
 .taskStatistic a{
     color: #56baed;
     font-weight: 500;

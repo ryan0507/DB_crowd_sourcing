@@ -55,7 +55,7 @@ const rows = [
   createData('새마을식당', 30000000,  60000, 4500000),
 ];
 
-export default function Admin_fileDetail(props : RouteComponentProps<{submission_id : string}>,){
+export default function Admin_fileDetail(props : RouteComponentProps<{task_id : string, submission_id : string}>,){
     // const getApi = async() =>{
     //     await axios.get(`http://127.0.0.1:8000/adminUI/${props.match.params.task_id}/`).then((r)=>{
     //         let temp: taskInfo = r.data;
