@@ -51,7 +51,8 @@ const Admin_tableSchema_add = ({onSchemaChange}:Props) => {
   const onValueChange =<P extends keyof tempValue> (prop: P, value: tempValue[P]) => {
       let special_pattern = /[`~!@#$%^&*|\\\'\";:\/?]/gi;
       let korean_pattern = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
-      if(!special_pattern.test(value) && !korean_pattern.test(value)) {
+      let Capital_pattern = /[A-Z]/;
+      if(!special_pattern.test(value) && !korean_pattern.test(value) && !Capital_pattern.test(value) && !value.includes(' ')) {
           setTempValue({..._tempValue, [prop]: value});
           onSchemaChange(prop, value)
       }
@@ -102,7 +103,7 @@ const Admin_tableSchema_add = ({onSchemaChange}:Props) => {
                       </FormControl>
                    </div>
               </div>
-             <div className={"notice"}>*속성 이름에는 한글 및 특수문자를 사용할 수 없습니다.</div>
+             <div className={"notice"}>*속성 이름에는 영어 소문자만을 사용할 수 있습니다.</div>
       </div>
   );
 }

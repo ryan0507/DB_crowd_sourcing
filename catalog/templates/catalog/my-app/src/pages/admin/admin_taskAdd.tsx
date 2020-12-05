@@ -119,8 +119,10 @@ function Admin_taskAdd(){
     };
 
     const handleTableNameChange = ( value: string) =>{
-        let korean_pattern = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
-        if(!korean_pattern.test(value) && !value.includes(' ')){
+        let special_pattern = /[`~!@#$%^&*|\\\'\";:\/?]/gi;
+          let korean_pattern = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
+          let Capital_pattern = /[A-Z]/;
+          if(!special_pattern.test(value) && !korean_pattern.test(value) && !Capital_pattern.test(value) && !value.includes(' ')) {
         setTask({...task, ["TableName"] : value});}
     }
 
@@ -212,13 +214,17 @@ function Admin_taskAdd(){
       const onValueChange =<P extends keyof tempValue> (prop: P, value: tempValue[P]) =>
       {
           let special_pattern = /[`~!@#$%^&*|\\\'\";:\/?]/gi;
-          let korean_pattern = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
-          if(!special_pattern.test(value) && !korean_pattern.test(value)) {
+          let Capital_pattern = /[A-Z]/;
+          if(!special_pattern.test(value) && !Capital_pattern.test(value) && !value.includes(' ')) {
               setTempValue({..._tempValue, [prop]: value});
           }
       }
       const onTypeNameChange = (value : string) =>{
-          setName(value);
+          let special_pattern = /[`~!@#$%^&*|\\\'\";:\/?]/gi;
+          let Capital_pattern = /[A-Z]/;
+          if(!special_pattern.test(value) && !Capital_pattern.test(value) && !value.includes(' ')) {
+              setName(value);
+          }
       }
       const handleSubmit = (e:any) =>{
           e.preventDefault();
@@ -463,7 +469,7 @@ function Admin_taskAdd(){
                           value={task.TableName}
                           onChange={e=> handleTableNameChange(e.target.value)}
                           />
-                          <div className={"notice2"}>*테이블 이름에는 한글 및 띄어쓰기를 사용할 수 없습니다.</div>
+                          <div className={"notice2"}>*테이블 이름에는 영어 소문자만을 사용할 수 있습니다.</div>
                </div>
 
                <div className={"dataTableSchema"}>
@@ -547,6 +553,7 @@ function Admin_taskAdd(){
                                   }}
                                 />
                            </div>
+                                <div className={"notice1"}>*속성 이름에는 영어 소문자와 한글만을 사용할 수 있습니다.</div>
 
                            <div className={"valueList"}>
                                {valueList.map((item)=>{
@@ -564,7 +571,7 @@ function Admin_taskAdd(){
                                       onValueChange('name', e.target.value)
                                   }}
                                 />
-                                <div className={"notice1"}>*속성 이름에는 한글 및 특수문자를 사용할 수 없습니다.</div>
+                                <div className={"notice1"}>*속성 이름에는 영어 소문자와 한글만을 사용할 수 있습니다.</div>
                               <form className="input" onClick={e => handleSubmit(e)}>
                                   <button className={"short"} type="submit">추가</button>
                               </form>

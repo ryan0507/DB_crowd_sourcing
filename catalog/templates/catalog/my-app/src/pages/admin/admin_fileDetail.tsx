@@ -1,6 +1,6 @@
-import {BrowserRouter as Router, Route, Link, RouteComponentProps} from 'react-router-dom';
-import React, {useEffect} from 'react';
-import table from '../table';
+import { RouteComponentProps, BrowserRouter as Router, Route,Link } from 'react-router-dom';
+
+import React, { Fragment, useEffect, useState} from 'react';
 import {makeStyles} from "@material-ui/core/styles";
 import TableContainer from "@material-ui/core/TableContainer";
 import Table from "@material-ui/core/Table";
@@ -12,21 +12,34 @@ import TablePagination from "@material-ui/core/TablePagination";
 import Paper from "@material-ui/core/Paper";
 import axios from "axios";
 
-interface Column {
-  id: 'name' | 'salary' | 'customer' | 'money' ;
-  label: string;
-  minWidth?: number;
-  align?: 'center';
-  alignment?: 'center';
-  format?: (value: number) => string;
+
+axios.defaults.xsrfCookieName = "csrftoken";
+axios.defaults.xsrfHeaderName = "X-CSRFToken";
+
+interface fileDetail{
+    Columns : string[],
+    Submissions : _submission[],
+}
+interface _submission{
+    submission: string[],
 }
 
-const columns: Column[] = [
-  { id: 'name', label: '음식점\u00a0이름'},
-  { id: 'salary', label: '월\u00a0매출' },
-  { id: 'customer',label: '월\u00a0고객\u00a0수'},
-  {id: 'money',label: '순\u00a0이익',},
-];
+
+
+// interface Column {
+//   label: string;
+//   minWidth?: number;
+//   align?: 'center';
+//   alignment?: 'center';
+//   format?: (value: number) => string;
+// }
+//
+// const columns: Column[] = [
+//   { label: '음식점\u00a0이름'},
+//   {label: '월\u00a0매출' },
+//   { label: '월\u00a0고객\u00a0수'},
+//   { label: '순\u00a0이익',},
+// ];
 
 const useStyles = makeStyles({
   root: {
@@ -39,33 +52,36 @@ const useStyles = makeStyles({
 });
 
 
-interface Data {
-  name: string;
-  salary: number;
-  customer: number;
-  money: number;
-}
-
-function createData( name: string, salary: number, customer: number,money: number): Data {
-  return { name, salary, customer, money };
-}
-
-const rows = [
-  createData('새마을식당', 30000000,  60000, 4500000),
-  createData('새마을식당', 30000000,  60000, 4500000),
-];
+// interface Data {
+//   '음식점\u00a0이름' : string;
+//   '월\u00a0매출' : number;
+//   '월\u00a0고객\u00a0수' : number;
+//   '순\u00a0이익': number;
+// }
+//
+// function createData( name: string, salary: number, customer: number,money: number): Data {
+//   return { name, salary, customer, money };
+// }
+//
+// const rows = [
+//   createData('새마을식당', 30000000,  60000, 4500000),
+//   createData('새마을식당', 30000000,  60000, 4500000),
+// ];
 
 export default function Admin_fileDetail(props : RouteComponentProps<{task_id : string, submission_id : string}>,){
-    // const getApi = async() =>{
-    //     await axios.get(`http://127.0.0.1:8000/adminUI/${props.match.params.task_id}/`).then((r)=>{
-    //         let temp: taskInfo = r.data;
-    //         setInfo(temp);
-    //     })
-    // }
-    //
-    // useEffect(()=>{
-    //     getApi()
-    // },[])
+    const [detail, setDetail] = useState<fileDetail>({Columns: [], Submissions: []});
+    const getApi = async() =>{
+        await axios.get(`http://127.0.0.1:8000/adminUI/${props.match.params.task_id}/${props.match.params.submission_id}`).then((r)=>{
+            let temp: fileDetail = r.data;
+            setDetail(temp);
+        })
+    }
+
+    useEffect(()=>{
+        getApi()
+    },[])
+    interface submission{
+    }
     const classes = useStyles();
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -85,27 +101,20 @@ export default function Admin_fileDetail(props : RouteComponentProps<{task_id : 
                 <Table stickyHeader aria-label="sticky table">
                   <TableHead>
                     <TableRow>
-                      {columns.map((column) => (
-                        <TableCell
-                          key={column.id}
-                          align={'center'}
-                          style={{ minWidth: column.minWidth, fontSize: '16px', fontWeight: 'bold' }}
-                        >
-                          {column.label}
-                        </TableCell>
-                      ))}
+                        {detail.Columns.map((item)=>{
+                            if(item!= "SubmissionID") {
+                                return (<TableCell align="center" style={{fontSize: '16px', fontWeight: 'bold'}}>{item}</TableCell>);
+                            }})}
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                    {detail.Submissions.map((row) => {
                       return (
-                        <TableRow hover role="checkbox" tabIndex={-1} key={row.name}>
-                          {columns.map((column) => {
-                              const value = row[column.id];
+                        <TableRow hover role="checkbox" tabIndex={-1}>
+                          {row.submission.slice(1).map((column) => {
                               return (
-                                  <TableCell key={column.id} align='center'
-                                  style={{fontSize: '14px', fontWeight: 'normal' }}>
-                                      {column.format && typeof value === 'number' ? column.format(value) : value}
+                                  <TableCell align='center' style={{fontSize: '14px', fontWeight: 'normal' }}>
+                                      {column}
                                   </TableCell>
                                 );
                             }
@@ -119,7 +128,7 @@ export default function Admin_fileDetail(props : RouteComponentProps<{task_id : 
               <TablePagination
                 rowsPerPageOptions={[10, 20, 30]}
                 component="div"
-                count={rows.length}
+                count={detail.Submissions.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onChangePage={handleChangePage}
