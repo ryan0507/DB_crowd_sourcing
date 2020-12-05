@@ -44,12 +44,14 @@ interface userList {
     UserID : string,
     UserName : string,
     Average : string,
+    Pass : string,
 }
 
 interface requestUser {
     UserID : string,
     UserName : string,
     Average : string,
+    Pass : string,
 }
 
 interface statistic{
@@ -310,8 +312,12 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
           let tempRequestUser : requestUser[] = [];
 
           info.Request.map((user)=>{
-              if(userID !== user.UserID){tempRequestUser.push(user)}
-              else{tempUserList.push(user)}
+              if(userID !== user.UserID){
+                  tempRequestUser.push(user);
+              } else{
+                  user.Pass = "P";
+                  tempUserList.push(user);
+              }
           })
           setInfo({...info,["Participant"]: tempUserList, ["Request"]: tempRequestUser})
 
@@ -345,6 +351,10 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
 
           info.Request.map((user)=>{
               if(userID !== user.UserID){tempRequestUser.push(user)}
+              else{
+                  user.Pass = "NP";
+                  tempRequestUser.push(user);
+              }
           })
         console.log(info.Request)
           setInfo({...info, ["Request"]: tempRequestUser})
@@ -507,17 +517,23 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
                        <ul className={"applicants"}>
                            {
                                info.Request.map((item)=>{
-                                   return(
-                                       <li>
-                                           <div className={"sequenceNum"}>{++requestUserNum}.</div>
-                                           <div className={"personal_name"}>{item.UserName}</div>
-                                           <div className={"personal_score"}>{item.Average}점</div>
-                                           <div className={"YesNo"}>
-                                               <button className={"_button"} id={"yes"} onClick={(e)=> handleClickYes(e, item.UserID)}>승인</button>
-                                               <button className={"_button"} id={"no"} onClick={(e)=> handleClickNo(e, item.UserID)}>거절</button>
-                                           </div>
-                                       </li>
-                                   );
+                                   if(item.Pass === "W") {
+                                       return (
+                                           <li>
+                                               <div className={"sequenceNum"}>{++requestUserNum}.</div>
+                                               <div className={"personal_name"}>{item.UserName}</div>
+                                               <div className={"personal_score"}>{item.Average}점</div>
+                                               <div className={"YesNo"}>
+                                                   <button className={"_button"} id={"yes"}
+                                                           onClick={(e) => handleClickYes(e, item.UserID)}>승인
+                                                   </button>
+                                                   <button className={"_button"} id={"no"}
+                                                           onClick={(e) => handleClickNo(e, item.UserID)}>거절
+                                                   </button>
+                                               </div>
+                                           </li>
+                                       );
+                                   }
 
                                }
                            )}
