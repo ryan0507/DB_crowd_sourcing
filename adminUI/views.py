@@ -172,8 +172,8 @@ def TaskInfoView(request, infoID):
                 FROM PARTICIPATE_TASK P, USER U
                 WHERE U.MainID = P.SubmitterID AND P.TaskID = %s"""
 
-        sql3 = """SELECT U.MainID, U.Name, O.OriginSchema, D.SubmissionDate, 
-                    D.SubmissionNumber, D.FileName, D.NumberOfTuple, D.P_NP 
+        sql3 = """SELECT U.MainID, U.Name, O.OriginSchema, D.SubmissionDate,
+                    D.SubmissionNumber, D.FileName, D.NumberOfTuple, D.P_NP, D.SubmissionID 
                 FROM TASK T, ORIGINAL_DATA_TYPE O, PARSING_DATA D, USER U
                 WHERE T.TaskID = %s AND T.TaskID = O.TaskID 
                     AND O.OriginalTypeID = D.OriginalTypeID AND D.SubmitterID = U.MainID"""
@@ -222,7 +222,7 @@ def TaskInfoView(request, infoID):
         info_dict["Statistics"] = {"Files": []}
         for info in selectDetail(dbconn, sql3, list_arg):
             sub_dict = {"UserID": info[0][3:], "UserName": info[1], "OriginSchema": info[2], "SubmissionDate": info[3],
-                        "SubmissionNumber": info[4], "FileName": info[5], "P_NP": info[7]}
+                        "SubmissionNumber": info[4], "FileName": info[5], "P_NP": info[7], "SubmissionID": info[8]}
             sub_dict["SubmissionTime"] = sub_dict["SubmissionDate"].strftime('%H:%M:%S')
             sub_dict["SubmissionDate"] = sub_dict["SubmissionDate"].strftime('%Y-%m-%d')
             info_dict["Statistics"]["Files"].append(sub_dict)
