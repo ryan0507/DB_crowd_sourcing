@@ -383,6 +383,8 @@ def postFile(request):
             return JsonResponse({"state": 202, "message": "csv파일만을 제출해야합니다."})
         data = [i.decode('utf-8').strip().split(",") for i in request.FILES['file']]
         data = pd.DataFrame(data[1:],columns=data[0])
+        data = data.where(data != "")
+
 
         dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
         schema = next(select(dbconn,"SELECT Mapping FROM ORIGINAL_DATA_TYPE WHERE OriginalTypeID = {}".format(post_data["OriginalID"])))
@@ -407,7 +409,7 @@ def postFile(request):
             elif type[schema[i]] == "integer":
                 try:
                     data[i] = data[i].astype(float)
-                    tmp.dropna().astype(int)
+                    data[i].dropna().astype(int)
                     data[i] = data[i].round()
                     insert_type += "%s,"
                 except Exception as e:
@@ -416,12 +418,16 @@ def postFile(request):
             elif type[schema[i]] == "boolean":
                 try:
                     insert_type += "%s,"
+                    print(data[i][data[i].fillna("").astype(str).str.contains("F")])
+                    data.loc[data[i].fillna("").astype(str).str.contains("F"),i] = 0
+                    data.loc[data[i].fillna("").astype(str).str.contains("T"), i] = 1
                     data[i] = data[i].astype(float)
                     tmp = data[i]
                     if tmp[ ~((tmp == 0) | (tmp == 1))].notna().sum() != 0:
                         return JsonResponse({"state": "202", "message": "제출한 파일이 스키마의 데이터 타입과 맞지 않습니다."})
                     data[i] = data[i].round()
-                except:
+                except Exception as e:
+                    print(e)
                     return JsonResponse({"state": "202", "message": "제출한 파일이 스키마의 데이터 타입과 맞지 않습니다."})
             elif type[schema[i]] == "string":
                 try:
@@ -496,7 +502,7 @@ def CalCulateScore_ReturnRefinedDF(data1, TaskID, MainID):
         TableName, TaskSchema = next(select(dbconn,"SELECT TableName, TaskSchema FROM TASK WHERE TaskID ={}".format(TaskID)))
         TaskSchema = TaskSchema.split("%")[::2]
         TaskSchema = [i for i in TaskSchema if i in data1.columns]
-        data1 = data1[[TaskSchema]]
+        data1 = data1[TaskSchema]
 
         Info["TotalColumn"] = len(TaskSchema)
         Info["TotalRow"] = len(data1)
@@ -542,23 +548,24 @@ def CalCulateScore_ReturnRefinedDF(data1, TaskID, MainID):
         Info["Score"] = score
 
         return (Info, data2)
-    except:
+    except Exception as e:
+        print(e)
         Info = {"NullRow": -1, "SelfDupRow": -1, "OtherDupRow": -1, "NullPercent": -1, "TotalRow": -1, "RestRow": -1,
                 "TotalColumn": -1, "Score": -1}
-        data2 = pd.DateFrame()
-        return None
+        data2 = pd.DataFrame()
+        return None, None
     finally:
         dbconn.close()
 
 def getResult(request,id):
-    # try:
+    try:
         print(type(id))
         result = request.session[str(id)]
         del request.session[str(id)]
         return JsonResponse(result)
-    # except:
-    #
-    #     return JsonResponse({})
+    except:
+
+        return JsonResponse({})
 
 
 def execute(dbconn, query, bufferd=True):

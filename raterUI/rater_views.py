@@ -184,8 +184,6 @@ def RaterFileDetailMergeView(request):
                     changedNum += 1
                     nullNumberChanged = True
 
-
-
             if nullNumberChanged: # 중복된 data tuple이 있는 경우
                 for row in select(dbconn, sql3):
                     originalNum = row[0]
