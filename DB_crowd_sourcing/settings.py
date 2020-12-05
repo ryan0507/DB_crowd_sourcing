@@ -113,7 +113,7 @@ DATABASES = {
         "ENGINE": "django.db.backends.mysql",
         "NAME": "DB_test",  # mysql
         "USER": "root",  # root
-        "PASSWORD": "111111",
+        "PASSWORD": '1246team!',
         "HOST": "34.64.198.135",  # 공백으로 냅두면 default localhost
         "PORT": "3306",  # 공백으로 냅두면 default 3306
     }

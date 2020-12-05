@@ -10,7 +10,7 @@ import mysql.connector
 # dbconn = mysql.connector.connect(host = "34.64.198.135", user = "root", passwd = "111111", database = "DB_test")
 DB_HOST = "34.64.198.135"
 DB_ROOT = "root"
-DB_PASSWD = "111111"
+DB_PASSWD = '1246team!'
 DB_DATABASE = "DB_test"
 def select(dbconn, query, bufferd=True):
     cursor = dbconn.cursor(buffered=bufferd);
