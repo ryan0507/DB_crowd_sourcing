@@ -122,7 +122,8 @@ function Admin_taskAdd(){
         let special_pattern = /[`~!@#$%^&*|\\\'\";:\/?]/gi;
           let korean_pattern = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
           let Capital_pattern = /[A-Z]/;
-          if(!special_pattern.test(value) && !korean_pattern.test(value) && !Capital_pattern.test(value) && !value.includes(' ')) {
+          let number_pattern = /[0-9]/;
+          if(!special_pattern.test(value) && !korean_pattern.test(value) && !Capital_pattern.test(value) && !number_pattern.test(value) && !value.includes(' ')) {
         setTask({...task, ["TableName"] : value});}
     }
 
@@ -215,14 +216,18 @@ function Admin_taskAdd(){
       {
           let special_pattern = /[`~!@#$%^&*|\\\'\";:\/?]/gi;
           let Capital_pattern = /[A-Z]/;
-          if(!special_pattern.test(value) && !Capital_pattern.test(value) && !value.includes(' ')) {
+          let number_pattern = /[0-9]/;
+          if(!special_pattern.test(value) && !Capital_pattern.test(value) && !number_pattern.test(value) && !value.includes(' ')) {
+
               setTempValue({..._tempValue, [prop]: value});
           }
       }
       const onTypeNameChange = (value : string) =>{
           let special_pattern = /[`~!@#$%^&*|\\\'\";:\/?]/gi;
           let Capital_pattern = /[A-Z]/;
-          if(!special_pattern.test(value) && !Capital_pattern.test(value) && !value.includes(' ')) {
+          let number_pattern = /[0-9]/;
+          if(!special_pattern.test(value) &&  !Capital_pattern.test(value) && !number_pattern.test(value) && !value.includes(' ')) {
+
               setName(value);
           }
       }

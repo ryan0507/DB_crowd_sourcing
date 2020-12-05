@@ -215,15 +215,17 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
       {
           let special_pattern = /[`~!@#$%^&*|\\\'\";:\/?]/gi;
           let Capital_pattern = /[A-Z]/;
-          if(!special_pattern.test(value) && !Capital_pattern.test(value) && !value.includes(' ')) {
-              setTempValue({..._tempValue, [prop]: value});
+          let number_pattern = /[0-9]/;
+          if(!special_pattern.test(value) && !Capital_pattern.test(value) && !number_pattern.test(value) && !value.includes(' ')) {
+                setTempValue({..._tempValue, [prop]: value});
           }
       }
       const onTypeNameChange = (value : string) =>{
           let special_pattern = /[`~!@#$%^&*|\\\'\";:\/?]/gi;
           let Capital_pattern = /[A-Z]/;
-          if(!special_pattern.test(value) && !Capital_pattern.test(value) && !value.includes(' ')) {
-              setName(value);
+          let number_pattern = /[0-9]/;
+          if(!special_pattern.test(value) && !Capital_pattern.test(value) && !number_pattern.test(value) && !value.includes(' ')) {
+                setName(value);
           }
 
     }
@@ -611,7 +613,7 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
                                                     </Link>
                                               </TableCell>
                                             );
-                                        }else if(column.id =="UserName"){
+                                        }else if(column.id =="UserName" && value!="탈퇴한 회원"){
                                           return (
                                               <TableCell key={column.id} align='center'
                                                   style={{fontSize: '14px', fontWeight: 'normal', color:'black' }}>

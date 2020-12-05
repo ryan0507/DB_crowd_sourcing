@@ -17,7 +17,7 @@ axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
 
 interface fileDetail{
-    Filename : string,
+    FileName : string,
     Columns : string[],
     Submissions : _submission[],
 }
@@ -37,7 +37,7 @@ const useStyles = makeStyles({
 });
 
 export default function Admin_fileDetail(props : RouteComponentProps<{task_id : string, submission_id : string}>,){
-    const [detail, setDetail] = useState<fileDetail>({Filename: '', Columns: [], Submissions: []});
+    const [detail, setDetail] = useState<fileDetail>({FileName: '', Columns: [], Submissions: []});
     const getApi = async() =>{
         await axios.get(`http://127.0.0.1:8000/adminUI/${props.match.params.task_id}/${props.match.params.submission_id}`).then((r)=>{
             let temp: fileDetail = r.data;
@@ -81,10 +81,10 @@ export default function Admin_fileDetail(props : RouteComponentProps<{task_id : 
    return(
        <div className={"fileDetail"}>
        <div className="wrapper">
-           <div className="Title">{detail.Filename}</div>
-           <Link to = "/admin/taskinfo" className="right_side_small">뒤로가기</Link>
+           <div className="Title">{detail.FileName}</div>
+           <Link to ={`/admin/taskinfo/${props.match.params.task_id}`} className="right_side_small">뒤로가기</Link>
            <div className={"downloadCSV"}>
-               <button onClick = {(i) => downloadfile(props.match.params.task_id,detail.Filename)}>
+               <button onClick = {(i) => downloadfile(props.match.params.task_id,detail.FileName)}>
                     해당 파일 다운
                 </button>
            </div>
