@@ -94,7 +94,7 @@ export default function Admin_presenterDetail(props : RouteComponentProps<{su_ID
 
 
     let isNull : boolean = false;
-    if(submitter.Tasks===[]){isNull= true;}
+    if(submitter.Tasks.length===0){isNull= true;}
 
     const classes = useStyles();
     const [page, setPage] = React.useState(0);
@@ -191,9 +191,9 @@ export default function Admin_presenterDetail(props : RouteComponentProps<{su_ID
                               />
                             </Paper>
                        </div>
-                   </div> );
+                     </div>   );
+                    })}
                    </div>
-               })}
                )}
 
 
