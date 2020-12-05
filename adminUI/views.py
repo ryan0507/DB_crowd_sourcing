@@ -103,7 +103,7 @@ def TaskAddView(request):
 
             tmp = tableSchema.split("%")
             tablename = data["TableName"] + "_W"
-            sql1 = "CREATE TABLE " + data["TableName"] + "(TableID INT AUTO_INCREMENT PRIMARY KEY"
+            sql1 = "CREATE TABLE " + data["TableName"] + "(TableID INT AUTO_INCREMENT PRIMARY KEY, SubmissionID INT"
             sql2 = "CREATE TABLE " + tablename + "(TableID INT AUTO_INCREMENT PRIMARY KEY"
             for i in range(len(tmp) // 2):
                 if tmp[2 * i + 1] == "string":
@@ -242,10 +242,6 @@ def TypeAddView(request, infoID):
         body_unicode = request.body.decode('utf-8')
         data = json.loads(body_unicode)
 
-        list_arg = [infoID]
-        for row in selectDetail(dbconn, "SELECT TableName FROM TASK WHERE TaskID = %s", list_arg):
-            tableName = row[0]
-
         oSchema = data["OriginalData"][len(data["OriginalData"]) - 1]["Schema"]
         for j in range(len(oSchema)):
             if j == 0:
@@ -298,25 +294,32 @@ def UserUpdateView(request, infoID):
 
 
 def FileDetailView(request, infoID, fileID):
+
     try:
         dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
 
-        file_lst = []
+        list_arg1 = [infoID]
+        sql1 = "SELECT TableName FROM TASK WHERE TaskID = %s"
+        for file in selectDetail(dbconn, sql1, list_arg1):
+            tableName = file[0]
 
-        sql = """SELECT O.OriginalTypeID, O.TaskID, O.OriginSchema, O.Mapping, P.FileName
-                FROM ORIGINAL_DATA_TYPE O, PARSING_DATA P 
-                WHERE O.OriginalTypeID = P.OriginalTypeID AND O.TaskID = %s AND O.OriginalTypeID = %s"""
+        list_arg2 = [fileID]
+        sql2 = "SELECT * FROM " + tableName + " WHERE SubmissionID = %s"
+        sql3 = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS" + " WHERE TABLE_NAME = %s"
 
-        list_arg = [infoID, fileID]
+        list_arg3 = [tableName]
+        column_lst = selectDetail(dbconn, sql3, list_arg3)
 
-        for file in selectDetail(dbconn, sql, list_arg):
-            tmp = file[5].split("%")
-            file_dict = {"OriginalTypeID": file[0], "TaskID": file[1], "OriginSchema": file[2],
-                         "Schema": [{"Big": tmp[2 * i], "small": tmp[2 * i + 1]} for i in range(len(tmp) // 2)],
-                         "Files": file[4]}
-            file_lst.append(file_dict)
+        data_lst = [{"Columns": []}]
+        data_dict = {}
+        for j in range(len(column_lst)):
+            data_lst[0]["Columns"].append(''.join(column_lst[j]))
+        for data in selectDetail(dbconn, sql2, list_arg2):
+            for i in range(len(column_lst)):
+                data_dict[''.join(column_lst[i])] = data[i]
+            data_lst.append(data_dict)
 
-        return JsonResponse(file_dict, safe=False)
+        return JsonResponse(data_lst, safe=False)
 
     except Exception as e:
         return JsonResponse([], safe=False)
@@ -387,7 +390,7 @@ def PresenterDetailView(request, su_ID):
         for row in selectDetail(dbconn, sql, list_arg):
             pre_dict["ID"] = row[0]
             taskName = row[1]
-            score += (row[4] + row[6])
+            score += ((row[4] + row[6]) / 2)
             file_dict = {"SubmissionDate": row[2], "FileName": row[3], "QualAssessment": row[4], "P_NP": row[5]}
             file_dict["SubmissionTime"] = file_dict["SubmissionDate"].strftime('%H:%M:%S')
             file_dict["SubmissionDate"] = file_dict["SubmissionDate"].strftime('%Y-%m-%d')
