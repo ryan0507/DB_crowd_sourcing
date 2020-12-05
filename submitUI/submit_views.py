@@ -395,6 +395,7 @@ def postFile(request):
         col = data.columns
         insert_type = ""
         for i in schema.keys():
+            print(i)
             if i not in col:
                 return JsonResponse({"state": "202", "message": "제출한 파일이 원본 스키마와 맞지 않습니다."})
             if type[schema[i]] == "float":
@@ -405,15 +406,21 @@ def postFile(request):
                     return JsonResponse({"state": "202", "message": "제출한 파일이 스키마의 데이터 타입과 맞지 않습니다."})
             elif type[schema[i]] == "integer":
                 try:
-                    data[i] = data[i].astype(int)
+                    data[i] = data[i].astype(float)
+                    tmp.dropna().astype(int)
+                    data[i] = data[i].round()
                     insert_type += "%s,"
-                except:
+                except Exception as e:
+                    print(e)
                     return JsonResponse({"state": "202", "message": "제출한 파일이 스키마의 데이터 타입과 맞지 않습니다."})
             elif type[schema[i]] == "boolean":
                 try:
-                    data[i] = data[i].astype(bool)
-                    data[i] = data[i].astype(int)
                     insert_type += "%s,"
+                    data[i] = data[i].astype(float)
+                    tmp = data[i]
+                    if tmp[ ~((tmp == 0) | (tmp == 1))].notna().sum() != 0:
+                        return JsonResponse({"state": "202", "message": "제출한 파일이 스키마의 데이터 타입과 맞지 않습니다."})
+                    data[i] = data[i].round()
                 except:
                     return JsonResponse({"state": "202", "message": "제출한 파일이 스키마의 데이터 타입과 맞지 않습니다."})
             elif type[schema[i]] == "string":
@@ -444,7 +451,7 @@ def postFile(request):
         key = next(select(dbconn,"SELECT LAST_INSERT_ID()"))[0]
         data["SubmissionID"] = key
         merge_bulk(dbconn,"INSERT INTO {} VALUES (%s, {})".format(TableName + "_W(" + ",".join(list(data.columns)) + ")", insert_type[:-1])
-                   ,[tuple(i) for i in data.values])
+                   ,[tuple(i) for i in data.where(pd.notnull(data), None).values])
 
         info = {"TotalColumn" : str(score["TotalColumn"]), "NullRow" : str(score["NullRow"]),
          "SelfDupRow" : str(score["SelfDupRow"]), "OtherDupRow" : str(score["OtherDupRow"]),
@@ -567,10 +574,10 @@ def execute(dbconn, query, bufferd=True):
         dbconn.rollback();
         raise e;
 
-
+# import numpy as np
 # dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
-# merge_bulk(dbconn,"INSERT INTO Rest_Rev VALUE (%s, %s, %s, %s, %s)",[(124,"1",1,1,1)])
-# merge_bulk(dbconn,"INSERT INTO Rest_Rev VALUE (%s, %s, %s, %s, %s)",[(125,"1",2,1,1)])
+# merge_bulk(dbconn,"INSERT INTO Rest_Rev VALUE (%s, %s, %s, %s, %s)",[(1,"1",None,1,1)])
+# # merge_bulk(dbconn,"INSERT INTO Rest_Rev VALUE (%s, %s, %s, %s, %s)",[(1,"1",2,1,1.)])
 # dbconn.commit()
 
 # execute(dbconn,"DELETE FROM Rest_Rev WHERE SubmissionID IN ('124','125')")
