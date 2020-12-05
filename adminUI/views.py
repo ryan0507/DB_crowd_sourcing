@@ -109,17 +109,13 @@ def TaskAddView(request):
 
             tmp = tableSchema.split("%")
             tablename = data["TableName"] + "_W"
-<<<<<<< Updated upstream
-            sql1 = "CREATE TABLE " + data["TableName"] + "(TableID INT AUTO_INCREMENT PRIMARY KEY, SubmissionID INT"
-            sql2 = "CREATE TABLE " + tablename + "(TableID INT AUTO_INCREMENT PRIMARY KEY"
-=======
+
 
 
             sql1 = "CREATE TABLE " + data["TableName"] + "(SubmissionID INT"
             sql2 = "CREATE TABLE " + tablename + "(SubmissionID INT"
             pk1 = ",PRIMARY KEY("
             pk2 = ",PRIMARY KEY(SubmissionID"
->>>>>>> Stashed changes
             for i in range(len(tmp) // 2):
                 if tmp[2 * i + 1] == "string":
                     tmp[2 * i + 1] = "VARCHAR(50)"
@@ -137,7 +133,6 @@ def TaskAddView(request):
             sql2 += (pk2 + "));")
             execute(dbconn, sql1)
             execute(dbconn, sql2)
-
 
             list_arg = [data["Name"]]
             for row in selectDetail(dbconn, "SELECT TaskID FROM TASK WHERE Name = %s", list_arg):
