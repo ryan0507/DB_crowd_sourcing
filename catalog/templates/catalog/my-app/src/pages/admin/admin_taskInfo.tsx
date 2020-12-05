@@ -365,13 +365,13 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
 
 
       const downloadfile = (i:string, name:string) => {
-        axios({method: 'GET', url: `http://127.0.0.1:8000/adminUI/downloadcsv/${i}/`,
+        axios({method: 'GET', url: `http://127.0.0.1:8000/adminUI/downloadcsv/${i}`,
         responseType: 'blob' }).then((r)=>{
             if (r.status === 200) {
                 const url = window.URL.createObjectURL(new Blob([r.data], { type: r.headers['content-type'] }));
                 const link = document.createElement('a');
                 link.href = url;
-                link.setAttribute('download',  name);
+                link.setAttribute('download',  name + ".csv");
                 document.body.appendChild(link);
                 link.click();
                 alert('파일이 다운로드 됩니다.')
