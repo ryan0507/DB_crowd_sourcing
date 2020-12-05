@@ -96,12 +96,6 @@ function Admin_taskAdd(){
     const [valueList, setValueList] = useState<dataTable[]>( []);
     const [valueCount, setValueCount] = useState<number>(valueList.length + 1);
 
-
-    const initialOriginType = {name : "", schema : [],}
-    const [_originType, setOriginType] = useState<originType>(initialOriginType);
-    const initialSchema = { id : 0, up: "", down : "",}
-    const [_schema, setSchema] = useState<schema>(initialSchema);
-
     const [toggleSchema, setToggleSchema] = useState<boolean>(true);
     const [toggleData, setToggleData] = useState<boolean>(true);
     const initialTask = {
@@ -326,24 +320,32 @@ function Admin_taskAdd(){
     }
 
     const handleSubmitDD = ( event : React.FormEvent<HTMLFormElement> ) =>{
-        event.preventDefault();
-        axios.post('http://127.0.0.1:8000/adminUI/create/', {
-            Name : task.Name,
-            Description :task.Description,
-            TaskThreshold : task.TaskThreshold,
-            SubmissionPeriod : task.SubmissionPeriod,
-            TableName : task.TableName,
-            TableSchema : task.TableSchema,
-            OriginData : task.OriginData,
-        }).then((r) => {
-        console.log(r);
-        console.log(r.data);
-        console.log('hhhhhhhhhhhhhhhh');
-        window.location.href="/admin/main/";
-      }).catch((err) => {
-         console.log(err.response.data);
-         console.log(err.response.status);
-         console.log(err.response.headers); } )
+          event.preventDefault();
+          let exAll : boolean = true;
+          if( task.Name === '' || task.Description==='' || task.TaskThreshold === ''
+           || task.TableName === '' || task.TableSchema.length === 0 || task.OriginData.length === 0){exAll = false;}
+          console.log(task.TableSchema);
+          console.log(task.OriginData);
+        if(exAll) {
+            axios.post('http://127.0.0.1:8000/adminUI/create/', {
+                Name: task.Name,
+                Description: task.Description,
+                TaskThreshold: task.TaskThreshold,
+                SubmissionPeriod: task.SubmissionPeriod,
+                TableName: task.TableName,
+                TableSchema: task.TableSchema,
+                OriginData: task.OriginData,
+            }).then((r) => {
+                console.log(r);
+                console.log(r.data);
+                console.log('hhhhhhhhhhhhhhhh');
+                window.location.href = "/admin/main/";
+            }).catch((err) => {
+                console.log(err.response.data);
+                console.log(err.response.status);
+                console.log(err.response.headers);
+            })
+        }else{alert("모든 정보를 입력해주시길 바랍니다.")}
 
         // const taskName = {event.target.name}
         // setTask({e.target.name.task_name, 0, '', '', '', ''}) ;
