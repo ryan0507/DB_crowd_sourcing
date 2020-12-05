@@ -91,7 +91,7 @@ if (True):
     Rev          FLOAT,
     Pop          INT,
     Pas           INT,
-    FOREIGN KEY (SubmissionID) REFERENCES PARSING_DATA(SubmissionID)
+    FOREIGN KEY (SubmissionID) REFERENCES PARSING_DATA(SubmissionID) ON DELETE CASCADE ON UPDATE CASCADE
     );""")
 
   execute("""
@@ -101,7 +101,7 @@ if (True):
       Rev          FLOAT,
       Pop          INT,
       Pas           INT,
-      FOREIGN KEY (SubmissionID) REFERENCES PARSING_DATA(SubmissionID)
+      FOREIGN KEY (SubmissionID) REFERENCES PARSING_DATA(SubmissionID) ON DELETE CASCADE ON UPDATE CASCADE
       );""")
 
   values = [("1", "새마을 식당", "50.27", "10", "1"),
@@ -119,7 +119,7 @@ if (True):
     Tem          FLOAT,
     Fpop         INT,
     Lpop           INT,
-    FOREIGN KEY (SubmissionID) REFERENCES PARSING_DATA(SubmissionID)
+    FOREIGN KEY (SubmissionID) REFERENCES PARSING_DATA(SubmissionID) ON DELETE CASCADE ON UPDATE CASCADE
     );""")
 
   execute("""
@@ -129,7 +129,7 @@ if (True):
     Tem          FLOAT,
     Fpop         INT,
     Lpop           INT,
-    FOREIGN KEY (SubmissionID) REFERENCES PARSING_DATA(SubmissionID)
+    FOREIGN KEY (SubmissionID) REFERENCES PARSING_DATA(SubmissionID) ON DELETE CASCADE ON UPDATE CASCADE
     );""")
   values = [("4", "강남", "18", "10", "30"),
             ("4", "강서", "28", "20", "50")]

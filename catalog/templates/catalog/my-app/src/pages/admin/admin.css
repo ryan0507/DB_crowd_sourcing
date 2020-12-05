@@ -22,7 +22,7 @@
 
 /*admin_taskInfo*/
 .task_howToPass, .Submission_Period, .originDataType {
-    margin-top: 20px;
+    padding-top: 20px;
     clear: both;
 }
 .originDataType .wrapper_title{
@@ -219,11 +219,15 @@
     margin-top: 12px;
     margin-right: 90px;
 }
-.adminAlterPassword input[type="submit"]{
-    margin: 40px auto 0 auto;
-    transform: translate(296px,0);
+.adminAlterPassword .saveButton{
+    margin : 0 auto;
+    transform: translate(-45px,0px);
+}
+.adminAlterPassword button[type="submit"]{
+    margin: 20px auto 0 auto;
     font-size: 20px;
     font-weight: 600;
+    display: table;
 }
 
 /*task add*/
@@ -344,10 +348,10 @@
     margin-top: 10px;
 }
 .formContent .dataTableSchema{
-    margin-top: 25px;
+    margin-top: 20px;
 }
 .formContent .originDataType_add{
-    margin-top: 25px;
+    padding-top: 20px;
 }
 .originDataType_add .wrapper_title{
     float: left;
