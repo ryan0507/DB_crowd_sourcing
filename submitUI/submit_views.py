@@ -349,7 +349,6 @@ def download_csv_data(request, SubmissionID):
 
         # write the headers
         writer.writerow([smart_str(i) for i in TaskSchema.split("%")[::2]])
-        print([smart_str(i) for i in TaskSchema.split("%")[::2]])
         data = select(dbconn, "SELECT * FROM {} WHERE SubmissionID = {}".format(TableName,SubmissionID))
 
         for row in data:
@@ -397,7 +396,6 @@ def postFile(request):
         col = data.columns
         insert_type = ""
         for i in schema.keys():
-            print(i)
             if i not in col:
                 return JsonResponse({"state": "202", "message": "제출한 파일이 원본 스키마와 맞지 않습니다."})
             if type[schema[i]] == "float":
@@ -413,12 +411,11 @@ def postFile(request):
                     data[i] = data[i].round()
                     insert_type += "%s,"
                 except Exception as e:
-                    print(e)
+
                     return JsonResponse({"state": "202", "message": "제출한 파일이 스키마의 데이터 타입과 맞지 않습니다."})
             elif type[schema[i]] == "boolean":
                 try:
                     insert_type += "%s,"
-                    print(data[i][data[i].fillna("").astype(str).str.contains("F")])
                     data.loc[data[i].fillna("").astype(str).str.contains("F"),i] = 0
                     data.loc[data[i].fillna("").astype(str).str.contains("T"), i] = 1
                     data[i] = data[i].astype(float)
@@ -427,11 +424,12 @@ def postFile(request):
                         return JsonResponse({"state": "202", "message": "제출한 파일이 스키마의 데이터 타입과 맞지 않습니다."})
                     data[i] = data[i].round()
                 except Exception as e:
-                    print(e)
+
                     return JsonResponse({"state": "202", "message": "제출한 파일이 스키마의 데이터 타입과 맞지 않습니다."})
             elif type[schema[i]] == "string":
                 try:
                     data[i] = data[i].astype(str)
+                    data.loc[data[i]=="nan",i] = np.nan
                     insert_type += "%s,"
                 except:
                     return JsonResponse({"state": "202", "message": "제출한 파일이 스키마의 데이터 타입과 맞지 않습니다."})
@@ -445,7 +443,7 @@ def postFile(request):
             raise Exception
 
         lst = list(select(dbconn, "SELECT MainID FROM USER WHERE MainID LIKE 'as %'"))
-        print(lst)
+
         rater = random.sample(lst,1)[0][0]
 
         merge_bulk(dbconn,"""INSERT INTO PARSING_DATA(OriginalTypeID, SubmitterID, AssessorID, SubmissionNumber,
@@ -467,11 +465,10 @@ def postFile(request):
 
         id = random.randint(0,10000)
         request.session[id] = info
-        print(request.session[id])
         dbconn.commit()
         return JsonResponse({"state": "200","message": str(id)})
     except Exception as e:
-        print(e)
+
         dbconn.rollback()
         return JsonResponse({"state": "203", "message": "오류가 발생했습니다."})
 
@@ -549,7 +546,7 @@ def CalCulateScore_ReturnRefinedDF(data1, TaskID, MainID):
 
         return (Info, data2)
     except Exception as e:
-        print(e)
+
         Info = {"NullRow": -1, "SelfDupRow": -1, "OtherDupRow": -1, "NullPercent": -1, "TotalRow": -1, "RestRow": -1,
                 "TotalColumn": -1, "Score": -1}
         data2 = pd.DataFrame()
@@ -559,7 +556,6 @@ def CalCulateScore_ReturnRefinedDF(data1, TaskID, MainID):
 
 def getResult(request,id):
     try:
-        print(type(id))
         result = request.session[str(id)]
         del request.session[str(id)]
         return JsonResponse(result)
