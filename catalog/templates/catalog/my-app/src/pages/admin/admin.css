@@ -631,3 +631,18 @@
     font-weight: 780;
     transform: translate(175px,0px);
 }
+.notice2{
+    color:#E86E77;
+    font-size: 13px;
+    font-weight: 780;
+    transform: translate(30px,0px);
+    margin-top: 4px;
+}
+
+.notice3{
+    clear: both;
+    color:#E86E77;
+    font-size: 13px;
+    font-weight: 780;
+    transform: translate(175px,-25px);
+}

@@ -119,7 +119,8 @@ function Admin_taskAdd(){
     };
 
     const handleTableNameChange = ( value: string) =>{
-        if(!value.includes(' ')){
+        let korean_pattern = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
+        if(!korean_pattern.test(value) && !value.includes(' ')){
         setTask({...task, ["TableName"] : value});}
     }
 
@@ -462,6 +463,7 @@ function Admin_taskAdd(){
                           value={task.TableName}
                           onChange={e=> handleTableNameChange(e.target.value)}
                           />
+                          <div className={"notice2"}>*테이블 이름에는 한글 및 띄어쓰기를 사용할 수 없습니다.</div>
                </div>
 
                <div className={"dataTableSchema"}>

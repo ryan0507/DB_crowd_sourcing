@@ -209,7 +209,11 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
       const [_tempValue, setTempValue] = useState(defaultTempValue);
       const onValueChange =<P extends keyof tempValue> (prop: P, value: tempValue[P]) =>
       {
-          setTempValue({..._tempValue, [prop]: value});
+          let special_pattern = /[`~!@#$%^&*|\\\'\";:\/?]/gi;
+          let korean_pattern = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
+          if(!special_pattern.test(value) && !korean_pattern.test(value)) {
+              setTempValue({..._tempValue, [prop]: value});
+          }
       }
       const onTypeNameChange = (value : string) =>{
           setName(value);
@@ -462,6 +466,7 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
                               <form className="input" onClick={e => handleSubmit(e)}>
                                   <button className={"short"} type="submit">추가</button>
                               </form>
+                                <div className={"notice3"}>*속성 이름에는 한글 및 특수문자를 사용할 수 없습니다.</div>
                           </div>
                            <div className={"datatypeList"}><ul className={"decimalList"}>{datatypeList}</ul></div>
                            {_list.length >= 1 ?(
