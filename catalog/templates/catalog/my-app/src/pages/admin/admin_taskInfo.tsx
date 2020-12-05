@@ -324,7 +324,7 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
           _axiosPost(tempUserList, tempRequestUser);
       }
       const _axiosPost = (tempUserList : userList[], tempRequestUser : requestUser[]) => {
-          axios.post(`http://127.0.0.1:8000/adminUI/${props.match.params.task_id}/create`, {
+          axios.post(`http://127.0.0.1:8000/adminUI/${props.match.params.task_id}/pass/`, {
                 TaskID : info.TaskID,
                 Name : info.Name,
                 SubmissionPeriod : info.SubmissionPeriod,
