@@ -113,6 +113,7 @@ def withdrawal(request):
         if data["pw"] != list(select(dbconn,"SELECT Password FROM USER WHERE MainID = '{}'".format(request.session["MainID"])))[0][0]:
             return JsonResponse({"state": "f1", "message": "탈퇴를 위해서는 현재 비밀 번호를 입력해야합니다. 입력한 현재 비밀번호가 일치하지 않습니다."})
         merge(dbconn, "DELETE FROM USER WHERE MainID = %s", (request.session["MainID"],))
+        merge(dbconn, "UPDATE PARSING_DATA SET SubmitterID = %s WHERE SubmitterID IS NULL ",['ad 1'])
         del request.session['MainID'], request.session['ID'], request.session['Name']
         dbconn.commit()
         return JsonResponse({"state": "s", "message" : "성공적으로 탈퇴 되었습니다."})
