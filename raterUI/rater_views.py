@@ -202,9 +202,7 @@ def RaterFileDetailMergeView(request):
 
             if (finalNum != originalNum + selectedNum): # 중복된 data tuple이 있는 경우
                 print("Duplicated : {} rows".format(originalNum + selectedNum - finalNum))
-                for row in select(dbconn, sql3):
-                    originalNum = row[0]
-                newTupleNum = originalNum - changedNum
+                newTupleNum = originalNum + selectedNum - finalNum
                 sql5 = "UPDATE PARSING_DATA SET NUMBEROFTUPLE = {} WHERE SUBMISSIONID = {}".format(newTupleNum, data["SubmissionID"]) # parsing_data의 numberOfTuple을 새로 업데이트하는 sql
                 merge(dbconn, sql5, ())
 
