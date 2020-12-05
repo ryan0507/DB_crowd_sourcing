@@ -365,7 +365,7 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
 
 
       const downloadfile = (i:string, name:string) => {
-        axios({method: 'GET', url: `http://127.0.0.1:8000/submitUI/downloadcsvfile/${i}/`,
+        axios({method: 'GET', url: `http://127.0.0.1:8000/adminUI/downloadcsvfile/${i}/`,
         responseType: 'blob' }).then((r)=>{
             if (r.status === 200) {
                 const url = window.URL.createObjectURL(new Blob([r.data], { type: r.headers['content-type'] }));
