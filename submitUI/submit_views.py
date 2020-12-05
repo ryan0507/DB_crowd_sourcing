@@ -574,11 +574,11 @@ def execute(dbconn, query, bufferd=True):
         dbconn.rollback();
         raise e;
 
-import numpy as np
-dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
-merge_bulk(dbconn,"INSERT INTO Rest_Rev VALUE (%s, %s, %s, %s, %s)",[(1,"1",None,1,1)])
-# merge_bulk(dbconn,"INSERT INTO Rest_Rev VALUE (%s, %s, %s, %s, %s)",[(1,"1",2,1,1.)])
-dbconn.commit()
+# import numpy as np
+# dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
+# merge_bulk(dbconn,"INSERT INTO Rest_Rev VALUE (%s, %s, %s, %s, %s)",[(1,"1",None,1,1)])
+# # merge_bulk(dbconn,"INSERT INTO Rest_Rev VALUE (%s, %s, %s, %s, %s)",[(1,"1",2,1,1.)])
+# dbconn.commit()
 
 # execute(dbconn,"DELETE FROM Rest_Rev WHERE SubmissionID IN ('124','125')")
 
