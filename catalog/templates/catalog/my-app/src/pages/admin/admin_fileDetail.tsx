@@ -25,22 +25,6 @@ interface _submission{
 }
 
 
-
-// interface Column {
-//   label: string;
-//   minWidth?: number;
-//   align?: 'center';
-//   alignment?: 'center';
-//   format?: (value: number) => string;
-// }
-//
-// const columns: Column[] = [
-//   { label: '음식점\u00a0이름'},
-//   {label: '월\u00a0매출' },
-//   { label: '월\u00a0고객\u00a0수'},
-//   { label: '순\u00a0이익',},
-// ];
-
 const useStyles = makeStyles({
   root: {
     width: '1000px',
@@ -50,23 +34,6 @@ const useStyles = makeStyles({
     maxHeight: 440,
   }
 });
-
-
-// interface Data {
-//   '음식점\u00a0이름' : string;
-//   '월\u00a0매출' : number;
-//   '월\u00a0고객\u00a0수' : number;
-//   '순\u00a0이익': number;
-// }
-//
-// function createData( name: string, salary: number, customer: number,money: number): Data {
-//   return { name, salary, customer, money };
-// }
-//
-// const rows = [
-//   createData('새마을식당', 30000000,  60000, 4500000),
-//   createData('새마을식당', 30000000,  60000, 4500000),
-// ];
 
 export default function Admin_fileDetail(props : RouteComponentProps<{task_id : string, submission_id : string}>,){
     const [detail, setDetail] = useState<fileDetail>({Columns: [], Submissions: []});

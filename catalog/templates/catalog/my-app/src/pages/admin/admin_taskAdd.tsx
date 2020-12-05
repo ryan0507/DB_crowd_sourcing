@@ -553,7 +553,7 @@ function Admin_taskAdd(){
                                   }}
                                 />
                            </div>
-                                <div className={"notice1"}>*속성 이름에는 영어 소문자와 한글만을 사용할 수 있습니다.</div>
+                                <div className={"notice1"}>*데이터 타입 이름에는 영어 소문자와 한글만을 사용할 수 있습니다.</div>
 
                            <div className={"valueList"}>
                                {valueList.map((item)=>{

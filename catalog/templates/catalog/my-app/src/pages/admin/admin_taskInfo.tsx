@@ -214,13 +214,18 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
       const onValueChange =<P extends keyof tempValue> (prop: P, value: tempValue[P]) =>
       {
           let special_pattern = /[`~!@#$%^&*|\\\'\";:\/?]/gi;
-          let korean_pattern = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
-          if(!special_pattern.test(value) && !korean_pattern.test(value)) {
+          let Capital_pattern = /[A-Z]/;
+          if(!special_pattern.test(value) && !Capital_pattern.test(value) && !value.includes(' ')) {
               setTempValue({..._tempValue, [prop]: value});
           }
       }
       const onTypeNameChange = (value : string) =>{
-          setName(value);
+          let special_pattern = /[`~!@#$%^&*|\\\'\";:\/?]/gi;
+          let Capital_pattern = /[A-Z]/;
+          if(!special_pattern.test(value) && !Capital_pattern.test(value) && !value.includes(' ')) {
+              setName(value);
+          }
+
     }
       const handleSubmit = (e:any) =>{
           e.preventDefault();
@@ -478,6 +483,7 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
                                       onTypeNameChange(e.target.value)
                                   }}
                                 />
+                                <div className={"notice4"}>*데이터 타입 이름에는 영어 소문자와 한글만을 사용할 수 있습니다.</div>
                            </div>
                            <div className={"valueList"}>
                                {info.Task_Schema.map((item)=>{
@@ -498,7 +504,7 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
                               <form className="input" onClick={e => handleSubmit(e)}>
                                   <button className={"short"} type="submit">추가</button>
                               </form>
-                                <div className={"notice3"}>*속성 이름에는 한글 및 특수문자를 사용할 수 없습니다.</div>
+                                <div className={"notice3"}>*속성 이름에는 영어 소문자와 한글만을 사용할 수 있습니다.</div>
                           </div>
                            <div className={"datatypeList"}><ul className={"decimalList"}>{datatypeList}</ul></div>
                            {_list.length >= 1 ?(
