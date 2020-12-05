@@ -3,6 +3,7 @@ from django.http import JsonResponse
 import mysql.connector
 import json
 from datetime import date
+import pandas as pd
 
 DB_HOST = "34.64.198.135"
 DB_ROOT = "root"
@@ -30,6 +31,14 @@ def merge(dbconn, query, values, buffered=True):
     except Exception as e:
         dbconn.rollback();
         raise e;
+
+def merge_bulk(dbconn, query, values, bufferd=True):
+  try:
+    cursor = dbconn.cursor(buffered=bufferd);
+    cursor.executemany(query, values);
+  except Exception as e:
+    dbconn.rollback();
+    raise e;
 
 def RaterMainView(request):
     try:
@@ -170,23 +179,29 @@ def RaterFileDetailMergeView(request):
         if data["P_NP"] == "P":
             nullNumberChanged, originalNum, changedNum = False, 0, 0
             sql2 = "SELECT * FROM {} WHERE SUBMISSIONID = '{}'".format(waitTableName, data["SubmissionID"]) # 대기 테이블의 모든 튜플을 가져오는 sql
-            sql3 = "SELECT NUMBEROFTUPLE FROM PARSING_DATA WHERE SUBMISSIONID = '{}'".format(data["SubmissionID"]) # 해당 제출의 저장된 튜플 수 가져오는 sql
+            #sql3 = "SELECT NUMBEROFTUPLE FROM PARSING_DATA WHERE SUBMISSIONID = '{}'".format(data["SubmissionID"]) # 해당 제출의 저장된 튜플 수 가져오는 sql
+            sql3 = "SELECT * FROM {}".format(tableName) # 태스크의 데이터 테이블 가져오는 sql
 
-            for row in select(dbconn, sql2):
-                value_template = "%s" + (", %s" * (len(row) - 1))
-                sql4 = "INSERT INTO {} VALUES ({})".format(tableName, value_template)
-
-                a = "SELECT EXISTS (SELECT * FROM " + tableName + " WHERE " + " and ".join([j + "=" "'{}'".format(i) if type(i) is str else "ROUND({},4)".format(j) + "=" + "ROUND({},4)".format(i) for j, i in
-                                                                                            zip(taskschema, row[1:])]) + ")"
-                if next(select(dbconn, a))[0]:
-                    merge(dbconn, sql4, row)
-                else:
-                    changedNum += 1
-                    nullNumberChanged = True
+            selected_df = pd.DataFrame(select(dbconn, sql2))
+            original_df = pd.DataFrame(select(dbconn, sql3))
+            selectedColumnNum = selected_df.shape[1]
+            value_template = "%s" + (", %s" * (selectedColumnNum - 1))
 
 
+            final_df = pd.concat([original_df, selected_df], axis = 0)
+            originalNum, selectedNum = original_df.shape[0], selected_df.shape[0]
 
-            if nullNumberChanged: # 중복된 data tuple이 있는 경우
+            final_df = final_df.drop_duplicates(final_df.columns[1:], keep = 'first')
+            finalNum = final_df.shape[0]
+
+            sql4 = "DELETE FROM {}".format(tableName)
+            sql5 = "INSERT INTO {} VALUES ({})".format(tableName, value_template)
+
+            merge(dbconn, sql4, ())
+            merge_bulk(dbconn, sql5, [tuple(i) for i in final_df.values])
+
+            if (finalNum != originalNum + selectedNum): # 중복된 data tuple이 있는 경우
+                print("Duplicated : {} rows".format(originalNum + selectedNum - finalNum))
                 for row in select(dbconn, sql3):
                     originalNum = row[0]
                 newTupleNum = originalNum - changedNum
@@ -211,29 +226,3 @@ def RaterFileDetailMergeView(request):
         return JsonResponse({}, safe=False)
     finally:
         dbconn.close()
-# dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
-#
-# tableName = "Rest_Rev"
-# taskschema = ["Name",	'Rev',	"Pop",	"Pas"]
-# rows = [(1,"새마을 식당",50.27,10,1),
-#         (6,"학생식당",1.27,1,0),
-#         (1,"한신포차",200,10,0),
-#         (6,"홍콩반점",20,20,0),
-#         (6,"홍콩반점",20,20,1),
-#         (6,"홍콩반점",20,20,2),
-#         (6,"홍콩반점",20,20,3)]
-# import pandas as pd
-# # print()
-# a = pd.DataFrame(list(select(dbconn,"SELECT * FROM " + tableName)))
-# a = a.append(pd.DataFrame(rows))
-# # print(a[a.duplicated()])
-# print(a.round(4))
-# for row in rows:
-#     a = "SELECT EXISTS (SELECT * FROM " + tableName + " WHERE " + " and ".join([j + "=" "'{}'".format(i) if type(i) is str else "ROUND({},5)".format(j) +"=" +  "ROUND({},5)".format(i) for j,i in zip(taskschema,row[1:])]) + ")"
-#     print(a)
-#     if next(select(dbconn, a))[0]:
-#         print("맞음")
-#     else:
-#         print("틀림")
-#
-# # "SELECT * FROM PARSING_DATA WHERE "
