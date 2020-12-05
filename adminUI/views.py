@@ -109,8 +109,6 @@ def TaskAddView(request):
             tmp = tableSchema.split("%")
             tablename = data["TableName"] + "_W"
 
-
-
             sql1 = "CREATE TABLE " + data["TableName"] + "(SubmissionID INT"
             sql2 = "CREATE TABLE " + tablename + "(SubmissionID INT"
             pk1 = ",PRIMARY KEY("
@@ -326,9 +324,10 @@ def FileDetailView(request, infoID, fileID):
             data_dict["Columns"].append(''.join(column_lst[j]))
         sub_lst = []
         for data in selectDetail(dbconn, sql2, list_arg2):
+            sub_dict = {"submission": []}
             for i in range(len(column_lst)):
-                sub_lst.append(str(data[i]))
-            data_dict["Submissions"].append(sub_lst)
+                sub_dict["submission"].append(str(data[i]))
+            data_dict["Submissions"].append(sub_dict)
 
         return JsonResponse(data_dict, safe=False)
 
