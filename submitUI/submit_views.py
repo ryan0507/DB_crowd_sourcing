@@ -380,7 +380,7 @@ def postFile(request):
 
         if fileName[-3:] != "csv":
             return JsonResponse({"state": 202, "message": "csv파일만을 제출해야합니다."})
-        data = [i.decode('utf-8').strip().split(",") for i in request.FILES['file']]
+        data = [i.decode('utf-8').strip().strip("\ufeff").split(",") for i in request.FILES['file']]
         data = pd.DataFrame(data[1:],columns=data[0])
         data = data.where(data != "")
 
@@ -424,14 +424,13 @@ def postFile(request):
                         return JsonResponse({"state": "202", "message": "제출한 파일이 스키마의 데이터 타입과 맞지 않습니다."})
                     data[i] = data[i].round()
                 except Exception as e:
-
                     return JsonResponse({"state": "202", "message": "제출한 파일이 스키마의 데이터 타입과 맞지 않습니다."})
             elif type[schema[i]] == "string":
                 try:
                     data[i] = data[i].astype(str)
-                    data.loc[data[i]=="nan",i] = np.nan
+                    data.loc[data[i] == "nan",i] = np.nan
                     insert_type += "%s,"
-                except:
+                except Exception as e:
                     return JsonResponse({"state": "202", "message": "제출한 파일이 스키마의 데이터 타입과 맞지 않습니다."})
             else:
                 raise Exception
