@@ -380,13 +380,12 @@ def postFile(request):
         fileName = str(request.FILES["file"])
 
         if fileName[-3:] != "csv":
-            return JsonResponse({"state": 202, "message": "csv파일만을 제출해야합니다."})
+            return JsonResponse({"state": "202", "message": "csv파일만을 제출해야합니다."})
         try:
-            data = [i.decode('utf-8').strip().strip("\ufeff").split(",") for i in request.FILES['file']]
-            data = pd.DataFrame(data[1:],columns=data[0])
-            data = data.where(data != "")
-        except:
-            return JsonResponse({"state": 202, "message": "utf-8로 디코딩이 되지 않습니다."})
+            data = pd.read_csv(request.FILES['file'])
+        except Exception as e:
+            return JsonResponse({"state": "202", "message": "utf-8로 디코딩이 되지 않습니다."})
+
 
         schema = next(select(dbconn,"SELECT Mapping FROM ORIGINAL_DATA_TYPE WHERE OriginalTypeID = {}".format(post_data["OriginalID"])))
         TableName, type = next(select(dbconn,"SELECT TableName, TaskSchema FROM TASK WHERE TaskID = {}".format(post_data["TaskID"])))
