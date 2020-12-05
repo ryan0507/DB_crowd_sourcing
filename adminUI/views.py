@@ -242,18 +242,23 @@ def TypeAddView(request, infoID):
 
         body_unicode = request.body.decode('utf-8')
         data = json.loads(body_unicode)
+        print("data: ", data)
 
-        oSchema = data["OriginalData"][len(data["OriginalData"]) - 1]["Schema"]
-        for j in range(len(oSchema)):
-            if j == 0:
-                mapping = oSchema[j]["Big"] + "%" + oSchema[j]["small"]
-            else:
-                mapping = mapping + "%" + oSchema[j]["Big"] + "%" + oSchema[j]["small"]
+        arg_tuple = (infoID,)
+        merge(dbconn, "DELETE FROM ORIGINAL_DATA_TYPE WHERE TaskID = %s", arg_tuple)
 
-        data_tuple = (infoID, data["OriginalData"][j]["Name"], mapping)
-        merge(dbconn, """INSERT INTO ORIGINAL_DATA_TYPE(TaskID, OriginSchema, Mapping) 
-                            VALUES (%s, %s, %s)""", data_tuple)
-        dbconn.commit()
+        for i in range(len(data["OriginalData"])):
+            oSchema = data["OriginalData"][i]["Schema"]
+            for j in range(len(oSchema)):
+                if j == 0:
+                    mapping = oSchema[j]["Big"] + "%" + oSchema[j]["small"]
+                else:
+                   mapping = mapping + "%" + oSchema[j]["Big"] + "%" + oSchema[j]["small"]
+
+            data_tuple = (infoID, data["OriginalData"][i]["Name"], mapping)
+            merge(dbconn, """INSERT INTO ORIGINAL_DATA_TYPE(TaskID, OriginSchema, Mapping) 
+                                VALUES (%s, %s, %s)""", data_tuple)
+            dbconn.commit()
 
         return JsonResponse([], safe=False)
 
@@ -381,45 +386,52 @@ def UserListView(request):
 def PresenterDetailView(request, su_ID):
     try:
         dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
-        sql = """SELECT A.ID, T.Name, P.SubmissionNumber, P.SubmissionDate, O.OriginSchema, 
-                        P.FileName, P.QualAssessment, P.QuanAssessment, P.P_NP 
-                    FROM PARSING_DATA P, TASK T, ORIGINAL_DATA_TYPE O, USER A
-                    WHERE O.OriginalTypeID = P.OriginalTypeID AND T.TaskID = O.TaskID 
-                    AND A.MainID = P.SubmitterID AND P.SubmitterID = %s"""
 
+        sql = "SELECT MainID, ID FROM USER WHERE MainID = %s"
         su_ID = "su " + str(su_ID)
         list_arg = [su_ID]
 
         count = 0
         score = 0
-        pre_dict = {"Tasks": []}
+        pre_dict = {"Tasks": [], "ID": "", "score": 0}
         tasks_dict = {}
+
         for row in selectDetail(dbconn, sql, list_arg):
-            pre_dict["ID"] = row[0]
-            taskName = row[1]
-            score += ((row[6] + row[7]) / 2)
-            file_dict = {"SubmissionNum": row[2], "SubmissionDate": row[3], "OriginSchema": row[4], "FileName": row[5],
-                         "QualAssessment": row[6], "QuanAssessment": row[7], "P_NP": row[8]}
-            file_dict["SubmissionTime"] = file_dict["SubmissionDate"].strftime('%H:%M:%S')
-            file_dict["SubmissionDate"] = file_dict["SubmissionDate"].strftime('%Y-%m-%d')
-            file_dict["QualAssessment"] = int(file_dict["QualAssessment"])
-            file_dict["QuanAssessment"] = round(file_dict["QuanAssessment"], 2)
-            if taskName not in tasks_dict.keys():
-                tasks_dict = {taskName: count}
-                task_dict = {"TaskName": taskName}
-                task_dict["Files"] = [file_dict]
-                task_dict["Total"] = 1
-                task_dict["Pass"] = 0
-                pre_dict["Tasks"].append(task_dict)
-            else:
-                pre_dict["Tasks"][tasks_dict[taskName]]["Total"] += 1
-                pre_dict["Tasks"][tasks_dict[taskName]]["Files"].append(file_dict)
-            if file_dict["P_NP"] == "P": pre_dict["Tasks"][tasks_dict[taskName]]["Pass"] += 1
-            count += 1
-        pre_dict["score"] = round(score / count, 2)
+            pre_dict["ID"] = row[1]
+
+            sql2 = """SELECT T.Name, P.SubmissionNumber, P.SubmissionDate, O.OriginSchema,
+                            P.FileName, P.QualAssessment, P.QuanAssessment, P.P_NP
+                      FROM PARSING_DATA P, TASK T, ORIGINAL_DATA_TYPE O
+                      WHERE O.OriginalTypeID=  P.OriginalTypeID AND T.TaskID = O.TaskID AND P.SubmitterID = %s"""
+
+            for row2 in selectDetail(dbconn, sql2, list_arg):
+                taskName = row2[0]
+                score += ((row2[5] + row2[6]) / 2)
+                file_dict = {"SubmissionNum": row2[1], "SubmissionDate": row2[2], "OriginSchema": row2[3], "FileName": row2[4],
+                             "QualAssessment": row2[5], "QuanAssessment": row2[6], "P_NP": row2[7]}
+                file_dict["SubmissionTime"] = file_dict["SubmissionDate"].strftime('%H:%M:%S')
+                file_dict["SubmissionDate"] = file_dict["SubmissionDate"].strftime('%Y-%m-%d')
+                file_dict["QualAssessment"] = int(file_dict["QualAssessment"])
+                file_dict["QuanAssessment"] = round(file_dict["QuanAssessment"], 2)
+                if taskName not in tasks_dict.keys():
+                    tasks_dict = {taskName: count}
+                    task_dict = {"TaskName": taskName}
+                    task_dict["Files"] = [file_dict]
+                    task_dict["Total"] = 1
+                    task_dict["Pass"] = 0
+                    pre_dict["Tasks"].append(task_dict)
+                else:
+                    pre_dict["Tasks"][tasks_dict[taskName]]["Total"] += 1
+                    pre_dict["Tasks"][tasks_dict[taskName]]["Files"].append(file_dict)
+                if file_dict["P_NP"] == "P": pre_dict["Tasks"][tasks_dict[taskName]]["Pass"] += 1
+                count += 1
+            if count != 0:
+                pre_dict["score"] = round(score / count, 2)
+
         return JsonResponse(pre_dict, safe=False)
 
     except Exception as e:
+        print(e)
         return JsonResponse([], safe=False)
     finally:
         dbconn.close()

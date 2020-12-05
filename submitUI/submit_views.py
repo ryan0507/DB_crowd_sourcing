@@ -537,7 +537,7 @@ def CalCulateScore_ReturnRefinedDF(data1, TaskID, MainID):
 
         if Info["RestRow"] < 2000:
             weight = np.ones(4)
-            weight[0] = (2000 - Info["RestRow"])
+            weight[0] = max((2000 - Info["RestRow"])/2,1)
         else:
             weight = np.ones(4)
         weight = weight / weight.sum()
