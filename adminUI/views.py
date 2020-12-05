@@ -313,17 +313,20 @@ def FileDetailView(request, infoID, fileID):
         for file in selectDetail(dbconn, sql1, list_arg1):
             tableName = file[0]
 
-        list_arg2 = [fileID]
         sql2 = "SELECT * FROM " + tableName + " WHERE SubmissionID = %s"
         sql3 = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS" + " WHERE TABLE_NAME = %s"
+
+        list_arg2 = [fileID]
+        sql4 = "SELECT FileName FROM PARSING_DATA WHERE SubmissionID = %s"
+        for name in selectDetail(dbconn, sql4, list_arg2):
+            fileName = name[0]
 
         list_arg3 = [tableName]
         column_lst = selectDetail(dbconn, sql3, list_arg3)
 
-        data_dict = {"Columns": [], "Submissions": []}
+        data_dict = {"FileName": fileName, "Columns": [], "Submissions": []}
         for j in range(len(column_lst)):
             data_dict["Columns"].append(''.join(column_lst[j]))
-        sub_lst = []
         for data in selectDetail(dbconn, sql2, list_arg2):
             sub_dict = {"submission": []}
             for i in range(len(column_lst)):
@@ -332,8 +335,8 @@ def FileDetailView(request, infoID, fileID):
 
         return JsonResponse(data_dict, safe=False)
 
-    except Exception as e:
-        return JsonResponse([], safe=False)
+    #except Exception as e:
+    #    return JsonResponse([], safe=False)
     finally:
         dbconn.close()
 
