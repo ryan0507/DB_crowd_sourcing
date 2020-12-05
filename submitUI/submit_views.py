@@ -458,7 +458,7 @@ def postFile(request):
 
         info = {"TotalColumn" : str(score["TotalColumn"]), "NullRow" : str(score["NullRow"]),
          "SelfDupRow" : str(score["SelfDupRow"]), "OtherDupRow" : str(score["OtherDupRow"]),
-         "NullPercent": str(round(score["NullPercent"] * 100,5)), "TotalRow":str(score["TotalRow"]),
+         "NullPercent": str(round(score["NullPercent"] * 100,3)), "TotalRow":str(score["TotalRow"]),
          "RestRow" : str(score["RestRow"]), "Score": str(round(score["Score"],3)),
          }
 
