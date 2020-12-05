@@ -327,16 +327,16 @@ def FileDetailView(request, infoID, fileID):
         list_arg3 = [tableName]
         column_lst = selectDetail(dbconn, sql3, list_arg3)
 
-        data_lst = [{"Columns": []}]
-        data_dict = {}
+        data_dict = {"Columns": [], "Submissions": []}
         for j in range(len(column_lst)):
-            data_lst[0]["Columns"].append(''.join(column_lst[j]))
+            data_dict["Columns"].append(''.join(column_lst[j]))
+        sub_dict = {}
         for data in selectDetail(dbconn, sql2, list_arg2):
             for i in range(len(column_lst)):
-                data_dict[''.join(column_lst[i])] = data[i]
-            data_lst.append(data_dict)
+                sub_dict[''.join(column_lst[i])] = str(data[i])
+            data_dict["Submissions"].append(sub_dict)
 
-        return JsonResponse(data_lst, safe=False)
+        return JsonResponse(data_dict, safe=False)
 
     except Exception as e:
         return JsonResponse([], safe=False)
