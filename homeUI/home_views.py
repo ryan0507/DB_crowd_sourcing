@@ -3,7 +3,7 @@ from django.http import JsonResponse
 import mysql.connector
 DB_HOST = "34.64.198.135"
 DB_ROOT = "root"
-DB_PASSWD = "1246team!"
+DB_PASSWD = '1246team!'
 DB_DATABASE = "DB_test"
 
 #dbconn = mysql.connector.connect(host="34.64.198.135", user="root", passwd="111111", database="DB_test")
