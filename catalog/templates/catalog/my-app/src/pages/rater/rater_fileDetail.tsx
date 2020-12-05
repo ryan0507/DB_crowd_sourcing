@@ -212,12 +212,9 @@ export default function Rater_taskDetail(props : RouteComponentProps<{submission
                                 </div>
                                 <div className={"file_download"}>
                                     <div className={"wrapper_title"}>파일 다운로드</div>
-
-                                    <div className={"lightgray_wrapper_file"}>
-                                        <button onClick = {(i) => downloadfile(props.match.params.submission_id, item.FileName)}>
+                                        <button className={"downloadCSV"} onClick = {(i) => downloadfile(props.match.params.submission_id, item.FileName)}>
                                             {item.FileName}
                                         </button>
-                                    </div>
                                 </div>
                                 <div className={"taskData_table_name"}>
                                     <div className={"wrapper_title"}>태스크 데이터 테이블 이름</div>

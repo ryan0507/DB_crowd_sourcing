@@ -83,8 +83,10 @@ function Admin_alterPassword() {
                           onChange = {handleRePWChange}
                       />
                    </div>
-                   <button type="submit" onClick={(event) => AlterPassword(event)}>저장</button>
-               </div>
+                   <div className={"saveButton"}>
+                       <button type="submit" onClick={(event) => AlterPassword(event)}>저장</button>
+                   </div>
+                   </div>
            </div>
       </div>
   );
