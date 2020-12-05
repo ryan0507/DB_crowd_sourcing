@@ -213,7 +213,7 @@ function Admin_taskAdd(){
       {
           let special_pattern = /[`~!@#$%^&*|\\\'\";:\/?]/gi;
           let korean_pattern = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
-          if(!special_pattern.test(value) && !korean_pattern) {
+          if(!special_pattern.test(value) && !korean_pattern.test(value)) {
               setTempValue({..._tempValue, [prop]: value});
           }
       }

@@ -69,6 +69,7 @@ interface file{
     SubmissionNumber : number,
     FileName : string,
     P_NP : string,
+    SubmissionID : number,
     SubmissionTime : string,
 }
 
@@ -574,7 +575,7 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
                                            return (
                                               <TableCell key={column.id} align='center'
                                                   style={{fontSize: '14px', fontWeight: 'normal', color:'black' }}>
-                                                    <Link to ={`/admin/filedetail/`}>
+                                                    <Link to ={`/admin/filedetail/${row.SubmissionID}`}>
                                                         {column.format && typeof value === 'number' ? column.format(value) : value}
                                                     </Link>
                                               </TableCell>

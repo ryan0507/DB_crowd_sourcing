@@ -1,5 +1,5 @@
-import { BrowserRouter as Router, Route,Link } from 'react-router-dom';
-import React from 'react';
+import {BrowserRouter as Router, Route, Link, RouteComponentProps} from 'react-router-dom';
+import React, {useEffect} from 'react';
 import table from '../table';
 import {makeStyles} from "@material-ui/core/styles";
 import TableContainer from "@material-ui/core/TableContainer";
@@ -10,6 +10,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TablePagination from "@material-ui/core/TablePagination";
 import Paper from "@material-ui/core/Paper";
+import axios from "axios";
 
 interface Column {
   id: 'name' | 'salary' | 'customer' | 'money' ;
@@ -54,7 +55,17 @@ const rows = [
   createData('새마을식당', 30000000,  60000, 4500000),
 ];
 
-export default function Admin_fileDetail(){
+export default function Admin_fileDetail(props : RouteComponentProps<{submission_id : string}>,){
+    // const getApi = async() =>{
+    //     await axios.get(`http://127.0.0.1:8000/adminUI/${props.match.params.task_id}/`).then((r)=>{
+    //         let temp: taskInfo = r.data;
+    //         setInfo(temp);
+    //     })
+    // }
+    //
+    // useEffect(()=>{
+    //     getApi()
+    // },[])
     const classes = useStyles();
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);

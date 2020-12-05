@@ -39,7 +39,7 @@ function admin() {
                     <Route exact={true} path="/admin/main" component={admin_main}/>
                     <Route exact path="/admin/taskadd" component={admin_taskAdd}/>
                     <Route exact path="/admin/taskinfo/:task_id" component={admin_taskInfo}/>
-                    <Route exact path="/admin/filedetail" component={admin_fileDetail}/>
+                    <Route exact path="/admin/filedetail/:submission_id" component={admin_fileDetail}/>
                     <Route exact path="/admin/tableschemaadd" component={admin_tableSchema_add}/>
                     <Route exact path="/admin/datatypeadd" component={admin_datatype_add}/>
                     <Route exact path="/admin/datatypeadd_exist" component={admin_datatype_add_exist}/>
