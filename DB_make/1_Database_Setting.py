@@ -75,7 +75,7 @@ tmp.append(
 CREATE TABLE PARSING_DATA(
 SubmissionID       INT                AUTO_INCREMENT PRIMARY KEY,
 OriginalTypeID     INT        ,
-SubmitterID        VARCHAR(20),
+SubmitterID        VARCHAR(20)        NOT NULL   DEFAULT 'ad 1',
 AssessorID         VARCHAR(20),
 SubmissionNumber   INT                NOT NULL,
 SubmissionDate     DATETIME           NOT NULL,
@@ -88,12 +88,12 @@ QualAssessment     DECIMAL(6,4),
 P_NP               VARCHAR(2)         NOT NULL    DEFAULT 'W',
 
 FOREIGN KEY (OriginalTypeID) REFERENCES ORIGINAL_DATA_TYPE(OriginalTypeID) ON DELETE CASCADE ON UPDATE CASCADE,
-FOREIGN KEY (SubmitterID) REFERENCES USER(MainID) ON DELETE SET NULL ON UPDATE CASCADE,
+FOREIGN KEY (SubmitterID) REFERENCES USER(MainID) ON DELETE SET DEFAULT ON UPDATE CASCADE,
 FOREIGN KEY (AssessorID) REFERENCES USER(MainID) ON DELETE SET NULL ON UPDATE CASCADE,
 CONSTRAINT domain_QuanAssessment CHECK (QuanAssessment >=0 and QuanAssessment <= 10),
 CONSTRAINT domain_QualAssessment CHECK ((QualAssessment >=0 and QualAssessment <= 10) OR QualAssessment IS NULL),
 CONSTRAINT domain_P_NP CHECK (P_NP = 'NP' OR P_NP = 'P' OR P_NP = 'W'),
-CONSTRAINT domain_SubmitterID CHECK (SubmitterID LIKE 'su %'),
+CONSTRAINT domain_SubmitterID CHECK (SubmitterID LIKE 'su %' or SubmitterID LIKE 'ad %'),
 CONSTRAINT domain_AssessorID CHECK (AssessorID LIKE 'as %')
 );
 """)
