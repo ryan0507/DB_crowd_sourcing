@@ -135,7 +135,7 @@ def infochange(request):
         data = json.loads(request.body)
         dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
         if data["BeforePW"] != list(select(dbconn, "SELECT Password FROM USER WHERE MainID = '{}'".format(request.session["MainID"])))[0][0]:
-            return JsonResponse({"state": "f1", "message": "탈퇴를 위해서는 현재 비밀 번호를 입력해야합니다. 입력한 현재 비밀번호가 일치하지 않습니다."})
+            return JsonResponse({"state": "f1", "message": "개인정보 수정을 위해서는 현재 비밀 번호를 입력해야합니다. 입력한 현재 비밀번호가 일치하지 않습니다."})
         for i in select(dbconn,"SELECT MainID FROM USER WHERE ID = '{}'".format(data["ID"])):
             if (i[0] != request.session["MainID"]):
                 return JsonResponse({"state": "f2", "message": "이미 존재하는 아이디 입니다."})
