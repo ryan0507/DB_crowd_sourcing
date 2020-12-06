@@ -20,12 +20,14 @@ interface assesor {
 }
 
 interface file {
+    TaskID: number,
     TaskName : string,
     SubmitterName : string,
     OriginSchema : string,
     Filename: string,
     QualAssessment: string,
     P_NP : string,
+    SubmissionID : number,
 }
 
 
@@ -66,12 +68,14 @@ const useStyles = makeStyles({
 
 
 interface Data {
+    TaskID: number,
     taskname: string,
-  presenter: string,
+    presenter: string,
     OriginSchema: string,
-  fileName: string;
-  presenterScore: string,
-  pNp: string;
+    fileName: string;
+    presenterScore: string,
+    pNp: string;
+    SubmissionID : number,
 }
 
 // function createData( taskname: string, estimatedate: string, estimatetime: string, presenter: string, fileName: string, presenterScore:string, pNp: string): Data {
@@ -81,7 +85,7 @@ interface Data {
 function createData(files : file[]): Data[] {
     let temp : Data[] = [];
     files.map((item)=>{
-        temp.push({taskname : item.TaskName, presenter: item.SubmitterName, OriginSchema:item.OriginSchema, fileName: item.Filename, presenterScore: item.QualAssessment, pNp: item.P_NP,})
+        temp.push({TaskID: item.TaskID, taskname : item.TaskName, presenter: item.SubmitterName, OriginSchema:item.OriginSchema, fileName: item.Filename, presenterScore: item.QualAssessment, pNp: item.P_NP, SubmissionID: item.SubmissionID})
     })
   return temp;
 }
@@ -146,7 +150,7 @@ export default function Admin_presenterDetail(props : RouteComponentProps<{as_ID
                                            return (
                                               <TableCell key={column.id} align='center'
                                                   style={{fontSize: '14px', fontWeight: 'normal', color:'black' }}>
-                                                    <Link to ="/admin/filedetail">
+                                                    <Link to ={`/admin/filedetail/${row.TaskID}/${row.SubmissionID}`}>
                                                         {column.format && typeof value === 'number' ? column.format(value) : value}
                                                     </Link>
                                               </TableCell>

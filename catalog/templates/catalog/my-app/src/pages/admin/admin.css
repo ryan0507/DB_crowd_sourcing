@@ -99,6 +99,7 @@
     position: absolute;
     left: 250px;
     font-weight: 600;
+    padding : 0px;
 }
 
 .applicantList .applicants{
@@ -115,26 +116,29 @@
 }
 .presenters .applicants li .sequenceNum,
 .applicantList .applicants li .sequenceNum{
+    clear: both;
     float:left;
     text-align: right;
-    width : 10px;
+    min-width : 40px;
     display: inline-block;
-    transform: translate(-30px, 100%);
+    transform: translate(-50px, 18px);
 }
 .presenters .applicants li .personal_name,
 .applicantList .applicants li .personal_name{
     float: left;
-    transform: translate(20%, 100%);
+    transform: translate(-20px, 18px);
 }
-.taskInfo .presenters .applicants li .personal_score,
+.taskInfo .presenters .applicants li .personal_score{
+    float: right;
+    transform: translate(-27px, 18px);
+}
 .taskInfo .applicantList .applicants li .personal_score{
-    float: left;
-    transform: translate(78px, 19px);
+    float: right;
+    transform: translate(-176px, 18px);
 }
-.taskInfo .applicants #yes{
-    margin-left: 100px;
+.taskInfo .applicantList .applicants .YesNo{
+    transform: translate(40px, 0px);
 }
-
 .taskStatistic{
     padding-bottom: 20px;
 }

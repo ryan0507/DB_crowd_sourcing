@@ -92,59 +92,6 @@
 .originDataTypeRequest ul{
     transform: translate(0%, -25%);
 }
-#yes{color:#6EB9E8}
-#no{color:#E86E77}
-
-.applicantList{
-    padding-top: 10px;
-}
-.applicantList .lightgray_wrapper{
-    width : 500px;
-}
-.applicantList .lightgray_wrapper_inline_display{
-    width : 500px;
-    display:inline-block;
-}
-
-.applicantList .lightgray_wrapper_file{
-    width : 500px;
-}
-
-.applicantList .lightgray_wrapper_file_inline_display{
-    width : 500px;
-    display:inline-block;
-    color : #6EB9E8;
-}
-
-.applicantList .name{
-    position: absolute;
-    left: 150px;
-    font-weight: 600;
-}
-.applicantList .score{
-    position: absolute;
-    left: 250px;
-    font-weight: 600;
-}
-.applicants li{
-    font-weight: 600;
-}
-.applicants li .sequenceNum{
-    float:left;
-    transform: translate(-30px, 100%);
-}
-.applicants li .personal_name{
-    float: left;
-    transform: translate(20%, 100%);
-}
-.applicants li .personal_score{
-    float: left;
-    transform: translate(390%, 100%);
-}
-.applicants #yes{
-    margin-left: 170px;
-}
-
 .taskStatistic{
     margin-top: 20px;
 }
