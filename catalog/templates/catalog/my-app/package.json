@@ -1,7 +1,7 @@
 {
   "name": "my-app",
   "version": "0.1.0",
-  "proxy": "http://localhost:8000",
+  "proxy": "http://165.132.105.46:3025",
   "private": true,
   "dependencies": {
     "@agney/react-loading": "^0.1.2",
