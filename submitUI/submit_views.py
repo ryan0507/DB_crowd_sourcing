@@ -503,16 +503,17 @@ def CalCulateScore_ReturnRefinedDF(data1, TaskID, MainID):
         Info["TotalRow"] = len(data1)
         data2 = data1[data1.notnull().mean(axis=1) > 0.5]
         Info["NullRow"] = len(data1) - len(data2)
-        tmp = data2.duplicated()
+        tmp = data2.round(3).duplicated()
         data2 = data2[~tmp]
         Info["SelfDupRow"] += tmp.sum()
 
         t1 = select(dbconn, "SELECT SubmitterID,{} FROM {} A, PARSING_DATA B WHERE A.SubmissionID = B.SubmissionID".format(",".join(TaskSchema), TableName)) ; t1 = pd.DataFrame(t1, columns= ["SubmitterID"] + TaskSchema)
         print(t1.shape)
         tmp = t1.iloc[:,1:].append(data2)
-        dup = tmp.duplicated()
+        print(tmp)
+        dup = tmp.round(3).duplicated()
         data2 = tmp[~dup][len(t1):]
-        dup_data = t1[tmp.duplicated(keep=False)[:len(t1)]]
+        dup_data = t1[tmp.round(3).duplicated(keep=False)[:len(t1)]]
         dup_data = dup_data["SubmitterID"] == MainID
         Info["SelfDupRow"] += dup_data.sum()
         Info["OtherDupRow"] = (~dup_data).sum()
@@ -522,7 +523,7 @@ def CalCulateScore_ReturnRefinedDF(data1, TaskID, MainID):
         t1 = select(dbconn, "SELECT {} FROM {}_W A, PARSING_DATA B WHERE A.SubmissionID = B.SubmissionID and SubmitterID = '{}'".format(",".join(TaskSchema), TableName,MainID))
         t1 = pd.DataFrame(t1, columns=TaskSchema)
         tmp = t1.append(data2)
-        dup = tmp.duplicated()
+        dup = tmp.round(3).duplicated()
         data2 = tmp[~dup][len(t1):]
         Info["SelfDupRow"] += dup.sum()
 
