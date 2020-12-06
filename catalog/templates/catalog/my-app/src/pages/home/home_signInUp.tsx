@@ -186,15 +186,15 @@ function Home_signInUp() {
             let user: User = r.data;
             console.log(user.MainID);
             if(user.MainID.includes('ad')){
-                alert('관리자');
+                alert('안녕하세요 관리자 '+ user.Name+"(" + user.ID +")" +'님');
                 window.location.replace('/admin/main');
             }
             else if(user.MainID.includes('su')){
-                alert('제출자');
+                alert('안녕하세요 제출자 '+ user.Name+"(" + user.ID +")" +'님');
                 window.location.replace('/submit/main');
             }
             else if(user.MainID.includes('as')){
-                alert('평가자');
+                alert('안녕하세요 평가자 '+ user.Name+"(" + user.ID +")" +'님');
                 window.location.replace('/rater/main');
             }
             else {
