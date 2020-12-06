@@ -374,18 +374,19 @@ def getSubTime(request, infoID):
 
 def postFile(request):
     try:
+        dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
         post_data = {i: j[0] for i, j in dict(request.POST).items()}
         post_data["OriginalID"] = post_data["OriginalID"].split(":")[0].replace("ID ", "")
         fileName = str(request.FILES["file"])
 
         if fileName[-3:] != "csv":
-            return JsonResponse({"state": 202, "message": "csv파일만을 제출해야합니다."})
-        data = [i.decode('utf-8').strip().strip("\ufeff").split(",") for i in request.FILES['file']]
-        data = pd.DataFrame(data[1:],columns=data[0])
-        data = data.where(data != "")
+            return JsonResponse({"state": "202", "message": "csv파일만을 제출해야합니다."})
+        try:
+            data = pd.read_csv(request.FILES['file'])
+        except Exception as e:
+            return JsonResponse({"state": "202", "message": "utf-8로 디코딩이 되지 않습니다."})
 
 
-        dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
         schema = next(select(dbconn,"SELECT Mapping FROM ORIGINAL_DATA_TYPE WHERE OriginalTypeID = {}".format(post_data["OriginalID"])))
         TableName, type = next(select(dbconn,"SELECT TableName, TaskSchema FROM TASK WHERE TaskID = {}".format(post_data["TaskID"])))
         schema = schema[0].split("%")
@@ -442,7 +443,7 @@ def postFile(request):
             raise Exception
 
         lst = list(select(dbconn, "SELECT MainID FROM USER WHERE MainID LIKE 'as %'"))
-
+        random.shuffle(lst)
         rater = random.sample(lst,1)[0][0]
 
         merge_bulk(dbconn,"""INSERT INTO PARSING_DATA(OriginalTypeID, SubmitterID, AssessorID, SubmissionNumber,
@@ -458,7 +459,7 @@ def postFile(request):
 
         info = {"TotalColumn" : str(score["TotalColumn"]), "NullRow" : str(score["NullRow"]),
          "SelfDupRow" : str(score["SelfDupRow"]), "OtherDupRow" : str(score["OtherDupRow"]),
-         "NullPercent": str(score["NullPercent"]), "TotalRow":str(score["TotalRow"]),
+         "NullPercent": str(round(score["NullPercent"] * 100,3)), "TotalRow":str(score["TotalRow"]),
          "RestRow" : str(score["RestRow"]), "Score": str(round(score["Score"],3)),
          }
 
@@ -467,10 +468,8 @@ def postFile(request):
         dbconn.commit()
         return JsonResponse({"state": "200","message": str(id)})
     except Exception as e:
-
         dbconn.rollback()
         return JsonResponse({"state": "203", "message": "오류가 발생했습니다."})
-
     finally:
         dbconn.close()
 
@@ -526,7 +525,7 @@ def CalCulateScore_ReturnRefinedDF(data1, TaskID, MainID):
         data2 = tmp[~dup][len(t1):]
         Info["SelfDupRow"] += dup.sum()
 
-        Info["NullPercent"] = data2.isnull().values.mean()
+        Info["NullPercent"] = data2.isna().values.mean()
         Info["RestRow"] = len(data2)
 
 
@@ -545,7 +544,7 @@ def CalCulateScore_ReturnRefinedDF(data1, TaskID, MainID):
 
         return (Info, data2)
     except Exception as e:
-
+        print(e)
         Info = {"NullRow": -1, "SelfDupRow": -1, "OtherDupRow": -1, "NullPercent": -1, "TotalRow": -1, "RestRow": -1,
                 "TotalColumn": -1, "Score": -1}
         data2 = pd.DataFrame()
