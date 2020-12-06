@@ -117,15 +117,6 @@ export default function Admin_fileDetail(props : RouteComponentProps<{task_id : 
                   </TableBody>
                 </Table>
               </TableContainer>
-              <TablePagination
-                rowsPerPageOptions={[10, 20, 30]}
-                component="div"
-                count={detail.Submissions.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onChangePage={handleChangePage}
-                onChangeRowsPerPage={handleChangeRowsPerPage}
-              />
             </Paper>
         </div>
        </div>

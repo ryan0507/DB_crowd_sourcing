@@ -20,12 +20,14 @@ interface submitter {
     score : string,
 }
 interface task{
+    TaskID : number,
     TaskName : string,
     Files: file[],
     Total : number,
     Pass : number,
 }
 interface file{
+    SubmissionID:  number,
     SubmissionNum : string,
     SubmissionDate : string,
     OriginSchema : string,
@@ -48,19 +50,19 @@ interface Column {
 const columns: Column[] = [
     {id : "OriginSchema", label: '원본 데이터 타입'},
     {id : "SubmissionNum", label : '회차'},
-  { id: 'SubmissionDate', label: '제출일', minWidth: 80 },
-  {
-    id: 'FileName',
-    label: '제출\u00a0파일명',
-    minWidth: 140,
-  },
+    { id: 'SubmissionDate', label: '제출일', minWidth: 80 },
+    {
+        id: 'FileName',
+        label: '제출\u00a0파일명',
+        minWidth: 140,
+      },
     {id : 'QualAssessment', label: '정성 점수'},
     {id : 'QuanAssessment', label: '정량 점수'},
-  {
-    id: 'P_NP',
-    label: 'Pass\u00a0여부',
-    minWidth: 100,
-  },
+    {
+        id: 'P_NP',
+        label: 'Pass\u00a0여부',
+        minWidth: 100,
+    },
 ];
 
 const useStyles = makeStyles({
@@ -71,13 +73,6 @@ const useStyles = makeStyles({
     maxHeight: 440,
   }
 });
-
-
-interface Data {
-    SubmissionDate : string,
-    FileName : string,
-    P_NP : string,
-}
 
 export default function Admin_presenterDetail(props : RouteComponentProps<{su_ID : string}>,){
     const [submitter, setSubmitter] = useState<submitter>({Tasks: [], ID : '', score: '',});
@@ -153,7 +148,7 @@ export default function Admin_presenterDetail(props : RouteComponentProps<{su_ID
                                                return (
                                                   <TableCell key={column.id} align='center'
                                                       style={{fontSize: '14px', fontWeight: 'normal', color:'black' }}>
-                                                        <Link to ="/admin/filedetail">
+                                                        <Link to ={`/admin/filedetail/${item.TaskID}/${row.SubmissionID}`}>
                                                             {column.format && typeof value === 'number' ? column.format(value) : value}
                                                         </Link>
                                                   </TableCell>
