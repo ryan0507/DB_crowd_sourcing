@@ -12,7 +12,6 @@ import TablePagination from "@material-ui/core/TablePagination";
 import Paper from "@material-ui/core/Paper";
 import axios from "axios";
 
-
 axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
 
@@ -38,28 +37,19 @@ const useStyles = makeStyles({
 
 export default function Admin_fileDetail(props : RouteComponentProps<{task_id : string, submission_id : string}>,){
     const [detail, setDetail] = useState<fileDetail>({FileName: '', Columns: [], Submissions: []});
+    const [isLoaing, setIsLoading] = useState<boolean>(true);
     const getApi = async() =>{
         await axios.get(`http://127.0.0.1:8000/adminUI/${props.match.params.task_id}/${props.match.params.submission_id}`).then((r)=>{
             let temp: fileDetail = r.data;
             setDetail(temp);
+            setIsLoading(false);
         })
     }
 
     useEffect(()=>{
         getApi()
     },[])
-    interface submission{
-    }
     const classes = useStyles();
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
-    const handleChangePage = (event: unknown, newPage: number) => {
-        setPage(newPage);
-    };
-    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setRowsPerPage(+event.target.value);
-        setPage(0);
-    };
     const downloadfile = (i:string, name:string) => {
         axios({method: 'GET', url: `http://127.0.0.1:8000/adminUI/downloadcsv/${i}`,
         responseType: 'blob' }).then((r)=>{
@@ -81,43 +71,48 @@ export default function Admin_fileDetail(props : RouteComponentProps<{task_id : 
    return(
        <div className={"fileDetail"}>
        <div className="wrapper">
-           <div className="Title">{detail.FileName}</div>
-           <Link to ={`/admin/taskinfo/${props.match.params.task_id}`} className="right_side_small">뒤로가기</Link>
-           <div className={"downloadCSV"}>
-               <button onClick = {(i) => downloadfile(props.match.params.task_id,detail.FileName)}>
-                    해당 파일 다운
-                </button>
-           </div>
-           <Paper className={classes.root}>
-              <TableContainer className={classes.container}>
-                <Table stickyHeader aria-label="sticky table">
-                  <TableHead>
-                    <TableRow>
-                        {detail.Columns.map((item)=>{
-                            if(item!= "SubmissionID") {
-                                return (<TableCell align="center" style={{fontSize: '16px', fontWeight: 'bold'}}>{item}</TableCell>);
-                            }})}
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {detail.Submissions.map((row) => {
-                      return (
-                        <TableRow hover role="checkbox" tabIndex={-1}>
-                          {row.submission.slice(1).map((column) => {
-                              return (
-                                  <TableCell align='center' style={{fontSize: '14px', fontWeight: 'normal' }}>
-                                      {column}
-                                  </TableCell>
-                                );
-                            }
-                          )}
+           {isLoaing ? (
+               <div className={"Loading"}>해당 파일을 로딩하는 중입니다.<br/>잠시만 기다려주세요.</div>
+           ) : (<div>
+               <div className="Title">{detail.FileName}</div>
+               <Link to ={`/admin/taskinfo/${props.match.params.task_id}`} className="right_side_small">뒤로가기</Link>
+               <div className={"downloadCSV"}>
+                   <button onClick = {(i) => downloadfile(props.match.params.task_id,detail.FileName)}>
+                        해당 파일 다운
+                    </button>
+               </div>
+               <Paper className={classes.root}>
+                  <TableContainer className={classes.container}>
+                    <Table stickyHeader aria-label="sticky table">
+                      <TableHead>
+                        <TableRow>
+                            {detail.Columns.map((item)=>{
+                                if(item!= "SubmissionID") {
+                                    return (<TableCell align="center" style={{fontSize: '16px', fontWeight: 'bold'}}>{item}</TableCell>);
+                                }})}
                         </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Paper>
+                      </TableHead>
+                      <TableBody>
+                        {detail.Submissions.map((row) => {
+                          return (
+                            <TableRow hover role="checkbox" tabIndex={-1}>
+                              {row.submission.slice(1).map((column) => {
+                                  return (
+                                      <TableCell align='center' style={{fontSize: '14px', fontWeight: 'normal' }}>
+                                          {column}
+                                      </TableCell>
+                                    );
+                                }
+                              )}
+                            </TableRow>
+                          );
+                        })}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Paper></div>
+           )}
+
         </div>
        </div>
    );
