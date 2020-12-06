@@ -11,6 +11,11 @@ import TableBody from "@material-ui/core/TableBody";
 import TablePagination from "@material-ui/core/TablePagination";
 import Paper from "@material-ui/core/Paper";
 import axios from "axios";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+
+library.add(faSpinner);
 
 axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
@@ -72,7 +77,8 @@ export default function Admin_fileDetail(props : RouteComponentProps<{task_id : 
        <div className={"fileDetail"}>
        <div className="wrapper">
            {isLoaing ? (
-               <div className={"Loading"}>해당 파일을 로딩하는 중입니다.<br/>잠시만 기다려주세요.</div>
+               // <div></div>
+               <div className={"Loading"}>해당 파일을 로딩하는 중입니다.<br/>잠시만 기다려주세요.<br/><FontAwesomeIcon icon="spinner" spin/></div>
            ) : (<div>
                <div className="Title">{detail.FileName}</div>
                <Link to ={`/admin/taskinfo/${props.match.params.task_id}`} className="right_side_small">뒤로가기</Link>
