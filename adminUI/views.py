@@ -403,7 +403,6 @@ def PresenterDetailView(request, su_ID):
         for row3 in selectDetail(dbconn, sql3, list_arg):
             taskName = row3[0]
             taskID = row3[1]
-            score = 0
             task_dict = {"TaskID": taskID, "TaskName": taskName, "Files": [], "Total": 0, "Pass": 0}
             pre_dict["Tasks"].append(task_dict)
 
@@ -415,6 +414,7 @@ def PresenterDetailView(request, su_ID):
             list_arg2 = (taskID, su_ID)
             for row2 in selectDetail(dbconn, sql2, list_arg2):
                 score += ((row2[4] + row2[5]) / 2)
+                count += 1
                 file_dict = {"SubmissionID": row2[7], "SubmissionNum": row2[0], "SubmissionDate": row2[1],
                              "OriginSchema": row2[2], "FileName": row2[3], "QualAssessment": row2[4],
                              "QuanAssessment": row2[5], "P_NP": row2[6]}
@@ -429,14 +429,12 @@ def PresenterDetailView(request, su_ID):
                         pre_dict["Tasks"][j]["Files"].append(file_dict)
                 task_dict["Total"] += 1
 
-        count += 1
         if count != 0:
             pre_dict["score"] = round(score / count, 2)
 
         return JsonResponse(pre_dict, safe=False)
 
     except Exception as e:
-        print(e)
         return JsonResponse([], safe=False)
     finally:
         dbconn.close()
