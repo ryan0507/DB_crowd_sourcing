@@ -22,7 +22,7 @@ interface Score {
 const Submit_main2 = ()=>{
     const[task, setTask] = useState<Task[]>([]);
     const getApi = async() =>{
-        await axios.get('http://165.132.105.46:3026/submitUI/main2task').then((r)=>{
+        await axios.get('http://165.132.105.46:3025/submitUI/main2task').then((r)=>{
             let temp: Task[] = r.data;
             setTask(temp);
         })
