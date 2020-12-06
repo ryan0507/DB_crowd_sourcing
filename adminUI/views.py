@@ -473,8 +473,8 @@ def EstimatorDetailView(request, as_ID):
                 file_dict["SubmitterName"] = row2[0]
             est_dict["Files"].append(file_dict)
             total_num += 1
-            if row[4] != 'W': check_num += 1
-            if row[4] == 'P': pass_num += 1
+            if row[5] != 'W': check_num += 1
+            if row[5] == 'P': pass_num += 1
         est_dict["Total"] = total_num
         est_dict["Check"] = check_num
         est_dict["Pass"] = pass_num
