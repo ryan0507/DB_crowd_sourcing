@@ -78,7 +78,7 @@ CREATE TABLE PythonTable (
   idx int auto_increment primary key,	
   data1 varchar(255),	
   data2 varchar(255)	
-)	
+)	ENGINE=InnoDB DEFAULT CHARSET=utf8
 """);	
   # 테이블 값을 대량 insert하기 위한 리스트 튜플 값	
   values = [('data1', 'test1'),	

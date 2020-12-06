@@ -45,7 +45,7 @@ CONSTRAINT domain_Gender CHECK (Gender='M' OR Gender="F"),
 CONSTRAINT domain_MainID CHECK (MainID LIKE 'ad %' OR ID LIKE 'as %' OR ID LIKE 'su %'),
 PRIMARY KEY(MainID),
 UNIQUE(ID)
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
 """)
 tmp.append(
 """
@@ -58,7 +58,7 @@ Name                 VARCHAR(40)        NOT NULL,
 Description          MEDIUMTEXT         NOT NULL,
 TaskThreshold        TEXT               NOT NULL,
 UNIQUE(TableName)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 """)
 tmp.append(
 """
@@ -68,7 +68,7 @@ TaskID               INT                NOT NULL,
 OriginSchema         TEXT               NOT NULL,
 Mapping              TEXT               NOT NULL,
 FOREIGN KEY (TaskID) REFERENCES TASK(TaskID) ON DELETE CASCADE ON UPDATE CASCADE
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 """)
 tmp.append(
 """
@@ -95,7 +95,7 @@ CONSTRAINT domain_QualAssessment CHECK ((QualAssessment >=0 and QualAssessment <
 CONSTRAINT domain_P_NP CHECK (P_NP = 'NP' OR P_NP = 'P' OR P_NP = 'W'),
 CONSTRAINT domain_SubmitterID CHECK (SubmitterID LIKE 'su %'),
 CONSTRAINT domain_AssessorID CHECK (AssessorID LIKE 'as %')
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 """)
 tmp.append(
 """
@@ -108,7 +108,7 @@ FOREIGN KEY (TaskID) REFERENCES TASK(TaskID) ON DELETE CASCADE ON UPDATE CASCADE
 FOREIGN KEY (SubmitterID) REFERENCES USER(MainID) ON DELETE CASCADE ON UPDATE CASCADE,
 CONSTRAINT domain_SubmitterID CHECK (SubmitterID LIKE 'su %'),
 CONSTRAINT domain_Pass CHECK (Pass = 'P' OR Pass = 'W')
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 """)
 
 try:

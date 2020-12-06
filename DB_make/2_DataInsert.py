@@ -92,7 +92,7 @@ if (True):
     Pop          INT,
     Pas           INT,
     FOREIGN KEY (SubmissionID) REFERENCES PARSING_DATA(SubmissionID) ON DELETE CASCADE ON UPDATE CASCADE
-    );""")
+    )ENGINE=InnoDB DEFAULT CHARSET=utf8;""")
 
   execute("""
       CREATE TABLE Rest_Rev_W(
@@ -102,7 +102,7 @@ if (True):
       Pop          INT,
       Pas           INT,
       FOREIGN KEY (SubmissionID) REFERENCES PARSING_DATA(SubmissionID) ON DELETE CASCADE ON UPDATE CASCADE
-      );""")
+      )ENGINE=InnoDB DEFAULT CHARSET=utf8;""")
 
   values = [("1", "새마을 식당", "50.27", "10", "1"),
             ("1", "한신포차", "200", "10", "0")]
@@ -120,7 +120,7 @@ if (True):
     Fpop         INT,
     Lpop           INT,
     FOREIGN KEY (SubmissionID) REFERENCES PARSING_DATA(SubmissionID) ON DELETE CASCADE ON UPDATE CASCADE
-    );""")
+    )ENGINE=InnoDB DEFAULT CHARSET=utf8;""")
 
   execute("""
     CREATE TABLE Float_pop_W(
@@ -130,7 +130,7 @@ if (True):
     Fpop         INT,
     Lpop           INT,
     FOREIGN KEY (SubmissionID) REFERENCES PARSING_DATA(SubmissionID) ON DELETE CASCADE ON UPDATE CASCADE
-    );""")
+    )ENGINE=InnoDB DEFAULT CHARSET=utf8;""")
   values = [("4", "강남", "18", "10", "30"),
             ("4", "강서", "28", "20", "50")]
   merge_bulk("INSERT INTO Float_pop VALUES (%s, %s, %s, %s, %s)", values)

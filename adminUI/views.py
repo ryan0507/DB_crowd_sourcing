@@ -109,8 +109,8 @@ def TaskAddView(request):
                 # pk2 = pk2 + tmp[2 * i] + ","
             # sql1 += (pk1[:-1] + "),FOREIGN KEY (SubmissionID) REFERENCES PARSING_DATA(SubmissionID));")
             # sql2 += (pk2[:-1] + "),FOREIGN KEY (SubmissionID) REFERENCES PARSING_DATA(SubmissionID));")
-            sql1 += ",FOREIGN KEY (SubmissionID) REFERENCES PARSING_DATA(SubmissionID) ON DELETE CASCADE ON UPDATE CASCADE);"
-            sql2 += ",FOREIGN KEY (SubmissionID) REFERENCES PARSING_DATA(SubmissionID) ON DELETE CASCADE ON UPDATE CASCADE);"
+            sql1 += ",FOREIGN KEY (SubmissionID) REFERENCES PARSING_DATA(SubmissionID) ON DELETE CASCADE ON UPDATE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
+            sql2 += ",FOREIGN KEY (SubmissionID) REFERENCES PARSING_DATA(SubmissionID) ON DELETE CASCADE ON UPDATE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
 
             execute(dbconn, sql1)
             execute(dbconn, sql2)
