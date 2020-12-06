@@ -467,7 +467,7 @@ def EstimatorDetailView(request, as_ID):
             file_dict = {"TaskID": row[0], "TaskName": row[1], "SubmitterName": "탈퇴", "OriginSchema": row[2],
                          "Filename": row[3], "QualAssessment": row[4], "P_NP": row[5], "SubmissionID": row[6]}
             file_dict["QualAssessment"] = int(file_dict["QualAssessment"])
-            list_arg2 = [row[5]]
+            list_arg2 = [row[6]]
             sql3 = "SELECT S.Name FROM USER S, PARSING_DATA P WHERE P.SubmitterID = S.MainID AND P.SubmissionID = %s"
             for row2 in selectDetail(dbconn, sql3, list_arg2):
                 file_dict["SubmitterName"] = row2[0]
