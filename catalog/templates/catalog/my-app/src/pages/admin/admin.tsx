@@ -17,7 +17,7 @@ import "./admin.css";
 
 function admin() {
     function logoutSuccess() {
-        axios.get('http://127.0.0.1:8000/homeUI/logout/').then((r)=> {
+        axios.get('http://165.132.105.46:3025/homeUI/logout/').then((r)=> {
             window.location.replace("/");
         })
     }

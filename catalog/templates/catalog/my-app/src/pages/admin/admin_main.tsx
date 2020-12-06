@@ -14,7 +14,7 @@ interface Task{
 const Admin_main = (props : RouteComponentProps<{}>,)=>{
     const[task, setTask] = useState<Task[]>([]);
     const getApi = async() =>{
-        await axios.get('http://127.0.0.1:8000/adminUI/').then((r)=>{
+        await axios.get('http://165.132.105.46:3025/adminUI/').then((r)=>{
             let temp: Task[] = r.data;
             setTask(temp);
         })

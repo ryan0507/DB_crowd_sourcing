@@ -59,7 +59,7 @@ export default function Submit_submitFile(props : RouteComponentProps<{task_id :
         participate: "P", period: "Error", pass_s: "Error", schema: []
     });
     const getApi = async () => {
-        await axios.get(`http://127.0.0.1:8000/submitUI/taskinfo1/${props.match.params.task_id}/`).then((r) => {
+        await axios.get(`http://165.132.105.46:3025/submitUI/taskinfo1/${props.match.params.task_id}/`).then((r) => {
             let temp: Task = r.data;
             setTask(temp);
         })
@@ -70,7 +70,7 @@ export default function Submit_submitFile(props : RouteComponentProps<{task_id :
 
     const [st, setSt] = useState<time>({subtime:-1})
     const getApi2 = async () => {
-        await axios.get(`http://127.0.0.1:8000/submitUI/getsubtime/${props.match.params.task_id}/`).then((r) => {
+        await axios.get(`http://165.132.105.46:3025/submitUI/getsubtime/${props.match.params.task_id}/`).then((r) => {
             let temp: time = r.data;
             setSt(temp);
         })
@@ -131,7 +131,7 @@ export default function Submit_submitFile(props : RouteComponentProps<{task_id :
             formData.append('endDate', endDate);
             formData.append('file', file);
             console.log(minUpload);
-            axios.post('http://127.0.0.1:8000/submitUI/postfile/', formData,{headers: {"content-type": "multipart/form-data"}})
+            axios.post('http://165.132.105.46:3025/submitUI/postfile/', formData,{headers: {"content-type": "multipart/form-data"}})
                 .then(res => {console.log(res.data)
                     let st: state = res.data;
                     if (st.state === "200") {

@@ -93,7 +93,7 @@ function createData(files : file[]): Data[] {
 export default function Admin_presenterDetail(props : RouteComponentProps<{as_ID : string}>,){
     const [assesor, setAssesor] = useState<assesor>({ID : "", Files : [], Total: 0, Check: 0, Pass: 0,});
     const getApi = async() =>{
-        await axios.get(`http://127.0.0.1:8000/adminUI/user/assessor/${props.match.params.as_ID}`).then((r)=>{
+        await axios.get(`http://165.132.105.46:3025/adminUI/user/assessor/${props.match.params.as_ID}`).then((r)=>{
             let temp: assesor = r.data;
             setAssesor(temp);
         })

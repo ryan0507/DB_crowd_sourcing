@@ -350,7 +350,7 @@ function Admin_taskAdd(){
           console.log(task.TableSchema);
           console.log(task.OriginData);
         if(exAll) {
-            axios.post('http://127.0.0.1:8000/adminUI/create/', {
+            axios.post('http://165.132.105.46:3025/adminUI/create/', {
                 Name: task.Name,
                 Description: task.Description,
                 TaskThreshold: task.TaskThreshold,

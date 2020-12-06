@@ -120,7 +120,7 @@ function Home_signInUp() {
             isnull = true;
         }
         if(newUser.Password === newRePw && !exist && !isnull){
-            axios.post('http://127.0.0.1:3026/homeUI/signup/', {
+            axios.post('http://165.132.105.46:3025/homeUI/signup/', {
             MainID : type+' '+(max+1),
             ID : newUser.ID,
             Password : newUser.Password,
@@ -157,7 +157,7 @@ function Home_signInUp() {
     const[ids, setIds] = useState<Ids[]>([]);
     const[mainIds, setMainIds] = useState<MainIds[]>([]);
     const getId = async() =>{
-        await axios.get('http://127.0.0.1:8000/homeUI/id/').then((r)=>{
+        await axios.get('http://165.132.105.46:3025/homeUI/id/').then((r)=>{
             let temp: Ids[] = r.data;
             setIds(temp);
         })
@@ -168,7 +168,7 @@ function Home_signInUp() {
     },[])
 
     const getMainId = async() =>{
-        await axios.get('http://127.0.0.1:8000/homeUI/mainid/').then((r)=>{
+        await axios.get('http://165.132.105.46:3025/homeUI/mainid/').then((r)=>{
             let temp: MainIds[] = r.data;
             setMainIds(temp);
         })
@@ -179,7 +179,7 @@ function Home_signInUp() {
     },[])
 
     function loginSuccess() {
-        axios.post('http://127.0.0.1:8000/homeUI/login/', {
+        axios.post('http://165.132.105.46:3025/homeUI/login/', {
             ID: id,
             Password: pw
         }).then((r)=> {

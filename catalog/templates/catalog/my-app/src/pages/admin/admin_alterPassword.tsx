@@ -32,7 +32,7 @@ function Admin_alterPassword() {
         }
         if(!isnull && pw === rePw){
             alert("alter");
-            axios.post('http://127.0.0.1:8000/adminUI/alterpw/',{
+            axios.post('http://165.132.105.46:3025/adminUI/alterpw/',{
                 Password : pw,
                 MainID : 'ad 1',
             }).then((r) => {

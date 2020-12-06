@@ -77,7 +77,7 @@ const useStyles = makeStyles({
 export default function Admin_presenterDetail(props : RouteComponentProps<{su_ID : string}>,){
     const [submitter, setSubmitter] = useState<submitter>({Tasks: [], ID : '', score: '',});
     const getApi = async() =>{
-        await axios.get(`http://127.0.0.1:8000/adminUI/user/submitter/${props.match.params.su_ID}`).then((r)=>{
+        await axios.get(`http://165.132.105.46:3025/adminUI/user/submitter/${props.match.params.su_ID}`).then((r)=>{
             let temp: submitter = r.data;
             setSubmitter(temp);
         })

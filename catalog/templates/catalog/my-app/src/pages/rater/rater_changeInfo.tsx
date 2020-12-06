@@ -98,7 +98,7 @@ const Rater_changeInfo = ()=>{
         Address : "Error", DateOfBirth:"Error", PhoneNumber:"Error"})
 
     const getApi = async() =>{
-        await axios.get('http://127.0.0.1:8000/submitUI/changeinfo').then((r)=>{
+        await axios.get('http://165.132.105.46:3025/submitUI/changeinfo').then((r)=>{
             let temp: Info = r.data;
             newUser.Address = temp.Address;
             newUser.ID = temp.ID;
@@ -117,7 +117,7 @@ const Rater_changeInfo = ()=>{
 
 
     function withdrawalSuccess() {
-        axios.post('http://127.0.0.1:8000/homeUI/withdrawal/', {pw: newUser.BeforePw}
+        axios.post('http://165.132.105.46:3025/homeUI/withdrawal/', {pw: newUser.BeforePw}
         ).then((r)=> {
             let user: state = r.data;
             if (user.state === "s") {
@@ -141,7 +141,7 @@ const Rater_changeInfo = ()=>{
             isnull = true;
         }
         if(newUser.Password === newRePw && !isnull){
-            axios.post('http://127.0.0.1:8000/homeUI/chif/', {
+            axios.post('http://165.132.105.46:3025/homeUI/chif/', {
                 BeforePW :newUser.BeforePw,
                 ID : newUser.ID,
                 Password : newUser.Password,

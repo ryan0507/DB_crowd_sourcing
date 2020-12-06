@@ -49,7 +49,7 @@ export default function Submit_taskCheck(){
     }
     const[task, setTask] = useState<Task>({Name : "Error"})
     const getApi = async() =>{
-        await axios.get('http://127.0.0.1:8000/submitUI/gettask/').then((r)=>{
+        await axios.get('http://165.132.105.46:3025/submitUI/gettask/').then((r)=>{
             let temp: Task = r.data;
             setTask(temp);
         })
@@ -59,7 +59,7 @@ export default function Submit_taskCheck(){
     },[])
 
     function JoinSuccess() {
-        axios.get('http://127.0.0.1:8000/submitUI/jointask/').then((r)=> {
+        axios.get('http://165.132.105.46:3025/submitUI/jointask/').then((r)=> {
             let res: reponse = r.data;
             if (res.result === "success"){
                 alert("참여 신청이 완료됐습니다.")

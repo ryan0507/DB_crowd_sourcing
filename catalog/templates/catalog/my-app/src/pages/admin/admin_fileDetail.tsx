@@ -44,7 +44,7 @@ export default function Admin_fileDetail(props : RouteComponentProps<{task_id : 
     const [detail, setDetail] = useState<fileDetail>({FileName: '', Columns: [], Submissions: []});
     const [isLoaing, setIsLoading] = useState<boolean>(true);
     const getApi = async() =>{
-        await axios.get(`http://127.0.0.1:8000/adminUI/${props.match.params.task_id}/${props.match.params.submission_id}`).then((r)=>{
+        await axios.get(`http://165.132.105.46:3025/adminUI/${props.match.params.task_id}/${props.match.params.submission_id}`).then((r)=>{
             let temp: fileDetail = r.data;
             setDetail(temp);
             setIsLoading(false);
@@ -56,7 +56,7 @@ export default function Admin_fileDetail(props : RouteComponentProps<{task_id : 
     },[])
     const classes = useStyles();
     const downloadfile = (i:string, name:string) => {
-        axios({method: 'GET', url: `http://127.0.0.1:8000/adminUI/downloadcsv/${i}`,
+        axios({method: 'GET', url: `http://165.132.105.46:3025/adminUI/downloadcsv/${i}`,
         responseType: 'blob' }).then((r)=>{
             if (r.status === 200) {
                 const url = window.URL.createObjectURL(new Blob([r.data], { type: r.headers['content-type'] }));

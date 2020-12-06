@@ -151,7 +151,7 @@ const defaultTempValue: tempValue ={
 export default function Admin_taskInfo(props : RouteComponentProps<{task_id : string}>,){
     const [info, setInfo] = useState<taskInfo>({TaskID : '', Name: '', SubmissionPeriod: 0, Description: '', Threshold: '', OriginalData: [], Task_Schema : [], Participant: [], Request: [], Statistics: {Files: [],  Total : 0, Pass: 0, Tuple: 0,}});
     const getApi = async() =>{
-        await axios.get(`http://127.0.0.1:8000/adminUI/${props.match.params.task_id}/`).then((r)=>{
+        await axios.get(`http://165.132.105.46:3025/adminUI/${props.match.params.task_id}/`).then((r)=>{
             let temp: taskInfo = r.data;
             setInfo(temp);
         })
@@ -178,7 +178,7 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
     const [toggleData, setToggleData] = useState<boolean>(true);
     const handleToggleData = () => {
         if(!toggleData){
-            axios.post(`http://127.0.0.1:8000/adminUI/${props.match.params.task_id}/create/`, {
+            axios.post(`http://165.132.105.46:3025/adminUI/${props.match.params.task_id}/create/`, {
                 TaskID : info.TaskID,
                 Name : info.Name,
                 SubmissionPeriod : info.SubmissionPeriod,
@@ -333,7 +333,7 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
           _axiosPost(tempUserList, tempRequestUser);
       }
       const _axiosPost = (tempUserList : userList[], tempRequestUser : requestUser[]) => {
-          axios.post(`http://127.0.0.1:8000/adminUI/${props.match.params.task_id}/pass/`, {
+          axios.post(`http://165.132.105.46:3025/adminUI/${props.match.params.task_id}/pass/`, {
                 TaskID : info.TaskID,
                 Name : info.Name,
                 SubmissionPeriod : info.SubmissionPeriod,
@@ -372,7 +372,7 @@ export default function Admin_taskInfo(props : RouteComponentProps<{task_id : st
 
 
       const downloadfile = (i:string, name:string) => {
-        axios({method: 'GET', url: `http://127.0.0.1:8000/adminUI/downloadcsv/${i}`,
+        axios({method: 'GET', url: `http://165.132.105.46:3025/adminUI/downloadcsv/${i}`,
         responseType: 'blob' }).then((r)=>{
             if (r.status === 200) {
                 const url = window.URL.createObjectURL(new Blob([r.data], { type: r.headers['content-type'] }));

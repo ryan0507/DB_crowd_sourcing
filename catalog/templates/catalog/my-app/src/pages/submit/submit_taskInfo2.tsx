@@ -124,7 +124,7 @@ export default function Submit_taskInfo2(props : RouteComponentProps<{task_id : 
     const[task, setTask] = useState<Task>({name : "Error", tablename : "Error", description: "Error", original_schema : [],
         participate : "P", period: 0, pass_s: "Error", schema: []});
     const getApi = async() =>{
-        await axios.get(`http://127.0.0.1:8000/submitUI/taskinfo2/${props.match.params.task_id}/`).then((r)=>{
+        await axios.get(`http://165.132.105.46:3025/submitUI/taskinfo2/${props.match.params.task_id}/`).then((r)=>{
             let temp: Task = r.data;
             setTask(temp);
         })
@@ -137,7 +137,7 @@ export default function Submit_taskInfo2(props : RouteComponentProps<{task_id : 
     const[toTable, setToTable] = useState<parseToTable[]>([]);
 
     const getApi2 = async() =>{
-        await axios.get(`http://127.0.0.1:8000/submitUI/taskinfo2_2/${props.match.params.task_id}/`).then((r)=>{
+        await axios.get(`http://165.132.105.46:3025/submitUI/taskinfo2_2/${props.match.params.task_id}/`).then((r)=>{
             console.log(r.data);
             let temp: ParsingData = r.data;
             setParsing(temp);
@@ -153,7 +153,7 @@ export default function Submit_taskInfo2(props : RouteComponentProps<{task_id : 
         NpassedFile: 0, avgRate: "Error", NSubmittedTuple: 0, NpassedTuple: 0, NwaitFile : 0, NwaitTuple:0,
         Submissionthreshold: "0001-01-01", SubOK : false});
     const getApi3 = async() =>{
-        await axios.get(`http://127.0.0.1:8000/submitUI/taskinfo2_3/${props.match.params.task_id}/`).then((r)=>{
+        await axios.get(`http://165.132.105.46:3025/submitUI/taskinfo2_3/${props.match.params.task_id}/`).then((r)=>{
             let temp: TaskForStat = r.data;
             setStat(temp);
         })
@@ -175,7 +175,7 @@ export default function Submit_taskInfo2(props : RouteComponentProps<{task_id : 
     };
 
     const downloadfile = (i:string, name:string) => {
-        axios({method: 'GET', url: `http://127.0.0.1:8000/submitUI/downloadcsvfile/${i}/`,
+        axios({method: 'GET', url: `http://165.132.105.46:3025/submitUI/downloadcsvfile/${i}/`,
         responseType: 'blob' }).then((r)=>{
             if (r.status === 200) {
                 const url = window.URL.createObjectURL(new Blob([r.data], { type: r.headers['content-type'] }));
@@ -206,7 +206,7 @@ export default function Submit_taskInfo2(props : RouteComponentProps<{task_id : 
 
     // const[score, setScore] = useState<Score>({score: "0"});
     // const getApi4 = async() =>{
-    //     await axios.get(`http://127.0.0.1:8000/submitUI/taskinfo2_4/${props.match.params.task_id}/`).then((r)=>{
+    //     await axios.get(`http://165.132.105.46:3025/submitUI/taskinfo2_4/${props.match.params.task_id}/`).then((r)=>{
     //         let temp: Score = r.data;
     //         setScore(temp);
     //     })

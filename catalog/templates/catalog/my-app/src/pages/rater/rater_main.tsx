@@ -16,7 +16,7 @@ interface MainData{
 const Rater_main = (props : RouteComponentProps<{}>,)=>{
     const[task, setTask] = useState<MainData[]>([]);
     const getApi = async() =>{
-        await axios.get('http://127.0.0.1:8000/raterUI/').then((r)=>{
+        await axios.get('http://165.132.105.46:3025/raterUI/').then((r)=>{
             let temp: MainData[] = r.data;
             setTask(temp);
             console.log(temp);

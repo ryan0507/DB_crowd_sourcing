@@ -51,7 +51,7 @@ export default function Submit_taskInfo(props : RouteComponentProps<{task_id : s
     const[task, setTask] = useState<Task>({name : "Error", tablename : "Error", description: "Error", original_schema : [],
         participate : "P", period: "Error", pass_s: "Error", schema: []});
     const getApi = async() =>{
-        await axios.get(`http://127.0.0.1:8000/submitUI/taskinfo1/${props.match.params.task_id}/`).then((r)=>{
+        await axios.get(`http://165.132.105.46:3025/submitUI/taskinfo1/${props.match.params.task_id}/`).then((r)=>{
             let temp: Task = r.data;
             setTask(temp);
         })

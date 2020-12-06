@@ -82,7 +82,7 @@ export default function Admin_userList() {
     const[_user, setUser] = useState<User[]>([]);
 
     const getApi = async() =>{
-        await axios.get('http://127.0.0.1:8000/adminUI/user').then((r)=>{
+        await axios.get('http://165.132.105.46:3025/adminUI/user').then((r)=>{
             let temp: User[] = r.data;
             setUser(temp);
             // set(temp);

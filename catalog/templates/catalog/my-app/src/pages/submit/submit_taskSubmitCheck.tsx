@@ -48,7 +48,7 @@ export default function Submit_taskSubmitCheck(props : RouteComponentProps<{id :
         Score : ""
     })
     const getApi = async() => {
-        axios.get(`http://127.0.0.1:8000/submitUI/getresult/${props.match.params.id}/`).then((r)=> {
+        axios.get(`http://165.132.105.46:3025/submitUI/getresult/${props.match.params.id}/`).then((r)=> {
                 console.log(r.data);
                 let temp: message = r.data;
                 setNotification(temp);

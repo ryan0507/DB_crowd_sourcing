@@ -30,7 +30,7 @@ axios.defaults.withCredentials = true
 function Submit() {
     const[user, setUser] = useState<User>({MainID: "", ID: "", Name : ""});
     const getApi = async() =>{
-        await axios.get('http://127.0.0.1:8000/homeUI/getuser').then((r)=>{
+        await axios.get('http://165.132.105.46:3025/homeUI/getuser').then((r)=>{
             let temp: User = r.data;
             setUser(temp);
         })
@@ -40,7 +40,7 @@ function Submit() {
     },[])
 
     function logoutSuccess() {
-        axios.get('http://127.0.0.1:8000/homeUI/logout/').then((r)=> {
+        axios.get('http://165.132.105.46:3025/homeUI/logout/').then((r)=> {
             window.location.replace("/");
         })
     }

@@ -16,7 +16,7 @@ interface Task{
 const Submit_main = ()=>{
     const[task, setTask] = useState<Task[]>([]);
     const getApi = async() =>{
-        await axios.get('http://127.0.0.1:8000/submitUI/main1task').then((r)=>{
+        await axios.get('http://165.132.105.46:3025/submitUI/main1task').then((r)=>{
             let temp: Task[] = r.data;
             setTask(temp);
         })
