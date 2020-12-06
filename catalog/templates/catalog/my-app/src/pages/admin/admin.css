@@ -177,7 +177,7 @@
 /*file detail*/
 .fileDetail .downloadCSV{
     clear: both;
-    transform: translate(-450px, 90px);
+    transform: translate(0px, 90px);
 }
 .fileDetail .downloadCSV button{
     background-color: white;
