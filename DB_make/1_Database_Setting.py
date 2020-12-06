@@ -1,5 +1,5 @@
 import mysql.connector
-dbconn = mysql.connector.connect(host = "34.64.198.135", user = "root", passwd = "1246team!", database = "DB_test")
+dbconn = mysql.connector.connect(host = "127.0.0.1", user = "team15", passwd = "858682", database = "team15")
 
 def execute(query, bufferd=True):
   # 전역에 선언되어 있는 connection을 가져온다.	

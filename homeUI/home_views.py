@@ -1,11 +1,18 @@
 import json
+#from ..DB_crowd_sourcing.settings import DB_DATABASE, DB_PASSWD ,DB_HOST, DB_ROOT
 from django.http import JsonResponse
 import mysql.connector
+
+'''
 DB_HOST = "34.64.198.135"
 DB_ROOT = "root"
 DB_PASSWD = '1246team!'
 DB_DATABASE = "DB_test"
-
+'''
+DB_HOST = "localhost"
+DB_ROOT = "team15"
+DB_PASSWD = '858682'
+DB_DATABASE = "team15"
 #dbconn = mysql.connector.connect(host="34.64.198.135", user="root", passwd="111111", database="DB_test")
 
 
@@ -63,6 +70,7 @@ def UserAddView(request):
             merge(dbconn, """INSERT INTO USER(MainID, ID, Password, Name, Gender, Address, DateOfBirth, PhoneNumber)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s)""", val_tuple)
             dbconn.commit()
+            print(value_lst)
             return JsonResponse(value_lst, safe=False)
         else:
             print("noData")

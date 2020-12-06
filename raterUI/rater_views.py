@@ -4,11 +4,19 @@ import mysql.connector
 import json
 from datetime import date
 import pandas as pd
+#from ..DB_crowd_sourcing.settings import DB_DATABASE, DB_PASSWD ,DB_HOST, DB_ROOT
 
+
+'''
 DB_HOST = "34.64.198.135"
 DB_ROOT = "root"
 DB_PASSWD = '1246team!'
 DB_DATABASE = "DB_test"
+'''
+DB_HOST = "localhost"
+DB_ROOT = "team15"
+DB_PASSWD = '858682'
+DB_DATABASE = "team15"
 
 def select(dbconn, query, bufferd=True):
   cursor = dbconn.cursor(buffered=bufferd);

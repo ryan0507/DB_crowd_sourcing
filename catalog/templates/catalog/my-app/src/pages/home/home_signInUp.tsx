@@ -120,7 +120,7 @@ function Home_signInUp() {
             isnull = true;
         }
         if(newUser.Password === newRePw && !exist && !isnull){
-            axios.post('http://127.0.0.1:8000/homeUI/signup/', {
+            axios.post('http://127.0.0.1:3026/homeUI/signup/', {
             MainID : type+' '+(max+1),
             ID : newUser.ID,
             Password : newUser.Password,

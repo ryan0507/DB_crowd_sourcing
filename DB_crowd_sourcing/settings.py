@@ -66,7 +66,7 @@ CORS_ALLOW_CREDENTIALS = True
 # )
 
 CORS_ORIGIN_WHITELIST = (
-       'http://127.0.0.1:3000',    #React 도메인
+       'http://165.132.105.46:3026',    #React 도메인
        # 'http://127.0.0.1:8000',    #Django 도메인
 )
 
@@ -106,16 +106,22 @@ WSGI_APPLICATION = "DB_crowd_sourcing.wsgi.application"
 #     }
 # }
 
+DB_DATABASE = 'team15'
+DB_ROOT = 'team15'
+DB_PASSWD = '858682'
+DB_HOST = 'localhost'
+DB_PORT = '3306'
+
 DATABASES = {
     "default": {
         # 'ENGINE': 'django.db.backends.sqlite3',S
         # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "DB_test",  # mysql
-        "USER": "root",  # root
-        "PASSWORD": '1246team!',
-        "HOST": "34.64.198.135",  # 공백으로 냅두면 default localhost
-        "PORT": "3306",  # 공백으로 냅두면 default 3306
+        "NAME": DB_DATABASE,  # mysql
+        "USER": DB_ROOT,  # root
+        "PASSWORD": DB_PASSWD,
+        "HOST": DB_HOST,  # 공백으로 냅두면 default localhost
+        "PORT": DB_PORT,  # 공백으로 냅두면 default 3306
     }
 }
 

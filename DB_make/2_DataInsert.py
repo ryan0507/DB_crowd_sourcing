@@ -1,11 +1,11 @@
 import mysql.connector
-dbconn = mysql.connector.connect(host = "34.64.198.135", user = "root", passwd = "1246team!", database = "DB_test")
+dbconn = mysql.connector.connect(host = "127.0.0.1", user = "team15", passwd = "858682", database = "team15")
 
 # DML(Data Manipulation Language)의 insert, update, delete를 대랑 처리하는 함수	
 def merge_bulk(query, values, bufferd=True):	
   # 전역에 선언되어 있는 connection을 가져온다.	
-  global dbconn;	
-  try:	
+  global dbconn;
+  try:
     # 커서를 취득한다. 	
     cursor = dbconn.cursor(buffered=bufferd);	
     # 쿼리를 실행한다. values는 query 값에 있는 sql query식의 바인딩 값이다.	
