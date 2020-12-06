@@ -321,3 +321,31 @@ input[type=text]:focus {
 .MuiTableCell-body{
   text-align: center;
 }
+
+/*Log In*/
+.LoginTitle{
+  color: white;
+  font-size: 50px;
+  font-weight: 600;
+  transform: translate(0px, 20px);
+}
+
+footer {
+  z-index: 1;
+  font-size: 13px;
+  width: 100%;
+  position: fixed;
+  background: #F8F9FA;
+  padding : 10px 60px;
+  color: black;
+  bottom: 0;
+  left: 0;
+}
+
+footer .copyright{
+  float: left;
+}
+footer .names{
+  float: right;
+  font-size: 10px;
+}

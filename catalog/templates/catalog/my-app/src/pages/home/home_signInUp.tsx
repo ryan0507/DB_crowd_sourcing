@@ -206,6 +206,9 @@ function Home_signInUp() {
 
     return (
         <div className = 'home'>
+            {signIn ? (
+                <div className={"LoginTitle"}>Welcome!</div>
+            ) : (<div></div>)}
             <div className = 'home-white'>
                 <div className = 'home-white__title'>
                     <span className = {signIn ? "signin__select selected" : "signin__select unselected"} onClick={shiftInputSignin}>SIGN IN</span>

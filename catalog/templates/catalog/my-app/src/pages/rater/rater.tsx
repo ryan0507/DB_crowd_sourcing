@@ -66,6 +66,10 @@ function Rater(){
                 </Switch>
             </body>
         </div>
+        <footer>
+            <div className={"copyright"}>Copyright@ DB team15 미디미디</div>
+            <div className={"names"}>Team1 박선종 | 이재훈 | 조민주 || Team2 성은채 | 이수현 | 한채은</div>
+        </footer>
       </Router>
   );
 }
