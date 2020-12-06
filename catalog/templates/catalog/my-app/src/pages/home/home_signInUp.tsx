@@ -116,7 +116,7 @@ function Home_signInUp() {
             }
         }
         var isnull = false;
-        if(newUser.ID === "" || newUser.Password === "" || newUser.Name === "" || sex === '' || newUser.Address === "" || newUser.DateOfBirth === '0001-01-01' || newUser.PhoneNumber === ""){
+        if(newUser.ID === "" || newUser.Password === "" || newUser.Name === "" || sex === '' || newUser.Address === "" || newUser.DateOfBirth === '0001-01-01' || newUser.PhoneNumber === "" || type === ''){
             isnull = true;
         }
         if(newUser.Password === newRePw && !exist && !isnull){

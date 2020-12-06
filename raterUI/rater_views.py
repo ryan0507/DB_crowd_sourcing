@@ -150,7 +150,7 @@ def RaterChangeInfoView(request):
         dbconn.close();
 
 def RaterFileDetailMergeView(request):
-    # try:
+    try:
         data = json.loads(request.body)
         dbconn = mysql.connector.connect(host=DB_HOST, user=DB_ROOT, passwd=DB_PASSWD, database=DB_DATABASE)
 
@@ -191,8 +191,10 @@ def RaterFileDetailMergeView(request):
             final_df = pd.concat([original_df, selected_df], axis = 0)
             originalNum, selectedNum = original_df.shape[0], selected_df.shape[0]
 
+
             final_df = final_df.drop_duplicates(final_df.columns[1:], keep = 'first')
             finalNum = final_df.shape[0]
+            print(originalNum, selectedNum,finalNum)
 
             sql4 = "DELETE FROM {}".format(tableName)
             sql5 = "INSERT INTO {} VALUES ({})".format(tableName, value_template)
@@ -202,7 +204,7 @@ def RaterFileDetailMergeView(request):
 
             if (finalNum != originalNum + selectedNum): # 중복된 data tuple이 있는 경우
                 print("Duplicated : {} rows".format(originalNum + selectedNum - finalNum))
-                newTupleNum = originalNum + selectedNum - finalNum
+                newTupleNum = finalNum - originalNum
                 sql5 = "UPDATE PARSING_DATA SET NUMBEROFTUPLE = {} WHERE SUBMISSIONID = {}".format(newTupleNum, data["SubmissionID"]) # parsing_data의 numberOfTuple을 새로 업데이트하는 sql
                 merge(dbconn, sql5, ())
 
@@ -218,9 +220,9 @@ def RaterFileDetailMergeView(request):
         dbconn.commit();
         return JsonResponse({"state" : "s", "message" : "평가가 반영되었습니다. 평가한 파일은 평가 내역에서 확인할 수 있습니다."})
 
-    # except Exception as e:
-    #     print(e)
-    #     dbconn.rollback()
-    #     return JsonResponse({}, safe=False)
-    # finally:
-    #     dbconn.close()
+    except Exception as e:
+        print(e)
+        dbconn.rollback()
+        return JsonResponse({}, safe=False)
+    finally:
+        dbconn.close()
