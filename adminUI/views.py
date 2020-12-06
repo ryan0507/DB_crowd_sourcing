@@ -6,10 +6,14 @@ import csv
 from django.utils.encoding import smart_str
 
 # dbconn = mysql.connector.connect(host="34.64.198.135", user="root", passwd="111111", database="DB_test")
-DB_HOST = "34.64.198.135"
-DB_ROOT = "root"
-DB_PASSWD = "1246team!"
-DB_DATABASE = "DB_test"
+# DB_HOST = "34.64.198.135"
+# DB_ROOT = "root"
+# DB_PASSWD = "1246team!"
+# DB_DATABASE = "DB_test"
+DB_HOST = "localhost"
+DB_ROOT = "team15"
+DB_PASSWD = '858682'
+DB_DATABASE = "team15"
 
 def execute(dbconn, query, bufferd=True):
     try:
